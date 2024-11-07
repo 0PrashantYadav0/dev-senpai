@@ -1,0 +1,19 @@
+{
+  "socials": [
+    {
+      "name": "LinkedIn",
+      "href": "https://www.linkedin.com/in/prashant-kumar-yadav-9b08b4249/",
+      "icon": "linkedin"
+    },
+    {
+      "name": "GitHub",
+      "href": "https://github.com/0prashantyadav0",
+      "icon": "github"
+    },
+    {
+      "name": "Email",
+      "href": "mailto:prashantyadav09783@gmail.com",
+      "icon": "mail"
+    }
+  ]
+}

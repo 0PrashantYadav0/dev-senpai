@@ -1,0 +1,171 @@
+{
+  "projects": [
+    {
+      "name": "De-Fi Scholarship",
+      "description": "DApp for managing scholarships using smart contracts on the blockchain",
+      "image": "/defi.png",
+      "tags": [
+        "Move",
+        "TypeScript",
+        "React",
+        "ChatBot",
+        "NodeJS",
+        "Smart Contracts",
+        "Blockchain",
+        "Aptos"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://de-fi-scholarship-dapp.vercel.app",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/DeFi-Scholarship",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Enterprise Ticketing System",
+      "description": "B2B saas app for organizing and managing tickets within an organization",
+      "href": "https://b2b-saas-app.onrender.com",
+      "image": "/b2b.png",
+      "tags": [
+        "Bun",
+        "Hono",
+        "Elysia",
+        "Turso",
+        "CI/CD",
+        "Drizzle",
+        "UnoCSS",
+        "Docker",
+        "Render",
+        "SQLite",
+        "HTMX"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://b2b-saas-app.onrender.com",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/b2b-saas-app",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Pokedex",
+      "description": "A platform to search and view pokemons",
+      "href": "https://pokeknowledge.vercel.app/pokemon/1",
+      "image": "/pokedex.png",
+      "tags": ["React", "SCSS", "Firebase"],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://pokeknowledge.vercel.app/pokemon/1",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Pokedex",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "MeOW",
+      "description": "Web app to post and view blogs and articles",
+      "href": "https://me-ow.vercel.app",
+      "image": "/meow.png",
+      "tags": ["React", "TailwindCSS", "Appwrite", "JWT"],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://me-ow.vercel.app",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/MeOW",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Expense Tracker",
+      "description": "An expense tracker build with hono and bun.",
+      "href": "https://hour-meet.vercel.app/",
+      "image": "/expense.png",
+      "tags": ["Hono", "Bun", "NeonDB", "Drizzle", "Docker", "tanstack", "Kinde-auth", "hono-rpc"],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Expense-Tracking-App",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "HourMeet",
+      "description": "Hour Meet a platform to host meeting and schedule meet for later .",
+      "href": "https://hour-meet.vercel.app/",
+      "image": "/hourmeet.png",
+      "tags": ["NextJs", "Clerk", "TypeScript", "TailwindCSS", "stream-io"],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://hour-meet.vercel.app/",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/HourMeet",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Rustyestate",
+      "description": "Web app for selling and renting estates, build in MERN stack",
+      "href": "https://rustyestate.onrender.com/",
+      "image": "/estate.png",
+      "tags": ["React", "MongoDB", "Express", "NodeJS", "Redux", "JWT", "TailwindCSS"],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://rustyestate.onrender.com/",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Rustyestate",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Nexum (1st year)",
+      "description": "Platform build in spring boot and react for daily wage workers to register themselves",
+      "href": "https://nexum-frontend.vercel.app",
+      "image": "/nexum.png",
+      "tags": ["Spring Boot", "React", "MySQL", "Docker", "Railways"],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://nexum-frontend.vercel.app",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/nexum-frontend",
+          "icon": "github"
+        }
+      ]
+    }
+  ]
+}
