@@ -1,0 +1,16 @@
+{
+  "career": [
+    {
+      "name": "UBIQCURE",
+      "href": "http://ubiqcure.com/",
+      "title": "Full Stack Developer (Intern)",
+      "logo": "/ubiqcure.jpg",
+      "start": "Aug 2024",
+      "end": "Nov 2024",
+      "description": [
+        "Developed a full-stack web application for a client using React, Express, Node.js and MongoDB",
+        "Manage CI/CD pipelines for the application using GitHub Actions and Docker, and deployed the application to AWS using Terraform"
+      ]
+    }
+  ]
+}
