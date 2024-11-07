@@ -1,0 +1,34 @@
+{
+  "education": [
+    {
+      "name": "Indian Institute of Information and Technology Lucknow",
+      "href": "https://www.digipen.edu.sg",
+      "title": "Bachelor of Science in Computer Science and Artificial Intelligence",
+      "logo": "/iiitl.png",
+      "start": "Aug 2023",
+      "end": "Jun 2027",
+      "description": [
+        "Member of Web Wing, AXIOS (Techical Club Of IIITL)",
+        "Member of FOSS Wing, AXIOS (Techical Club Of IIITL)"
+      ],
+      "links": [
+        {
+          "name": "1st Year Project",
+          "href": "https://nexum-frontend.vercel.app/",
+          "icon": "globe"
+        }
+      ]
+    },
+    {
+      "name": "Kendriya Vidyalaya No. 1 Ferozepur Cantt",
+      "href": "https://no1ferozepur.kvs.ac.in/",
+      "title": "12th Board Examination",
+      "logo": "/kvs.jpg",
+      "start": "Apr 2021",
+      "end": "May 2022",
+      "description": [
+        "Scored 95.5% in the 12th Board Examination"
+      ]
+    }
+  ]
+}
