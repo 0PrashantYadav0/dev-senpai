@@ -18,7 +18,7 @@ export async function sendEmail(data: ContactFormInputs) {
   try {
     const { name, email, message } = result.data;
     const { data, error } = await resend.emails.send({
-      from: `dev-senpai.pages.dev <contact@dev-senpai.pages.dev>`,
+      from: `prashantyadav.vercel.app <contact@prashantyadav.vercel.app>`,
       to: "prashantyadav09783@gmail.com",
       replyTo: [email],
       cc: [email],
