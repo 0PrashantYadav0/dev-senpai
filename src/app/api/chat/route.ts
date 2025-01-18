@@ -1,18 +1,16 @@
 import { getVectorStore } from "@/lib/vectordb";
-import { UpstashRedisCache } from "@langchain/community/caches/upstash_redis";
 import { AIMessage, HumanMessage } from "@langchain/core/messages";
 import {
     ChatPromptTemplate,
     MessagesPlaceholder,
     PromptTemplate,
 } from "@langchain/core/prompts";
-import { ChatOpenAI } from "@langchain/openai";
-import { Redis } from "@upstash/redis";
+import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
 import { LangChainStream, Message, StreamingTextResponse } from "ai";
 import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
 import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retriever";
 import { createRetrievalChain } from "langchain/chains/retrieval";
-import { Stream } from "stream";
+import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
 
 export async function POST(req: Request) {
     try {
@@ -23,31 +21,29 @@ export async function POST(req: Request) {
 
         const { stream, handlers } = LangChainStream();
 
-        // store the same user questions
-        const cache = new UpstashRedisCache({
-            client: Redis.fromEnv(),
-        });
-
-        const chatModel = new ChatOpenAI({
-            model: "gpt-3.5-turbo-0125",
+        const chatModel = new ChatGoogleGenerativeAI({
+            model: "gemini-1.5-pro",
             streaming: true,
             callbacks: [handlers],
-            verbose: true, // logs to console
-            cache,
+            verbose: true,
             temperature: 0,
+            safetySettings: [
+                {
+                    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
+                    threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
+                },
+            ],
         });
 
-        const rephraseModel = new ChatOpenAI({
-            model: "gpt-3.5-turbo-0125",
+        const rephraseModel = new ChatGoogleGenerativeAI({
+            model: "gemini-1.5-pro",
             verbose: true,
-            cache,
         });
 
         const retriever = (await getVectorStore()).asRetriever();
 
-        // get a customised prompt based on chat history
         const chatHistory = messages
-            .slice(0, -1) // ignore latest message
+            .slice(0, -1)
             .map((msg: Message) =>
                 msg.role === "user"
                     ? new HumanMessage(msg.content)
@@ -71,7 +67,6 @@ export async function POST(req: Request) {
             rephrasePrompt,
         });
 
-        // final prompt
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
@@ -95,22 +90,18 @@ export async function POST(req: Request) {
             documentSeparator: "\n------\n",
         });
 
-        // 1. retrievalChain converts the {input} into a vector
-        // 2. do a similarity search in the vector store and finds relevant documents
-        // 3. pairs the documents to createStuffDocumentsChain and put into {context}
-        // 4. send the updated prompt to chatgpt for a customised response
-
         const retrievalChain = await createRetrievalChain({
             combineDocsChain,
-            retriever: historyAwareRetrievalChain, // get the relevant documents based on chat history
+            retriever: historyAwareRetrievalChain,
         });
 
+        // Start the chain and return the streaming response
         retrievalChain.invoke({
             input: latestMessage,
             chat_history: chatHistory,
         });
 
-        // return new StreamingTextResponse(stream);
+        return new StreamingTextResponse(stream);
     } catch (error) {
         console.error(error);
         return Response.json({ error: "Internal server error" }, { status: 500 });
