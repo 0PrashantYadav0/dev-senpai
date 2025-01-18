@@ -30,3 +30,9 @@ export async function getVectorStore() {
     }
   );
 }
+
+export async function getEmbeddingsCollection() {
+  const client = new DataAPIClient(token);
+  const db = client.db(endpoint);
+  return db.collection(collection);
+}
