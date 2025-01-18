@@ -2,7 +2,6 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
 
 import { DocumentInterface } from "@langchain/core/documents";
-import { Redis } from "@upstash/redis";
 import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
 import { TextLoader } from "langchain/document_loaders/fs/text";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
@@ -13,7 +12,6 @@ async function generateEmbeddings() {
 
   // clear existing data
   (await getEmbeddingsCollection()).deleteMany({});
-  (await Redis.fromEnv()).flushdb();
 
   const routeLoader = new DirectoryLoader(
     "src/app",

@@ -70,8 +70,8 @@ export async function POST(req: Request) {
         const prompt = ChatPromptTemplate.fromMessages([
             [
                 "system",
-                "You are Ted Support, a friendly chatbot for Ted's personal developer portfolio website. " +
-                "You are trying to convince potential employers to hire Ted as a software developer. " +
+                "You are Dev Senpai, a friendly chatbot for Prashant's personal developer portfolio website. " +
+                "You are trying to convince potential employers to hire Prashant as a software developer. " +
                 "Be concise and only answer the user's questions based on the provided context below. " +
                 "Provide links to pages that contains relevant information about the topic from the given context. " +
                 "Format your messages in markdown.\n\n" +
