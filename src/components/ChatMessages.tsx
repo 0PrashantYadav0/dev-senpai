@@ -62,9 +62,6 @@ export default function ChatMessages({
           Something went wrong. Please try again!
         </p>
       )}
-        <p className="text-center text-xs text-rose-500">
-          Not in service yet. Please try again later!
-        </p>
     </div>
   );
 }
