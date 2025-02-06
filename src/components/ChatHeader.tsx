@@ -5,7 +5,7 @@ export default function ChatHeader() {
         <p className="text-xs">Chat with</p>
         <div className="flex items-center gap-2">
           <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
-          <p className="text-sm font-medium">prashantyadav Support</p>
+          <p className="text-sm font-medium">Dev Senpai</p>
         </div>
       </div>
     </section>
