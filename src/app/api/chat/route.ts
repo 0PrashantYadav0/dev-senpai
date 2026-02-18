@@ -1,109 +1,93 @@
-import { getVectorStore } from "@/lib/vectordb";
-import { AIMessage, HumanMessage } from "@langchain/core/messages";
-import {
-    ChatPromptTemplate,
-    MessagesPlaceholder,
-    PromptTemplate,
-} from "@langchain/core/prompts";
-import { ChatGoogleGenerativeAI } from "@langchain/google-genai";
-import { LangChainStream, Message, StreamingTextResponse } from "ai";
-import { createStuffDocumentsChain } from "langchain/chains/combine_documents";
-import { createHistoryAwareRetriever } from "langchain/chains/history_aware_retriever";
-import { createRetrievalChain } from "langchain/chains/retrieval";
-import { HarmBlockThreshold, HarmCategory } from "@google/generative-ai";
+import { similaritySearch } from "@/lib/vectordb";
+import Groq from "groq-sdk";
+
+interface ChatMessage {
+    role: string;
+    content: string;
+}
 
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-        const messages = body.messages;
-
+        const messages: ChatMessage[] = body.messages;
         const latestMessage = messages[messages.length - 1].content;
 
-        const { stream, handlers } = LangChainStream();
+        // 1. Retrieve relevant documents
+        const results = await similaritySearch(latestMessage, 4);
+        const context = results
+            .map((doc: { pageContent: string }) => `Page content:\n${doc.pageContent}`)
+            .join("\n------\n");
 
-        const chatModel = new ChatGoogleGenerativeAI({
-            model: "gemini-1.5-pro",
-            streaming: true,
-            callbacks: [handlers],
-            verbose: true,
-            temperature: 0,
-            safetySettings: [
-                {
-                    category: HarmCategory.HARM_CATEGORY_HARASSMENT,
-                    threshold: HarmBlockThreshold.BLOCK_LOW_AND_ABOVE,
-                },
-            ],
+        // 2. Build the system message with context
+        const age = new Date().getFullYear() - 2003 - 1;
+        const systemMessage =
+            "You are Dev Senpai, a friendly chatbot for Prashant's personal developer portfolio website. " +
+            "You are trying to convince potential employers to hire Prashant as a software developer. " +
+            "Be concise and only answer the user's questions based on the provided context below. " +
+            "Provide links to pages that contains relevant information about the topic from the given context. " +
+            "Format your messages in markdown. " +
+            "IMPORTANT: Never output raw code, JSX syntax, or template expressions. Always use plain human-readable text.\n\n" +
+            `Key facts about Prashant:\n` +
+            `- Age: ${age} years old\n` +
+            `- From: India 🇮🇳\n` +
+            `- Enjoys: developing complex applications, instant coffee, Anime\n` +
+            `- Frontend: React, Redux, TailwindCSS, Shadcn/UI, Framer Motion\n` +
+            `- Backend: Express, NodeJS, Spring Boot, Bun, Deno, Hono, Gin, Chi\n` +
+            `- Database: MongoDB, MySQL, PostgreSQL, SQLite, Drizzle, Prisma, Supabase, Firebase, Redis\n` +
+            `- Deployment: Vercel, Render, Docker, Kubernetes, ArgoCD, Github Actions, Cloudflare, Railways, Fly.io, AWS, Azure, Cloudinary\n` +
+            `- Languages: TypeScript, JavaScript, Java, C++, C, Bash\n\n` +
+            (context ? `Context:\n${context}` : "No context available.");
+
+        // 3. Build conversation for Groq
+        const groqMessages = [
+            { role: "system" as const, content: systemMessage },
+            ...messages.map((msg) => ({
+                role: (msg.role === "user" ? "user" : "assistant") as
+                    | "user"
+                    | "assistant",
+                content: msg.content,
+            })),
+        ];
+
+        // 4. Stream response from Groq
+        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+        const completion = await groq.chat.completions.create({
+            model: "llama-3.3-70b-versatile",
+            messages: groqMessages,
+            temperature: 0.3,
+            stream: true,
         });
 
-        const rephraseModel = new ChatGoogleGenerativeAI({
-            model: "gemini-1.5-pro",
-            verbose: true,
+        // 5. Stream the response as plain text
+        const encoder = new TextEncoder();
+        const readableStream = new ReadableStream({
+            async start(controller) {
+                try {
+                    for await (const chunk of completion) {
+                        const text =
+                            chunk.choices[0]?.delta?.content || "";
+                        if (text) {
+                            controller.enqueue(encoder.encode(text));
+                        }
+                    }
+                    controller.close();
+                } catch (err) {
+                    console.error("Stream error:", err);
+                    controller.error(err);
+                }
+            },
         });
 
-        const retriever = (await getVectorStore()).asRetriever();
-
-        const chatHistory = messages
-            .slice(0, -1)
-            .map((msg: Message) =>
-                msg.role === "user"
-                    ? new HumanMessage(msg.content)
-                    : new AIMessage(msg.content),
-            );
-
-        const rephrasePrompt = ChatPromptTemplate.fromMessages([
-            new MessagesPlaceholder("chat_history"),
-            ["user", "{input}"],
-            [
-                "user",
-                "Given the above conversation history, generate a search query to look up information relevant to the current question. " +
-                "Do not leave out any relevant keywords. " +
-                "Only return the query and no other text. ",
-            ],
-        ]);
-
-        const historyAwareRetrievalChain = await createHistoryAwareRetriever({
-            llm: rephraseModel,
-            retriever,
-            rephrasePrompt,
+        return new Response(readableStream, {
+            headers: {
+                "Content-Type": "text/plain; charset=utf-8",
+            },
         });
-
-        const prompt = ChatPromptTemplate.fromMessages([
-            [
-                "system",
-                "You are Dev Senpai, a friendly chatbot for Prashant's personal developer portfolio website. " +
-                "You are trying to convince potential employers to hire Prashant as a software developer. " +
-                "Be concise and only answer the user's questions based on the provided context below. " +
-                "Provide links to pages that contains relevant information about the topic from the given context. " +
-                "Format your messages in markdown.\n\n" +
-                "Context:\n{context}",
-            ],
-            new MessagesPlaceholder("chat_history"),
-            ["user", "{input}"],
-        ]);
-
-        const combineDocsChain = await createStuffDocumentsChain({
-            llm: chatModel,
-            prompt,
-            documentPrompt: PromptTemplate.fromTemplate(
-                "Page content:\n{page_content}",
-            ),
-            documentSeparator: "\n------\n",
-        });
-
-        const retrievalChain = await createRetrievalChain({
-            combineDocsChain,
-            retriever: historyAwareRetrievalChain,
-        });
-
-        // Start the chain and return the streaming response
-        retrievalChain.invoke({
-            input: latestMessage,
-            chat_history: chatHistory,
-        });
-
-        return new StreamingTextResponse(stream);
     } catch (error) {
-        console.error(error);
-        return Response.json({ error: "Internal server error" }, { status: 500 });
+        console.error("Chat API error:", error);
+        return Response.json(
+            { error: "Internal server error" },
+            { status: 500 },
+        );
     }
 }
