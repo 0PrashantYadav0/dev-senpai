@@ -1,6 +1,35 @@
 {
   "career": [
     {
+      "name": "Nugget",
+      "href": "https://nugget.com",
+      "title": "GenAI Intern",
+      "logo": "/nugget.png",
+      "start": "Dec 2025",
+      "end": "Feb 2026",
+      "description": [
+        "Voice Orchestration & Ticketing : Built end-to-end ticketing logic for voice bots, including all internal tools required for LLM integration — enabling automated issue capture and resolution within the voice pipeline.",
+        "Multi-Tenant Support Systems : Engineered complete voice solutions for clients including Tata1mg and VoloHealth, implementing automated ticketing pipelines and multi-tenant architecture within the Nugget ecosystem to streamline cross-platform issue resolution.",
+        "Telephony Infrastructure & Go Microservices : Developed scalable Go microservices to integrate Ozonetel dialers, managing telephony signaling and SIP communication layers to optimize inbound and outbound call performance across production environments.",
+        "Contextual UI — Agent Handover Backend : Built the backend for a real-time contextual UI that surfaces full conversation context to human agents during call handovers — ensuring seamless transitions when the voice bot escalates unresolved queries to a live agent."
+      ]
+    },
+    {
+      "name": "Nugget",
+      "href": "https://nugget.com",
+      "title": "GenAI Intern",
+      "logo": "/nugget.png",
+      "start": "June 2025",
+      "end": "Sept 2025",
+      "description": [
+        "End-to-End Voice Bot Development : Contributed to production-grade voice bot solutions from the ground up, spanning the full stack — NLU, TTS, STT, and VAD — from design through delivery.",
+        "AI Voice Bot System Integration : Integrated best-in-class AI services (Elevenlabs and Google Gemini for TTS, Deepgram for STT, OpenAI and Groq for NLU) into client-facing voice platforms, driving meaningful gains in accuracy and system reliability.",
+        "Orchestration Framework for Voice Bots : Designed a modular, pluggable orchestration layer for coordinating voice pipeline components. The framework was adopted by Zomato Ads to automate customer support workflows and elevate the end-user experience.",
+        "Go Microservices : Developed and maintained scalable Go microservices for voice bot systems, contributing across deployment pipelines, production monitoring, and performance optimization in production environments.",
+        "DevOps & Infrastructure : Established a GitOps-driven CI/CD environment from scratch using GitHub Actions, ArgoCD, and an internal IaC toolchain on AWS (EKS/ECS) — cutting deployment friction and hardening infrastructure reliability across teams."
+      ]
+    },
+    {
       "name": "UBIQCURE",
       "href": "http://ubiqcure.com/",
       "title": "Full Stack Developer (Intern)",
@@ -8,8 +37,9 @@
       "start": "Aug 2024",
       "end": "Nov 2024",
       "description": [
-        "Developed a full-stack web application for a client using React, Express, Node.js and MongoDB",
-        "Manage CI/CD pipelines for the application using GitHub Actions and Docker, and deployed the application to AWS using Terraform"
+        "Full-Stack Platform Development & Cloud Optimization : Developed four web portals (Landing, User, Health-Management, School-Management) using React.js, Node.js/Express, and MongoDB, while optimizing Azure CI/CD pipelines and leading a 6+ member team via GitHub, Jira, and Confluence to improve productivity",
+        "Cloud Infrastructure & DevOps Automation : Engineered scalable cloud solutions using Docker, optimizing Azure CI/CD pipelines to reduce deployment times and enhance system reliability",
+        "Team Leadership & Project Management : Led a 6+ member cross-functional team using GitHub, Jira, and Confluence, implementing Agile methodologies to improve project delivery efficiency"
       ]
     }
   ]
