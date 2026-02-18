@@ -1,87 +1,100 @@
-import dotenv from "dotenv";
-dotenv.config({ path: ".env" });
-
-import { DocumentInterface } from "@langchain/core/documents";
-import { DirectoryLoader } from "langchain/document_loaders/fs/directory";
-import { TextLoader } from "langchain/document_loaders/fs/text";
+import { MemoryVectorStore } from "langchain/vectorstores/memory";
 import { RecursiveCharacterTextSplitter } from "langchain/text_splitter";
-import { getEmbeddingsCollection, getVectorStore } from "../src/lib/vectordb";
+import { Document } from "@langchain/core/documents";
+import { LocalEmbeddings } from "../src/lib/embeddings";
+import * as fs from "fs";
+import * as path from "path";
+import * as dotenv from "dotenv";
 
-async function generateEmbeddings() {
-  const vectorStore = await getVectorStore();
+dotenv.config();
 
-  // clear existing data
-  (await getEmbeddingsCollection()).deleteMany({});
-
-  const routeLoader = new DirectoryLoader(
-    "src/app",
-    {
-      ".tsx": (path) => new TextLoader(path),
-    },
-    true,
-  );
-
-  // routes
-  const routes = (await routeLoader.load())
-    .filter((route) => route.metadata.source.endsWith("page.tsx"))
-    .map((route): DocumentInterface => {
-      const url =
-        route.metadata.source
-          .replace(/\\/g, "/") // replace "\\" with "/"
-          .split("/src/app")[1]
-          .split("/page.tsx")[0] || "/";
-
-      const pageContentTrimmed = route.pageContent
-        .replace(/^import.*$/gm, "") // remove all import statements
-        .replace(/ className=(["']).*?\1| className={.*?}/g, "") // remove all className props
-        .replace(/^\s*[\r]/gm, "") // remove empty lines
-        .trim();
-
-      return { pageContent: pageContentTrimmed, metadata: { url } };
-    });
-
-  // console.log(routes);
-
-  const routesSplitter = RecursiveCharacterTextSplitter.fromLanguage("html");
-  const splitRoutes = await routesSplitter.splitDocuments(routes);
-
-  // resume data
-  const dataLoader = new DirectoryLoader("src/data", {
-    ".json": (path) => new TextLoader(path),
-  });
-
-  const data = await dataLoader.load();
-
-  // console.log(data);
-
-  const dataSplitter = RecursiveCharacterTextSplitter.fromLanguage("js");
-  const splitData = await dataSplitter.splitDocuments(data);
-
-  // blog posts
-  const postLoader = new DirectoryLoader(
-    "content",
-    {
-      ".mdx": (path) => new TextLoader(path),
-    },
-    true,
-  );
-
-  const posts = (await postLoader.load())
-    .filter((post) => post.metadata.source.endsWith(".mdx"))
-    .map((post): DocumentInterface => {
-      const pageContentTrimmed = post.pageContent.split("---")[1]; // only want the frontmatter
-
-      return { pageContent: pageContentTrimmed, metadata: post.metadata };
-    });
-
-  // console.log(posts);
-
-  const postSplitter = RecursiveCharacterTextSplitter.fromLanguage("markdown");
-  const splitPosts = await postSplitter.splitDocuments(posts);
-
-  await vectorStore.addDocuments(splitRoutes);
-  await vectorStore.addDocuments(splitData);
-  await vectorStore.addDocuments(splitPosts);
+interface StoredEmbedding {
+  content: string;
+  metadata: Record<string, unknown>;
+  embedding: number[];
 }
 
-generateEmbeddings();
+async function generate() {
+  console.log("🚀 Starting embedding generation...");
+
+  const embeddings = new LocalEmbeddings();
+
+  // Load routes
+  const appDir = path.join(process.cwd(), "src", "app");
+  const routeFiles = fs.readdirSync(appDir, { recursive: true });
+  const routes: Document[] = [];
+  for (const file of routeFiles) {
+    const filePath = path.join(appDir, file as string);
+    if (fs.statSync(filePath).isFile()) {
+      const ext = path.extname(filePath);
+      if (ext === ".tsx" && path.basename(filePath) === "page.tsx") {
+        const content = fs.readFileSync(filePath, "utf-8");
+        const route = "/" + path.relative(appDir, filePath).replace(/\/page\.tsx$/, "").replace(/^page\.tsx$/, "");
+        routes.push(new Document({ pageContent: content, metadata: { source: route, type: "page" } }));
+      } else if (ext !== ".tsx" && ext !== ".ts" && ext !== ".ico" && ext !== ".css") {
+        console.log(`Unknown file type: ${path.basename(filePath)}`);
+      }
+    }
+  }
+  console.log(`📄 Loaded ${routes.length} page routes`);
+
+  // Load data files
+  const dataDir = path.join(process.cwd(), "src", "data");
+  const dataFiles = fs.readdirSync(dataDir);
+  const dataDocs: Document[] = [];
+  for (const file of dataFiles) {
+    if (file === "embeddings.json") continue;
+    const filePath = path.join(dataDir, file);
+    if (fs.statSync(filePath).isFile()) {
+      const ext = path.extname(filePath);
+      if (ext === ".json") {
+        const content = fs.readFileSync(filePath, "utf-8");
+        dataDocs.push(new Document({ pageContent: content, metadata: { source: file, type: "data" } }));
+      } else if (ext === ".md") {
+        const content = fs.readFileSync(filePath, "utf-8");
+        dataDocs.push(new Document({ pageContent: content, metadata: { source: file, type: "data" } }));
+      } else if (ext === ".ts" || ext === ".tsx") {
+        const content = fs.readFileSync(filePath, "utf-8");
+        dataDocs.push(new Document({ pageContent: content, metadata: { source: file, type: "data" } }));
+      }
+    }
+  }
+  console.log(`📊 Loaded ${dataDocs.length} data files`);
+
+  // Load MDX content
+  const contentDir = path.join(process.cwd(), "content");
+  const mdxDocs: Document[] = [];
+  if (fs.existsSync(contentDir)) {
+    const contentFiles = fs.readdirSync(contentDir, { recursive: true });
+    for (const file of contentFiles) {
+      const filePath = path.join(contentDir, file as string);
+      if (fs.statSync(filePath).isFile() && path.extname(filePath) === ".mdx") {
+        const content = fs.readFileSync(filePath, "utf-8");
+        mdxDocs.push(new Document({ pageContent: content, metadata: { source: file as string, type: "blog" } }));
+      }
+    }
+  }
+  console.log(`📝 Loaded ${mdxDocs.length} blog posts`);
+
+  // Split and embed
+  const allDocs = [...routes, ...dataDocs, ...mdxDocs];
+  const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 });
+  const splitDocs = await splitter.splitDocuments(allDocs);
+  console.log(`📦 Total documents to embed: ${splitDocs.length}`);
+
+  console.log("🔄 Generating embeddings (this may take a minute on first run)...");
+  const store = await MemoryVectorStore.fromDocuments(splitDocs, embeddings);
+
+  // Save embeddings
+  const storedEmbeddings: StoredEmbedding[] = store.memoryVectors.map((d: { content: string; embedding: number[]; metadata: Record<string, unknown> }) => ({
+    content: d.content,
+    metadata: d.metadata,
+    embedding: d.embedding,
+  }));
+
+  const outputPath = path.join(process.cwd(), "src", "data", "embeddings.json");
+  fs.writeFileSync(outputPath, JSON.stringify(storedEmbeddings));
+  console.log(`✅ Done! Saved ${storedEmbeddings.length} embeddings to ${outputPath}`);
+}
+
+generate().catch(console.error);

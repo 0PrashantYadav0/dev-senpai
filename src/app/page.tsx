@@ -36,10 +36,10 @@ export default async function Home() {
           <h1 className="title text-5xl">hi prashant here 👋</h1>
           <p className="mt-4 font-light">
             {/* Update my age */}
-            {new Date().getFullYear() - DOB} -year-old software developer from INDIA 🇮🇳.
+            {new Date().getFullYear() - DOB - 1}-year-old software developer from INDIA 🇮🇳.
           </p>
           <p className="mt-2 font-light">
-            I like to develop full-stack, drink instant coffee and watch {" "}
+            I like to develop complex application, drink instant coffee and watch {" "}
             <Link
               href="https://www.crunchyroll.com/"
               target="_blank"
