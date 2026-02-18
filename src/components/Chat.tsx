@@ -19,7 +19,7 @@ export default function Chat() {
     setMessages,
     isLoading,
     error,
-  } = useChat();
+  } = useChat({ streamProtocol: "text" });
 
   const { isVisible } = useChatbot();
 
