@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Dev Senpai - AI Portfolio Chatbot
+
+A personal developer portfolio website featuring **Dev Senpai**, an AI chatbot that answers questions about my skills, projects, and experience using RAG (Retrieval-Augmented Generation).
+
+![Chatbot Demo](/public/chatbot-demo.png)
+
+## Features
+
+- **AI Chatbot**: Powered by [Groq](https://groq.com) (`llama-3.3-70b-versatile`) for ultra-fast responses.
+- **RAG Architecture**: Retrieves relevant portfolio data (projects, skills, bio) to ground the AI's answers.
+- **Local Embeddings**: Uses [`@xenova/transformers`](https://github.com/xenova/transformers.js) to generate embeddings locally (no external API costs).
+- **Fast & Free**: No database required. Embeddings are stored in a local JSON file.
+- **Modern Tech Stack**: Built with Next.js 14, TypeScript, and Tailwind CSS.
+
+## Tech Stack
+
+- **Framework**: [Next.js](https://nextjs.org/) (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **LLM**: [Groq](https://groq.com/) (Llama 3.3 70B)
+- **Embeddings**: Local MiniLM-L6-v2 (via `@xenova/transformers`)
+- **Vector Search**: In-memory keyword-similarity search (custom implementation for speed & Next.js compatibility)
+- **Streaming**: `ai/react` (Vercel AI SDK)
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/dev-senpai.git
+cd dev-senpai
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+### 3. Set up environment variables
+
+Create a `.env` file in the root directory:
+
+```bash
+cp .env.example .env
+```
+
+Add your Groq API key (get one for free at [console.groq.com](https://console.groq.com/keys)):
+
+```env
+GROQ_API_KEY=your_groq_api_key_here
+```
+
+### 4. Generate Embeddings
+
+This step reads your content (pages, data files, blog posts) and generates the vector embeddings used by the chatbot.
+
+```bash
+npm run gen
+```
+
+*Note: The first run will download the embedding model (~80MB).*
+
+### 5. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Architecture
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The chatbot works by:
+1. **Indexing**: `npm run gen` converts your content into embeddings saved in `src/data/embeddings.json`.
+2. **Retrieval**: When a user asks a question, the API finds the most relevant content using keyword-based similarity search.
+3. **Generation**: The relevant content is sent to Groq's Llama 3 model as context to generate a helpful answer.
 
-## Learn More
+For a detailed deep-dive, see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
-To learn more about Next.js, take a look at the following resources:
+## Customization
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Bio/Data**: Edit `src/data/about.md` to update the chatbot's core knowledge about you.
+- **Projects/Skills**: Update `src/data/projects.json` and `src/data/skills.json`.
+- **System Prompt**: Modify `src/app/api/chat/route.ts` to change the chatbot's personality or instructions.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT
