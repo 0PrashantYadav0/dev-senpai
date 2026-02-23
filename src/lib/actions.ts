@@ -1,5 +1,6 @@
 "use server";
 
+import ContactFormEmail from "@/components/email/ContactFormEmail";
 import { Resend } from "resend";
 import { z } from "zod";
 import { ContactFormSchema } from "./schemas";
@@ -18,13 +19,11 @@ export async function sendEmail(data: ContactFormInputs) {
   try {
     const { name, email, message } = result.data;
     const { data, error } = await resend.emails.send({
-      from: `prashantyadav.vercel.app <contact@prashantyadav.vercel.app>`,
-      to: "prashantyadav09783@gmail.com",
+      from: "Dev Senpai <onboarding@resend.dev>",
+      to: "devprashantkyadav@gmail.com",
       replyTo: [email],
-      cc: [email],
       subject: `New message from ${name}!`,
-      text: `Name:\n${name}\n\nEmail:\n${email}\n\nMessage:\n${message}`,
-      // react: ContactFormEmail({ name, email, message }),
+      react: ContactFormEmail({ name, email, message }),
     });
 
     if (!data || error) {
