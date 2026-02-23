@@ -8,10 +8,10 @@
       "start": "Dec 2025",
       "end": "Feb 2026",
       "description": [
-        "Voice Orchestration & Ticketing : Built end-to-end ticketing logic for voice bots, including all internal tools required for LLM integration — enabling automated issue capture and resolution within the voice pipeline.",
-        "Multi-Tenant Support Systems : Engineered complete voice solutions for clients including Tata1mg and VoloHealth, implementing automated ticketing pipelines and multi-tenant architecture within the Nugget ecosystem to streamline cross-platform issue resolution.",
-        "Telephony Infrastructure & Go Microservices : Developed scalable Go microservices to integrate Ozonetel dialers, managing telephony signaling and SIP communication layers to optimize inbound and outbound call performance across production environments.",
-        "Contextual UI — Agent Handover Backend : Built the backend for a real-time contextual UI that surfaces full conversation context to human agents during call handovers — ensuring seamless transitions when the voice bot escalates unresolved queries to a live agent."
+        "Built end-to-end ticketing logic for voice bots with LLM integration, enabling automated issue capture and resolution.",
+        "Engineered voice solutions for Tata1mg and VoloHealth with automated ticketing pipelines and multi-tenant architecture.",
+        "Developed Go microservices to integrate Ozonetel dialers, managing SIP/telephony layers for inbound and outbound calls.",
+        "Built the backend for a real-time contextual UI surfacing full conversation context to human agents during call handovers."
       ]
     },
     {
@@ -22,11 +22,10 @@
       "start": "June 2025",
       "end": "Sept 2025",
       "description": [
-        "End-to-End Voice Bot Development : Contributed to production-grade voice bot solutions from the ground up, spanning the full stack — NLU, TTS, STT, and VAD — from design through delivery.",
-        "AI Voice Bot System Integration : Integrated best-in-class AI services (Elevenlabs and Google Gemini for TTS, Deepgram for STT, OpenAI and Groq for NLU) into client-facing voice platforms, driving meaningful gains in accuracy and system reliability.",
-        "Orchestration Framework for Voice Bots : Designed a modular, pluggable orchestration layer for coordinating voice pipeline components. The framework was adopted by Zomato Ads to automate customer support workflows and elevate the end-user experience.",
-        "Go Microservices : Developed and maintained scalable Go microservices for voice bot systems, contributing across deployment pipelines, production monitoring, and performance optimization in production environments.",
-        "DevOps & Infrastructure : Established a GitOps-driven CI/CD environment from scratch using GitHub Actions, ArgoCD, and an internal IaC toolchain on AWS (EKS/ECS) — cutting deployment friction and hardening infrastructure reliability across teams."
+        "Built production-grade voice bots end-to-end, covering NLU, TTS, STT, and VAD from design to delivery.",
+        "Integrated Elevenlabs, Gemini (TTS), Deepgram (STT), and Groq/OpenAI (NLU) into client-facing voice platforms.",
+        "Designed a modular voice orchestration framework adopted by Zomato Ads to automate customer support workflows.",
+        "Set up GitOps CI/CD from scratch using GitHub Actions, ArgoCD, and IaC on AWS EKS/ECS."
       ]
     },
     {
@@ -37,9 +36,9 @@
       "start": "Aug 2024",
       "end": "Nov 2024",
       "description": [
-        "Full-Stack Platform Development & Cloud Optimization : Developed four web portals (Landing, User, Health-Management, School-Management) using React.js, Node.js/Express, and MongoDB, while optimizing Azure CI/CD pipelines and leading a 6+ member team via GitHub, Jira, and Confluence to improve productivity",
-        "Cloud Infrastructure & DevOps Automation : Engineered scalable cloud solutions using Docker, optimizing Azure CI/CD pipelines to reduce deployment times and enhance system reliability",
-        "Team Leadership & Project Management : Led a 6+ member cross-functional team using GitHub, Jira, and Confluence, implementing Agile methodologies to improve project delivery efficiency"
+        "Built four web portals (Landing, User, Health-Management, School-Management) using React, Node.js, and MongoDB.",
+        "Optimized Azure CI/CD pipelines with Docker, reducing deployment times and improving system reliability.",
+        "Led a 6+ member cross-functional team using Jira, GitHub, and Agile methodologies."
       ]
     }
   ]

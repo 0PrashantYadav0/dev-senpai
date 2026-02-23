@@ -1,6 +1,161 @@
 {
   "projects": [
     {
+      "name": "Million RPS Todo API",
+      "description": "High-performance Todo API optimized to serve ~500k req/s using Redis caching and asynchronous Kafka writes.",
+      "image": "/million-rps.png",
+      "tags": [
+        "Go",
+        "Gin",
+        "Redis",
+        "PostgreSQL",
+        "Kafka",
+        "Docker",
+        "Kubernetes",
+        "Nginx"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/million-rps",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "KubeStore",
+      "description": "A Kubernetes Store Provisioning Platform that deploys fully-functional MedusaJS and WooCommerce e-commerce stores on local (Kind) and production (k3s) clusters.",
+      "image": "/kubestore.png",
+      "tags": [
+        "Go",
+        "React",
+        "Kubernetes",
+        "Docker",
+        "Helm",
+        "MedusaJS",
+        "WooCommerce",
+        "BoltDB"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0prashantyadav0/KubeStore",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "VulnPilot-Go",
+      "description": "Comprehensive, AI-powered security vulnerability scanner with GitHub integration and intelligent code analysis.",
+      "image": "/vulnpilot.png",
+      "tags": [
+        "Go",
+        "PostgreSQL",
+        "Redis",
+        "Docker",
+        "Gemini AI",
+        "Groq",
+        "GitHub OAuth"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/vulnpoint-go",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "SimStack",
+      "description": "AI-Powered Simulation Orchestration Platform using Cerebras inference and Llama 3.1 to plan and spawn parallel Docker scenarios.",
+      "image": "/simstack.png",
+      "tags": [
+        "Go",
+        "React",
+        "FastAPI",
+        "Cerebras",
+        "Llama 3.1",
+        "Docker",
+        "WebSockets"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/SimStack",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "ScrapBot",
+      "description": "Web scraping and data processing project to collect restaurant data and construct a RAG-based knowledge base for querying.",
+      "href": "https://restaurant-scraper-rag-bot.onrender.com/",
+      "image": "/scrapbot.png",
+      "tags": [
+        "Python",
+        "FastAPI",
+        "React",
+        "Docker",
+        "RAG",
+        "WebSockets"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://restaurant-scraper-rag-bot.onrender.com/",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/ScrapBot",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Kinetic",
+      "description": "Real-time collaborative virtual world platform inspired by Gather.town, featuring video chat and interactive avatars.",
+      "image": "/kinetic.png",
+      "tags": [
+        "Next.js",
+        "Tailwind CSS",
+        "Pixi.js",
+        "Agora RTC",
+        "Socket.IO",
+        "Node.js",
+        "Supabase"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Kinetic",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "InDiet",
+      "description": "Smart decentralized AI-based diet management system using CNN for food detection, USDA API for nutrients, and Web3/NFTs for gamification.",
+      "image": "/indiet.jpg",
+      "tags": [
+        "Next.js",
+        "TypeScript",
+        "Thirdweb",
+        "Web3",
+        "Flask",
+        "Python",
+        "CNN",
+        "Machine Learning"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Indiet",
+          "icon": "github"
+        }
+      ]
+    },
+    {
       "name": "De-Fi Scholarship",
       "description": "DApp for managing scholarships using smart contracts on the blockchain",
       "image": "/defi.png",
@@ -23,6 +178,91 @@
         {
           "name": "Source",
           "href": "https://github.com/0PrashantYadav0/DeFi-Scholarship",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Stoxs",
+      "description": "Portfolio Tracker web application designed to help users track their investment portfolios with real-time updates and secure authentication.",
+      "href": "https://stoxs.vercel.app",
+      "image": "/stoxs.png",
+      "tags": [
+        "Spring Boot",
+        "React",
+        "Tailwind CSS",
+        "Shadcn",
+        "TypeScript",
+        "Java",
+        "FinanceAPI"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://stoxs.vercel.app",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Stoxs",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "CI/CD DevOps Pipeline",
+      "description": "Deployed Python Flask App on Kubernetes cluster using a GitOps approach with ArgoCD and GitHub Actions.",
+      "image": "/devops-pipeline.png",
+      "tags": [
+        "Python",
+        "Flask",
+        "Kubernetes",
+        "GitOps",
+        "GitHub Actions",
+        "ArgoCD",
+        "Docker"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Github-Action-AgroCD",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "GO-TERM",
+      "description": "Intelligent terminal assistant built in Go and powered by Gemini AI for command suggestions and error resolution.",
+      "image": "/go-term.png",
+      "tags": [
+        "Go",
+        "Gemini AI",
+        "Groq",
+        "Docker",
+        "CLI"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/GO-TERM",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Student Hub",
+      "description": "An Open Source application for student community of IIITL for discussions, resources, question papers, and collaboration.",
+      "image": "/student-hub.png",
+      "tags": [
+        "Next.js",
+        "Tailwind CSS",
+        "MongoDB",
+        "React"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/iiitl/student-hub",
           "icon": "github"
         }
       ]
@@ -59,53 +299,65 @@
       ]
     },
     {
-      "name": "Pokedex",
-      "description": "A platform to search and view pokemons",
-      "href": "https://pokeknowledge.vercel.app/pokemon/1",
-      "image": "/pokedex.png",
-      "tags": ["React", "SCSS", "Firebase"],
+      "name": "Server Monitoring Stack",
+      "description": "Monitoring setup for a Node.js server using Grafana, Loki, and Prometheus in Docker.",
+      "image": "/monitoring.png",
+      "tags": [
+        "Node.js",
+        "Express",
+        "Docker",
+        "Prometheus",
+        "Grafana",
+        "Loki"
+      ],
       "links": [
         {
-          "name": "Website",
-          "href": "https://pokeknowledge.vercel.app/pokemon/1",
-          "icon": "globe"
-        },
-        {
           "name": "Source",
-          "href": "https://github.com/0PrashantYadav0/Pokedex",
+          "href": "https://github.com/0PrashantYadav0/grafana-prometheus-loki",
           "icon": "github"
         }
       ]
     },
     {
-      "name": "MeOW",
-      "description": "Web app to post and view blogs and articles",
-      "href": "https://me-ow.vercel.app",
-      "image": "/meow.png",
-      "tags": ["React", "TailwindCSS", "Appwrite", "JWT"],
+      "name": "Personalized-SmartEd Go-Backend",
+      "description": "A robust and scalable Go backend for the Personalized-SmartEd platform, integrating RESTful APIs with an ML-Service for dynamic assessments and tailored tutoring.",
+      "image": "/smarted-backend.png",
+      "tags": [
+        "Go",
+        "REST API",
+        "Machine Learning Integration",
+        "Microservices"
+      ],
       "links": [
         {
-          "name": "Website",
-          "href": "https://me-ow.vercel.app",
-          "icon": "globe"
-        },
-        {
           "name": "Source",
-          "href": "https://github.com/0PrashantYadav0/MeOW",
+          "href": "https://github.com/Personalized-SmartEd/Go-Backend",
           "icon": "github"
         }
       ]
     },
     {
-      "name": "Expense Tracker",
-      "description": "An expense tracker build with hono and bun.",
-      "href": "https://hour-meet.vercel.app/",
-      "image": "/expense.png",
-      "tags": ["Hono", "Bun", "NeonDB", "Drizzle", "Docker", "tanstack", "Kinde-auth", "hono-rpc"],
+      "name": "Enhanced ML Inference Engine",
+      "description": "A JavaScript-based machine learning inference engine implementing a neural network to classify the Iris dataset, featuring both browser and Node.js execution.",
+      "href": "https://0prashantyadav0.github.io/stdlib-enhanced-ml-inference-engine",
+      "image": "/ml-engine.png",
+      "tags": [
+        "JavaScript",
+        "stdlib",
+        "Machine Learning",
+        "Neural Network",
+        "Node.js",
+        "Webpack"
+      ],
       "links": [
         {
+          "name": "Website",
+          "href": "https://0prashantyadav0.github.io/stdlib-enhanced-ml-inference-engine",
+          "icon": "globe"
+        },
+        {
           "name": "Source",
-          "href": "https://github.com/0PrashantYadav0/Expense-Tracking-App",
+          "href": "https://github.com/0PrashantYadav0/enhanced-ml-inference-engine",
           "icon": "github"
         }
       ]
@@ -115,7 +367,13 @@
       "description": "Hour Meet a platform to host meeting and schedule meet for later .",
       "href": "https://hour-meet.vercel.app/",
       "image": "/hourmeet.png",
-      "tags": ["NextJs", "Clerk", "TypeScript", "TailwindCSS", "stream-io"],
+      "tags": [
+        "NextJs",
+        "Clerk",
+        "TypeScript",
+        "TailwindCSS",
+        "stream-io"
+      ],
       "links": [
         {
           "name": "Website",
@@ -134,7 +392,15 @@
       "description": "Web app for selling and renting estates, build in MERN stack",
       "href": "https://rustyestate.onrender.com/",
       "image": "/estate.png",
-      "tags": ["React", "MongoDB", "Express", "NodeJS", "Redux", "JWT", "TailwindCSS"],
+      "tags": [
+        "React",
+        "MongoDB",
+        "Express",
+        "NodeJS",
+        "Redux",
+        "JWT",
+        "TailwindCSS"
+      ],
       "links": [
         {
           "name": "Website",
@@ -149,11 +415,201 @@
       ]
     },
     {
+      "name": "Github Bot",
+      "description": "A GitHub App built with Probot that automates issue management workflows, streamlining assigning and labeling for maintainers.",
+      "image": "/github-bot.png",
+      "tags": [
+        "Node.js",
+        "Probot",
+        "Docker",
+        "GitHub API",
+        "Automation"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/github-bot",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Youtube Backend In Nodejs",
+      "description": "A complete video hosting website backend similar to YouTube featuring user authentication, video uploads, likes, comments, subscriptions, and tweet functionalities.",
+      "image": "/youtube-backend.png",
+      "tags": [
+        "Node.js",
+        "Express.js",
+        "MongoDB",
+        "Mongoose",
+        "JWT",
+        "Bcrypt",
+        "Cloudinary"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Youtube-Twitter-Backend",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Expense Tracker",
+      "description": "An expense tracker build with hono and bun.",
+      "href": "https://hour-meet.vercel.app/",
+      "image": "/expense.png",
+      "tags": [
+        "Hono",
+        "Bun",
+        "NeonDB",
+        "Drizzle",
+        "Docker",
+        "tanstack",
+        "Kinde-auth",
+        "hono-rpc"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Expense-Tracking-App",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Smarted Frontend",
+      "description": "A robust web application serving as a comprehensive solution for managing school classes with role-based access for admins, teachers, and students.",
+      "image": "/smarted.png",
+      "tags": [
+        "React",
+        "Redux",
+        "Material-UI",
+        "MUI",
+        "Role-based Access"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Smarted",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Restaurant Management Backend",
+      "description": "Backend service for managing restaurant operations, including menus, food items, orders, tables, and invoices.",
+      "image": "/restaurant-backend.png",
+      "tags": [
+        "Go",
+        "Gin",
+        "MongoDB",
+        "REST API",
+        "Backend"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Restaurant-Management-Backend",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Floor Planner",
+      "description": "Intelligent floor plan management system for efficient room booking and space utilization.",
+      "image": "/floor-planner.png",
+      "tags": [
+        "Node.js",
+        "Express",
+        "MongoDB",
+        "React",
+        "Tailwind CSS",
+        "JWT"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Floor-Planner",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "MeOW",
+      "description": "Web app to post and view blogs and articles",
+      "href": "https://me-ow.vercel.app",
+      "image": "/meow.png",
+      "tags": [
+        "React",
+        "TailwindCSS",
+        "Appwrite",
+        "JWT"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://me-ow.vercel.app",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/MeOW",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Pokedex",
+      "description": "A platform to search and view pokemons",
+      "href": "https://pokeknowledge.vercel.app/pokemon/1",
+      "image": "/pokedex.png",
+      "tags": [
+        "React",
+        "SCSS",
+        "Firebase"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://pokeknowledge.vercel.app/pokemon/1",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Pokedex",
+          "icon": "github"
+        }
+      ]
+    },
+    {
+      "name": "Hand Out Gift",
+      "description": "A fast-paced mini-game made in 3 days where players use arrow keys to defend their holiday presents from being stolen.",
+      "image": "/hand-out-gift.png",
+      "tags": [
+        "Python",
+        "Pygame"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Hand_Out_Gifts",
+          "icon": "github"
+        }
+      ]
+    },
+    {
       "name": "Nexum (1st year)",
       "description": "Platform build in spring boot and react for daily wage workers to register themselves",
       "href": "https://nexum-frontend.vercel.app",
       "image": "/nexum.png",
-      "tags": ["Spring Boot", "React", "MySQL", "Docker", "Railways"],
+      "tags": [
+        "Spring Boot",
+        "React",
+        "MySQL",
+        "Docker",
+        "Railways"
+      ],
       "links": [
         {
           "name": "Website",
