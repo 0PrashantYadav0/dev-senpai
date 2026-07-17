@@ -57,8 +57,18 @@ export async function POST(req: Request) {
             })),
         ];
 
-        // 4. Stream response from Groq
-        const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+        // 4. Stream response from Groq.
+        // Honor a corporate proxy if one is configured (no-op in normal
+        // deployments like Vercel, where HTTPS_PROXY is unset).
+        const proxyUrl = process.env.HTTPS_PROXY || process.env.https_proxy;
+        const groqOptions: ConstructorParameters<typeof Groq>[0] = {
+            apiKey: process.env.GROQ_API_KEY,
+        };
+        if (proxyUrl) {
+            const { HttpsProxyAgent } = await import("https-proxy-agent");
+            groqOptions.httpAgent = new HttpsProxyAgent(proxyUrl);
+        }
+        const groq = new Groq(groqOptions);
         const completion = await groq.chat.completions.create({
             model: "llama-3.3-70b-versatile",
             messages: groqMessages,
