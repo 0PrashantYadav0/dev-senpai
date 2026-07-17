@@ -6,10 +6,18 @@ This document explains how the Dev Senpai chatbot works end-to-end.
 
 ## Overview
 
-The chatbot uses **Retrieval-Augmented Generation (RAG)** — it finds relevant portfolio data first, then sends it as context to an LLM to generate a natural-language answer.
+The chatbot uses **Retrieval-Augmented Generation (RAG)** — it finds relevant
+portfolio data first, then sends it as context to an LLM to generate a natural,
+human-like answer.
 
 ```
-User Question → Keyword Search → Top Documents → Groq LLM → Streamed Response
+User Question
+  → Query Expansion
+  → Hybrid Retrieval (dense cosine + sparse BM25)
+  → Reciprocal Rank Fusion
+  → MMR diversity rerank
+  → Groq LLM
+  → Streamed Response
 ```
 
 ---
@@ -19,10 +27,10 @@ User Question → Keyword Search → Top Documents → Groq LLM → Streamed Res
 | Component | Technology | Purpose |
 |-----------|-----------|---------|
 | **Chat LLM** | [Groq](https://groq.com) (`llama-3.3-70b-versatile`) | Generates natural language responses |
-| **Embeddings** | [@xenova/transformers](https://github.com/xenova/transformers.js) (`all-MiniLM-L6-v2`) | Generates document embeddings at build time |
-| **Vector Search** | Custom keyword similarity | Finds relevant docs at query time |
+| **Embeddings** | [@xenova/transformers](https://github.com/xenova/transformers.js) (`all-MiniLM-L6-v2`) | 384-dim embeddings for docs (build time) and queries (runtime) |
+| **Vector Search** | Custom hybrid engine (dense + sparse + RRF + MMR) | Finds diverse, high-signal docs at query time |
 | **Frontend** | `useChat` from `ai/react` | Handles streaming UI |
-| **API** | Next.js API Route (`/api/chat`) | Orchestrates RAG pipeline |
+| **API** | Next.js API Route (`/api/chat`) | Orchestrates the RAG pipeline |
 
 ---
 
@@ -30,89 +38,84 @@ User Question → Keyword Search → Top Documents → Groq LLM → Streamed Res
 
 ### 1. Embedding Generation (`npm run gen`)
 
-Run once at build time to index all portfolio content:
+Run once at build time to index the portfolio content. Instead of embedding raw
+JSX/JSON, `generate.ts` builds **readable "cards"** — one self-contained,
+human-readable document per fact cluster (each job, each project, education,
+socials, a curated profile/skills card, and readable text extracted from the
+site pages).
 
 ```
-src/app/**/page.tsx  ──┐
-src/data/*.json       ──┼──→ Text Splitter ──→ Local Embeddings ──→ embeddings.json
-src/data/*.md         ──┤                    (MiniLM-L6-v2)
-content/*.mdx         ──┘
+src/data/career.json     ──┐
+src/data/education.json   ──┤
+src/data/projects.json    ──┼──→ Readable cards ──→ Text Splitter ──→ Local Embeddings ──→ embeddings.json
+src/data/socials.json     ──┤                                       (MiniLM-L6-v2)
+src/app/**/page.tsx       ──┘   (imports/JSX stripped to prose)
 ```
 
-**Script:** [`scripts/generate.ts`](file:///Users/prashantyadav/Downloads/Project/dev-senpai/scripts/generate.ts)
+**Script:** `scripts/generate.ts`
 
-1. Reads all page routes, data files (JSON, MD), and blog posts (MDX)
-2. Splits them into ~1000-character chunks with 200-char overlap
-3. Generates 384-dimensional embeddings using MiniLM-L6-v2 (runs locally, no API)
-4. Saves everything to `src/data/embeddings.json`
+1. Converts each JSON record into clean prose (e.g. "Prashant worked as … at …").
+2. Extracts readable copy from the home/privacy/contact pages (JSX stripped).
+3. Adds a curated profile + skills card so key facts are always retrievable.
+4. Splits into ~700-char chunks (120 overlap) and embeds with MiniLM-L6-v2.
+5. Saves everything to `src/data/embeddings.json`.
 
 ### 2. Query Time (`POST /api/chat`)
 
-When a user sends a message:
-
 ```
-User: "What skills does Prashant have?"
-            │
-            ▼
-   ┌─── Keyword Search ───┐
-   │  Tokenize query       │
-   │  Score all 25 docs    │
-   │  Return top 4         │
-   └───────────────────────┘
-            │
-            ▼
-   ┌─── System Prompt ─────┐
-   │  Bio facts (age, etc) │
-   │  + Retrieved context  │
-   │  + Instructions       │
-   └───────────────────────┘
-            │
-            ▼
-   ┌─── Groq Streaming ───┐
-   │  llama-3.3-70b        │
-   │  Stream chunks back   │
-   └───────────────────────┘
-            │
-            ▼
-   Frontend renders in real-time
+User: "What did Prashant do at Nugget?"
+        │
+        ▼
+  Query expansion (synonyms/aliases)
+        │
+        ├── Dense: embed query → cosine similarity over all docs
+        └── Sparse: BM25 term-overlap with IDF weighting
+        │
+        ▼
+  Reciprocal Rank Fusion (robust to score-scale differences)
+        │
+        ▼
+  MMR rerank (drops redundant chunks, keeps variety)
+        │
+        ▼
+  System prompt (bio facts + retrieved context w/ source links)
+        │
+        ▼
+  Groq llama-3.3-70b → streamed, human-like answer
 ```
 
-**Handler:** [`src/app/api/chat/route.ts`](file:///Users/prashantyadav/Downloads/Project/dev-senpai/src/app/api/chat/route.ts)
+If the embedding model can't load at request time, retrieval **degrades
+gracefully to pure sparse search** so the chat never hard-fails.
+
+**Handler:** `src/app/api/chat/route.ts`
 
 ---
 
 ## Key Files
 
-### [`src/lib/vectordb.ts`](file:///Users/prashantyadav/Downloads/Project/dev-senpai/src/lib/vectordb.ts)
-**Runtime search engine.** Loads pre-computed embeddings and performs keyword-based similarity search. Avoids importing ML libraries in Next.js (which causes webpack issues with native ONNX bindings).
+### `src/lib/vectordb.ts`
+**Runtime hybrid search engine.** Loads pre-computed embeddings and performs:
 
-- `loadEmbeddings()` — reads `embeddings.json` once, caches in memory
-- `tokenize()` — splits text into lowercase tokens (3+ chars)
-- `computeSimilarity()` — counts matching tokens between query and document
-- `similaritySearch(query, k)` — returns top-k most relevant documents
+- `embedQuery()` — lazily embeds the query (MiniLM), falls back to sparse-only.
+- `cosineSimilarity()` — dense semantic scoring.
+- `buildSparseScorer()` — BM25-style lexical scoring with IDF.
+- `expandQuery()` — lightweight synonym expansion for casual phrasing.
+- `rrfFuse()` — Reciprocal Rank Fusion of dense + sparse rankings.
+- `mmrRerank()` — Maximal Marginal Relevance for diverse context.
+- `similaritySearch(query, k)` — returns top-k fused, reranked documents.
 
-### [`src/lib/embeddings.ts`](file:///Users/prashantyadav/Downloads/Project/dev-senpai/src/lib/embeddings.ts)
-**Embedding model wrapper.** Used only by `generate.ts` (not imported in Next.js). Wraps `@xenova/transformers` to provide a LangChain-compatible `Embeddings` interface.
+### `src/lib/embeddings.ts`
+**Embedding model wrapper.** Wraps `@xenova/transformers` behind a
+LangChain-compatible interface. Used at build time by `generate.ts` and lazily
+at runtime by `vectordb.ts` (externalized via `serverComponentsExternalPackages`).
 
-- Uses `Xenova/all-MiniLM-L6-v2` (384 dimensions, ~80MB model, downloaded on first run)
-- Model is cached after first download
+### `src/app/api/chat/route.ts`
+**API endpoint.** Runs similarity search, builds a grounded system prompt with
+source links, and streams a plain-text response from Groq.
 
-### [`src/app/api/chat/route.ts`](file:///Users/prashantyadav/Downloads/Project/dev-senpai/src/app/api/chat/route.ts)
-**API endpoint.** Orchestrates the RAG pipeline:
-1. Extracts the latest user message
-2. Runs similarity search to find relevant documents
-3. Builds a system prompt with bio facts + retrieved context
-4. Streams response from Groq's `llama-3.3-70b-versatile`
-5. Returns a `ReadableStream` (plain text)
-
-### [`src/components/Chat.tsx`](file:///Users/prashantyadav/Downloads/Project/dev-senpai/src/components/Chat.tsx)
-**Chat UI.** Uses the `useChat` hook from `ai/react` with `streamProtocol: "text"` to handle the plain-text stream from the API.
-
-### [`scripts/generate.ts`](file:///Users/prashantyadav/Downloads/Project/dev-senpai/scripts/generate.ts)
-**Embedding generator.** Runs in standalone Node.js (not in Next.js). Reads all content sources, splits into chunks, generates embeddings with MiniLM, and saves to JSON.
-
-### [`src/data/about.md`](file:///Users/prashantyadav/Downloads/Project/dev-senpai/src/data/about.md)
-**Plain-text bio.** Contains human-readable facts about Prashant (age, skills, contact). This ensures the chatbot has clean text to reference instead of raw JSX code from page files.
+### `scripts/generate.ts`
+**Embedding generator.** Builds readable cards from JSON + pages, chunks, embeds
+with MiniLM, and writes `src/data/embeddings.json`.
 
 ---
 
@@ -120,7 +123,7 @@ User: "What skills does Prashant have?"
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
-| `GROQ_API_KEY` | ✅ | Groq API key for chat completions |
+| `GROQ_API_KEY` | yes | Groq API key for chat completions |
 
 No other API keys needed. Embeddings are generated locally.
 
@@ -132,11 +135,3 @@ No other API keys needed. Embeddings are generated locally.
 |---------|-------------|
 | `npm run gen` | Regenerate embeddings from all content sources |
 | `npm run dev` | Start the development server |
-
----
-
-## Why Not Vector Search at Runtime?
-
-The `@xenova/transformers` library uses ONNX Runtime (native Node.js bindings). Next.js tries to bundle these with webpack, which fails because `.node` binary files can't be parsed as JavaScript modules. Rather than fighting webpack config, the runtime uses a lightweight keyword search that works well for the ~25 documents in this portfolio.
-
-The pre-computed embeddings (generated via `npm run gen` in plain Node.js) still use the full ML model for high-quality document splitting and indexing.
