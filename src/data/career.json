@@ -1,31 +1,80 @@
 {
   "career": [
-    {
-      "name": "Nugget",
-      "href": "https://nugget.com",
-      "title": "GenAI Intern",
-      "logo": "/nugget.png",
-      "start": "Dec 2025",
-      "end": "Feb 2026",
+        {
+      "name": "Walmart",
+      "href": "https://walmart.com",
+      "title": "Engineering Intern",
+      "logo": "/walmart.png",
+      "start": "May 2026",
+      "end": "July 2026",
       "description": [
-        "Built end-to-end ticketing logic for voice bots with LLM integration, enabling automated issue capture and resolution.",
-        "Engineered voice solutions for Tata1mg and VoloHealth with automated ticketing pipelines and multi-tenant architecture.",
-        "Developed Go microservices to integrate Ozonetel dialers, managing SIP/telephony layers for inbound and outbound calls.",
-        "Built the backend for a real-time contextual UI surfacing full conversation context to human agents during call handovers."
+        "Built a data migration pipeline to reliably transfer and validate large datasets across internal systems.",
+        "Developed AI agent skills powered by the Model Context Protocol (MCP) that autonomously pull and correlate logs and metrics from OpenObserve, Grafana, and Prometheus.",
+        "Engineered pod-level diagnostics and automated report generation to surface root causes and accelerate incident debugging with minimal manual intervention.",
+        "Drove cloud cost-optimization efforts across internal services, identifying and eliminating unnecessary resource spend."
+      ],
+      "tech": [
+        "Java / Spring Boot",
+        "Python",
+        "Kubernetes",
+        "WCNP",
+        "MCP",
+        "AI Agents / LLMs",
+        "OpenObserve",
+        "Grafana",
+        "Prometheus",
+        "Cloud Cost Optimization"
       ]
     },
     {
       "name": "Nugget",
       "href": "https://nugget.com",
-      "title": "GenAI Intern",
-      "logo": "/nugget.png",
+      "title": "Engineering Intern",
+      "logo": "/nugget.avif",
+      "start": "Dec 2025",
+      "end": "Feb 2026",
+      "description": [
+        "Architected end-to-end ticketing logic for LLM-powered voice bots, automating issue capture, classification, and resolution.",
+        "Delivered production voice solutions for Tata1mg and VoloHealth, building automated ticketing pipelines on a scalable multi-tenant architecture.",
+        "Engineered high-throughput Go microservices integrating Ozonetel dialers to orchestrate SIP/telephony layers for inbound and outbound calls.",
+        "Developed the backend for a real-time agent-assist interface that surfaced full conversation context during live call handovers."
+      ],
+      "tech": [
+        "Go",
+        "LLMs",
+        "Voice Bots",
+        "SIP / Telephony",
+        "Ozonetel",
+        "Microservices",
+        "Multi-tenant Architecture",
+        "PostgreSQL"
+      ]
+    },
+    {
+      "name": "Eternal",
+      "href": "https://eternal.com",
+      "title": "Engineering Intern",
+      "logo": "/eternal.avif",
       "start": "June 2025",
       "end": "Sept 2025",
       "description": [
-        "Built production-grade voice bots end-to-end, covering NLU, TTS, STT, and VAD from design to delivery.",
-        "Integrated Elevenlabs, Gemini (TTS), Deepgram (STT), and Groq/OpenAI (NLU) into client-facing voice platforms.",
-        "Designed a modular voice orchestration framework adopted by Zomato Ads to automate customer support workflows.",
-        "Set up GitOps CI/CD from scratch using GitHub Actions, ArgoCD, and IaC on AWS EKS/ECS."
+        "Designed and delivered production-grade voice bots end-to-end, owning the full NLU, TTS, STT, and VAD pipeline from architecture to release.",
+        "Integrated ElevenLabs, Gemini (TTS), Deepgram (STT), and Groq/OpenAI (NLU) into client-facing voice platforms.",
+        "Built a modular voice-orchestration framework adopted by Zomato Ads to automate customer-support workflows at scale.",
+        "Established GitOps CI/CD from scratch using GitHub Actions, ArgoCD, and Infrastructure-as-Code on AWS EKS/ECS."
+      ],
+      "tech": [
+        "Go",
+        "Elevenlabs",
+        "Gemini",
+        "Deepgram",
+        "Groq",
+        "OpenAI",
+        "GitHub Actions",
+        "ArgoCD",
+        "AWS EKS/ECS",
+        "IaC",
+        "NLU / TTS / STT"
       ]
     },
     {
@@ -36,9 +85,19 @@
       "start": "Aug 2024",
       "end": "Nov 2024",
       "description": [
-        "Built four web portals (Landing, User, Health-Management, School-Management) using React, Node.js, and MongoDB.",
-        "Optimized Azure CI/CD pipelines with Docker, reducing deployment times and improving system reliability.",
-        "Led a 6+ member cross-functional team using Jira, GitHub, and Agile methodologies."
+        "Designed and shipped four production web portals (Landing, User, Health-Management, and School-Management) using React, Node.js, and MongoDB.",
+        "Optimized Azure CI/CD pipelines with Docker, reducing deployment times and improving overall system reliability.",
+        "Led a cross-functional team of 6+ engineers using Jira, GitHub, and Agile methodologies to deliver on schedule."
+      ],
+      "tech": [
+        "React",
+        "Node.js",
+        "MongoDB",
+        "Azure",
+        "Docker",
+        "CI/CD",
+        "Jira",
+        "Agile"
       ]
     }
   ]
