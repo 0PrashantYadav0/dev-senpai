@@ -39,6 +39,7 @@ const experience = z.object({
   start: z.string(),
   end: z.string().optional(),
   description: z.array(z.string()).optional(),
+  tech: z.array(z.string()).optional(),
   links: z.array(iconLink).optional(),
 });
 export type Experience = z.infer<typeof experience>;

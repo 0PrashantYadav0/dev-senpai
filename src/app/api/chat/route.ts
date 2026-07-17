@@ -12,31 +12,39 @@ export async function POST(req: Request) {
         const messages: ChatMessage[] = body.messages;
         const latestMessage = messages[messages.length - 1].content;
 
-        // 1. Retrieve relevant documents
-        const results = await similaritySearch(latestMessage, 4);
+        // 1. Retrieve relevant documents (hybrid dense + sparse, MMR-reranked)
+        const results = await similaritySearch(latestMessage, 6);
         const context = results
-            .map((doc: { pageContent: string }) => `Page content:\n${doc.pageContent}`)
-            .join("\n------\n");
+            .map((doc, i) => {
+                const src = (doc.metadata?.source as string) ?? "";
+                const title = (doc.metadata?.title as string) ?? "";
+                const header = [title, src && `page: ${src}`]
+                    .filter(Boolean)
+                    .join(" | ");
+                return `[Source ${i + 1}${header ? ` - ${header}` : ""}]\n${doc.pageContent}`;
+            })
+            .join("\n\n------\n\n");
 
         // 2. Build the system message with context
         const age = new Date().getFullYear() - 2003 - 1;
         const systemMessage =
-            "You are Dev Senpai, a friendly chatbot for Prashant's personal developer portfolio website. " +
-            "You are trying to convince potential employers to hire Prashant as a software developer. " +
-            "Be concise and only answer the user's questions based on the provided context below. " +
-            "Provide links to pages that contains relevant information about the topic from the given context. " +
-            "Format your messages in markdown. " +
-            "IMPORTANT: Never output raw code, JSX syntax, or template expressions. Always use plain human-readable text.\n\n" +
+            "You are Dev Senpai, a warm, sharp assistant on Prashant's personal developer portfolio. " +
+            "Your job is to help visitors (often recruiters or engineers) understand Prashant's work and gently make the case that he's a strong hire. " +
+            "Answer ONLY from the provided context and the key facts below. If the context does not contain the answer, say so honestly and suggest where they might look (for example the projects or experience page) rather than inventing details. " +
+            "Write like a helpful human: natural, concise, and conversational - a few sentences or a short bullet list, never a wall of text. " +
+            "When something maps to a page in the context, link to it in markdown (for example [projects](/projects), [experience](/experience), [resume](/resume.pdf), [contact](/contact)). " +
+            "Never dump the raw context, never output code, JSX, or template expressions - just clear human-readable prose in markdown.\n\n" +
             `Key facts about Prashant:\n` +
-            `- Age: ${age} years old\n` +
-            `- From: India 🇮🇳\n` +
-            `- Enjoys: developing complex applications, instant coffee, Anime\n` +
-            `- Frontend: React, Redux, TailwindCSS, Shadcn/UI, Framer Motion\n` +
-            `- Backend: Express, NodeJS, Spring Boot, Bun, Deno, Hono, Gin, Chi\n` +
+            `- Age: ${age} years old, based in India\n` +
+            `- Focus: complex, high-performance systems - voice AI, Go microservices, full-stack apps, cloud-native infra\n` +
+            `- Enjoys: building ambitious things, instant coffee, Anime\n` +
+            `- Frontend: React, Next.js, Redux, TailwindCSS, Shadcn/UI, Framer Motion\n` +
+            `- Backend: Go (Gin, Chi), Node.js, Express, Spring Boot, Bun, Deno, Hono\n` +
             `- Database: MongoDB, MySQL, PostgreSQL, SQLite, Drizzle, Prisma, Supabase, Firebase, Redis\n` +
-            `- Deployment: Vercel, Render, Docker, Kubernetes, ArgoCD, Github Actions, Cloudflare, Railways, Fly.io, AWS, Azure, Cloudinary\n` +
-            `- Languages: TypeScript, JavaScript, Java, C++, C, Bash\n\n` +
-            (context ? `Context:\n${context}` : "No context available.");
+            `- DevOps: Docker, Kubernetes, ArgoCD, GitHub Actions, AWS, Azure, Vercel, Render, Cloudflare, Fly.io, Railway\n` +
+            `- AI/GenAI: LLM integration, RAG, voice bots (NLU/TTS/STT/VAD), Groq, OpenAI, Gemini, Deepgram, Elevenlabs, Cerebras\n` +
+            `- Languages: TypeScript, JavaScript, Go, Java, C++, C, Python, Bash\n\n` +
+            (context ? `Context (retrieved from the site):\n${context}` : "No context was retrieved for this question.");
 
         // 3. Build conversation for Groq
         const groqMessages = [

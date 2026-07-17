@@ -1,13 +1,24 @@
 import { Embeddings, type EmbeddingsParams } from "@langchain/core/embeddings";
-import { pipeline, type FeatureExtractionPipeline } from "@xenova/transformers";
+import type { FeatureExtractionPipeline } from "@xenova/transformers";
 
 const MODEL_NAME = "Xenova/all-MiniLM-L6-v2";
 
 let pipelineInstance: FeatureExtractionPipeline | null = null;
 
+/**
+ * Load the feature-extraction pipeline lazily.
+ *
+ * The import is marked `webpackIgnore` so Next/webpack never tries to bundle
+ * `@xenova/transformers` (and its native `onnxruntime-node` `.node` binaries)
+ * into the server bundle. It is resolved at runtime instead, keeping the build
+ * clean while still allowing real semantic query embeddings.
+ */
 async function getPipeline(): Promise<FeatureExtractionPipeline> {
     if (!pipelineInstance) {
-        pipelineInstance = await pipeline("feature-extraction", MODEL_NAME);
+        const mod = await import(
+            /* webpackIgnore: true */ "@xenova/transformers"
+        );
+        pipelineInstance = await mod.pipeline("feature-extraction", MODEL_NAME);
     }
     return pipelineInstance;
 }

@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default function TimelineItem({ experience }: Props) {
-  const { name, href, title, logo, start, end, description, links } =
+  const { name, href, title, logo, start, end, description, tech, links } =
     experience;
 
   return (
@@ -46,6 +46,18 @@ export default function TimelineItem({ experience }: Props) {
               </li>
             ))}
           </ul>
+        )}
+        {tech && tech.length > 0 && (
+          <div className="mt-3 flex flex-wrap gap-1.5 pr-8">
+            {tech.map((item) => (
+              <span
+                key={item}
+                className="rounded-md border border-border bg-secondary/60 px-2 py-0.5 text-[10px] font-medium text-secondary-foreground transition-colors hover:bg-secondary"
+              >
+                {item}
+              </span>
+            ))}
+          </div>
         )}
       </div>
       {links && links.length > 0 && (

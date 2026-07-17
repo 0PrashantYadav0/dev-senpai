@@ -78,8 +78,24 @@
   * {
     @apply border-border;
   }
+  html {
+    scroll-behavior: smooth;
+  }
   body {
     @apply bg-background text-foreground;
+  }
+  /* subtle, minimalist depth: a faint glow anchored top-centre */
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: radial-gradient(
+      60rem 40rem at 50% -10%,
+      hsl(var(--foreground) / 0.06),
+      transparent 70%
+    );
   }
   .title {
     @apply font-serif text-5xl tracking-wide decoration-border/75 decoration-2;

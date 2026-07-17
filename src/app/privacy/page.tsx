@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-const lastUpdated = "Sep 2024";
+const lastUpdated = "Jul 2026";
 
 export default function page() {
   return (
@@ -25,9 +25,12 @@ export default function page() {
         </p>
         <h3>1. Chatbot Conversations</h3>
         <p>
-          If you send a message through the chatbot, it might be stored for
-          caching and training purposes. So please avoid sharing any
-          confidential info in the chat.
+          This site has an AI assistant that answers questions about me using a
+          retrieval-augmented (RAG) pipeline over my own portfolio content. When
+          you send a message, it may be processed by a third-party language
+          model provider and briefly logged for debugging, caching, and quality
+          improvements. Please don&apos;t share confidential or sensitive info
+          in the chat.
         </p>
         <h3>2. Contact Info</h3>
         <p>

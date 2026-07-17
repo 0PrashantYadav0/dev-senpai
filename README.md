@@ -7,7 +7,7 @@ A personal developer portfolio website featuring **Dev Senpai**, an AI chatbot t
 ## Features
 
 - **AI Chatbot**: Powered by [Groq](https://groq.com) (`llama-3.3-70b-versatile`) for ultra-fast responses.
-- **RAG Architecture**: Retrieves relevant portfolio data (projects, skills, bio) to ground the AI's answers.
+- **RAG Architecture**: Hybrid retrieval (dense embeddings + BM25) fused with Reciprocal Rank Fusion and reranked with MMR to ground the AI's answers in real portfolio data.
 - **Local Embeddings**: Uses [`@xenova/transformers`](https://github.com/xenova/transformers.js) to generate embeddings locally (no external API costs).
 - **Fast & Free**: No database required. Embeddings are stored in a local JSON file.
 - **Modern Tech Stack**: Built with Next.js 14, TypeScript, and Tailwind CSS.
@@ -19,7 +19,7 @@ A personal developer portfolio website featuring **Dev Senpai**, an AI chatbot t
 - **Styling**: Tailwind CSS
 - **LLM**: [Groq](https://groq.com/) (Llama 3.3 70B)
 - **Embeddings**: Local MiniLM-L6-v2 (via `@xenova/transformers`)
-- **Vector Search**: In-memory keyword-similarity search (custom implementation for speed & Next.js compatibility)
+- **Vector Search**: Custom in-memory hybrid engine — dense cosine similarity + sparse BM25, RRF fusion, and MMR reranking (graceful fallback to sparse-only)
 - **Streaming**: `ai/react` (Vercel AI SDK)
 
 ## Getting Started
@@ -53,7 +53,7 @@ GROQ_API_KEY=your_groq_api_key_here
 
 ### 4. Generate Embeddings
 
-This step reads your content (pages, data files, blog posts) and generates the vector embeddings used by the chatbot.
+This step reads your content (data files and site pages), turns it into readable cards, and generates the vector embeddings used by the chatbot.
 
 ```bash
 npm run gen
@@ -73,15 +73,15 @@ Open [http://localhost:3000](http://localhost:3000) with your browser.
 
 The chatbot works by:
 1. **Indexing**: `npm run gen` converts your content into embeddings saved in `src/data/embeddings.json`.
-2. **Retrieval**: When a user asks a question, the API finds the most relevant content using keyword-based similarity search.
+2. **Retrieval**: When a user asks a question, the API runs hybrid retrieval (dense + sparse), fuses the rankings with RRF, and diversifies with MMR.
 3. **Generation**: The relevant content is sent to Groq's Llama 3 model as context to generate a helpful answer.
 
 For a detailed deep-dive, see [ARCHITECTURE.md](./ARCHITECTURE.md).
 
 ## Customization
 
-- **Bio/Data**: Edit `src/data/about.md` to update the chatbot's core knowledge about you.
-- **Projects/Skills**: Update `src/data/projects.json` and `src/data/skills.json`.
+- **Bio/Data**: Edit the curated profile card in `scripts/generate.ts` to update the chatbot's core knowledge about you.
+- **Projects/Experience**: Update `src/data/projects.json`, `src/data/career.json`, and `src/data/education.json`.
 - **System Prompt**: Modify `src/app/api/chat/route.ts` to change the chatbot's personality or instructions.
 
 ## License
