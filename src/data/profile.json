@@ -1,0 +1,181 @@
+{
+  "name": "Prashant Kumar Yadav",
+  "shortName": "Prashant",
+  "headline": "Software developer building voice AI and the Go services that keep it on the line.",
+  "location": "Lucknow, India",
+  "birthYear": 2003,
+  "email": "devprashantkyadav@gmail.com",
+  "site": "https://prashantyadav.vercel.app",
+  "resume": "/resume.pdf",
+  "summary": [
+    "Prashant is a final-year B.Tech student in Computer Science and Artificial Intelligence at IIIT Lucknow (2023 to 2027, GPA 8.6).",
+    "He has interned at Walmart Global Tech, Nugget by Zomato, Eternal (Zomato), and UBIQCURE, working on voice AI, Go microservices, telephony, data pipelines, AI observability agents, and cloud infrastructure.",
+    "He is a regular contributor to stdlib-js, the standard library for JavaScript, with more than 145 merged pull requests.",
+    "He likes shipping ambitious systems, instant coffee, and anime."
+  ],
+  "focus": [
+    "Voice AI pipelines (NLU, TTS, STT, VAD) integrated with Gemini, Deepgram, ElevenLabs, OpenAI, and Groq",
+    "High-throughput Go microservices, SIP telephony, and multi-tenant backends",
+    "Kubernetes, Helm, GitOps CI/CD with GitHub Actions and ArgoCD on AWS and Azure",
+    "Retrieval-augmented generation, LLM agents, and Model Context Protocol tooling",
+    "Full-stack web products with React, Next.js, Node.js, and PostgreSQL"
+  ],
+  "skills": [
+    {
+      "group": "Languages",
+      "items": [
+        "Go",
+        "Python",
+        "TypeScript",
+        "JavaScript",
+        "Java",
+        "C++",
+        "C",
+        "SQL",
+        "Bash"
+      ]
+    },
+    {
+      "group": "Backend",
+      "items": [
+        "Node.js",
+        "Express",
+        "Spring Boot",
+        "Django",
+        "FastAPI",
+        "Bun",
+        "Hono",
+        "GraphQL",
+        "REST"
+      ]
+    },
+    {
+      "group": "Frontend",
+      "items": [
+        "React",
+        "Next.js",
+        "Tailwind CSS",
+        "Redux",
+        "shadcn/ui"
+      ]
+    },
+    {
+      "group": "DevOps and cloud",
+      "items": [
+        "Docker",
+        "Kubernetes",
+        "Helm",
+        "GitHub Actions",
+        "ArgoCD",
+        "AWS",
+        "Azure",
+        "Linux",
+        "Infrastructure as Code"
+      ]
+    },
+    {
+      "group": "Databases",
+      "items": [
+        "PostgreSQL",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "SQLite",
+        "Drizzle",
+        "Prisma"
+      ]
+    },
+    {
+      "group": "AI and ML",
+      "items": [
+        "LLM integration",
+        "RAG",
+        "LangChain",
+        "Groq",
+        "OpenAI",
+        "Gemini",
+        "Deepgram",
+        "ElevenLabs",
+        "MCP agents",
+        "Neural networks"
+      ]
+    }
+  ],
+  "openSource": {
+    "name": "stdlib-js",
+    "role": "Contributor",
+    "href": "https://github.com/stdlib-js/stdlib",
+    "start": "May 2024",
+    "end": null,
+    "description": [
+      "Authored more than 145 merged pull requests across the BLAS, LAPACK, and statistics packages (the live count is shown on the site).",
+      "Contributed C-level BLAS extensions and WebAssembly implementations that improve numerical-computing performance."
+    ]
+  },
+  "achievements": [
+    {
+      "title": "Overall winner, GenTech Thales Hackathon",
+      "detail": "First place across all tracks."
+    },
+    {
+      "title": "Global top 11, Walmart Sparkathon",
+      "detail": "Selected from a worldwide pool of teams."
+    },
+    {
+      "title": "2nd in the ML Hackathon and 3rd in the Finance Hackathon, Techkriti IIT Kanpur",
+      "detail": ""
+    },
+    {
+      "title": "3rd, SuperMove dAppthon",
+      "detail": "Built the De-Fi Scholarship dApp on Aptos."
+    },
+    {
+      "title": "Codeforces Specialist, peak rating 1534",
+      "detail": "Global rank 386 in a Division 2 contest."
+    },
+    {
+      "title": "CodeChef 4-star, peak rating 1813",
+      "detail": ""
+    }
+  ],
+  "roles": [
+    {
+      "title": "Coordinator, Web Wing, AXIOS (technical society of IIIT Lucknow)",
+      "start": "Aug 2024",
+      "end": null,
+      "description": "Coordinated more than 10 technical development events for over 240 students."
+    },
+    {
+      "title": "Senior member, FOSS Wing, AXIOS (technical society of IIIT Lucknow)",
+      "start": "Aug 2024",
+      "end": null,
+      "description": "Led open-source workshops for over 240 students and promoted Hacktoberfest."
+    }
+  ],
+  "faq": [
+    {
+      "q": "Is Prashant open to internships or full-time roles?",
+      "a": "Prashant graduates from IIIT Lucknow in June 2027 and is interested in software engineering internships and full-time roles, especially in backend systems, infrastructure, and applied AI. The fastest way to reach him is the contact page or email at devprashantkyadav@gmail.com."
+    },
+    {
+      "q": "Where is Prashant based?",
+      "a": "Prashant is based in India. He studies at IIIT Lucknow, Uttar Pradesh, and has worked both onsite and remotely during his internships."
+    },
+    {
+      "q": "What kind of work does Prashant enjoy most?",
+      "a": "He gravitates toward complex, high-performance systems: voice AI pipelines, Go microservices, telephony, Kubernetes platforms, and retrieval-augmented generation. Recent internships at Zomato and Walmart were in exactly these areas."
+    },
+    {
+      "q": "How can I contact Prashant?",
+      "a": "Use the contact form on the site, email devprashantkyadav@gmail.com, or connect on LinkedIn (linkedin.com/in/prashantyadav097) and GitHub (github.com/0PrashantYadav0). His resume is at /resume.pdf."
+    },
+    {
+      "q": "Does Prashant do competitive programming?",
+      "a": "Yes. He is a Codeforces Specialist with a peak rating of 1534 and a 4-star coder on CodeChef with a peak rating of 1813, and he placed 386th globally in a Codeforces Division 2 contest."
+    },
+    {
+      "q": "What is Dev Senpai?",
+      "a": "Dev Senpai is the assistant on this site. It answers questions about Prashant using retrieval-augmented generation over his portfolio content, and can run on Groq, Gemini, or ChatGPT."
+    }
+  ]
+}
