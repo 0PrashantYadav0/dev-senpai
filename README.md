@@ -1,88 +1,54 @@
-# Dev Senpai - AI Portfolio Chatbot
+# prashantyadav.vercel.app
 
-A personal developer portfolio website featuring **Dev Senpai**, an AI chatbot that answers questions about my skills, projects, and experience using RAG (Retrieval-Augmented Generation).
+Personal portfolio with Dev Senpai, a chatbot that answers questions about my
+work using retrieval-augmented generation over the site's own content. It can
+run on Groq, Gemini, or ChatGPT and falls back between them when a quota runs
+out.
 
-![Chatbot Demo](/public/chatbot-demo.png)
+## Stack
 
-## Features
+- Next.js 14 (App Router), TypeScript, Tailwind CSS
+- Bricolage Grotesque via `next/font`
+- Retrieval: local MiniLM embeddings (`@xenova/transformers`), BM25, reciprocal rank fusion, MMR. No database, the index is a JSON file.
+- Generation: Groq, Gemini, and OpenAI through one OpenAI-compatible client, with per-provider budgets, automatic fallback, and an answer cache.
+- Contact form: Resend
 
-- **AI Chatbot**: Powered by [Groq](https://groq.com) (`llama-3.3-70b-versatile`) for ultra-fast responses.
-- **RAG Architecture**: Hybrid retrieval (dense embeddings + BM25) fused with Reciprocal Rank Fusion and reranked with MMR to ground the AI's answers in real portfolio data.
-- **Local Embeddings**: Uses [`@xenova/transformers`](https://github.com/xenova/transformers.js) to generate embeddings locally (no external API costs).
-- **Fast & Free**: No database required. Embeddings are stored in a local JSON file.
-- **Modern Tech Stack**: Built with Next.js 14, TypeScript, and Tailwind CSS.
+Details of the chatbot pipeline are in [ARCHITECTURE.md](./ARCHITECTURE.md).
 
-## Tech Stack
-
-- **Framework**: [Next.js](https://nextjs.org/) (App Router)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS
-- **LLM**: [Groq](https://groq.com/) (Llama 3.3 70B)
-- **Embeddings**: Local MiniLM-L6-v2 (via `@xenova/transformers`)
-- **Vector Search**: Custom in-memory hybrid engine — dense cosine similarity + sparse BM25, RRF fusion, and MMR reranking (graceful fallback to sparse-only)
-- **Streaming**: `ai/react` (Vercel AI SDK)
-
-## Getting Started
-
-### 1. Clone the repository
-
-```bash
-git clone https://github.com/yourusername/dev-senpai.git
-cd dev-senpai
-```
-
-### 2. Install dependencies
+## Run it
 
 ```bash
 npm install
-```
-
-### 3. Set up environment variables
-
-Create a `.env` file in the root directory:
-
-```bash
-cp .env.example .env
-```
-
-Add your Groq API key (get one for free at [console.groq.com](https://console.groq.com/keys)):
-
-```env
-GROQ_API_KEY=your_groq_api_key_here
-```
-
-### 4. Generate Embeddings
-
-This step reads your content (data files and site pages), turns it into readable cards, and generates the vector embeddings used by the chatbot.
-
-```bash
-npm run gen
-```
-
-*Note: The first run will download the embedding model (~80MB).*
-
-### 5. Run the development server
-
-```bash
+cp .env.example .env     # add at least GROQ_API_KEY
+npm run gen              # build the retrieval index (downloads the ~80 MB model once)
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser.
+Open <http://localhost:3000>.
 
-## Architecture
+## Update the content
 
-The chatbot works by:
-1. **Indexing**: `npm run gen` converts your content into embeddings saved in `src/data/embeddings.json`.
-2. **Retrieval**: When a user asks a question, the API runs hybrid retrieval (dense + sparse), fuses the rankings with RRF, and diversifies with MMR.
-3. **Generation**: The relevant content is sent to Groq's Llama 3 model as context to generate a helpful answer.
+All content lives in `src/data`:
 
-For a detailed deep-dive, see [ARCHITECTURE.md](./ARCHITECTURE.md).
+| File | What it holds |
+|------|---------------|
+| `profile.json` | Headline, summary, skills, open source, achievements, college roles, FAQ answers |
+| `career.json` | Internships |
+| `education.json` | Degrees |
+| `projects.json` | Projects, tags, links, screenshots in `public/` |
+| `socials.json` | Social links |
 
-## Customization
+After editing any of them, run `npm run gen` so the chatbot picks up the change.
+The resume PDF is `public/resume.pdf`.
 
-- **Bio/Data**: Edit the curated profile card in `scripts/generate.ts` to update the chatbot's core knowledge about you.
-- **Projects/Experience**: Update `src/data/projects.json`, `src/data/career.json`, and `src/data/education.json`.
-- **System Prompt**: Modify `src/app/api/chat/route.ts` to change the chatbot's personality or instructions.
+## Scripts
+
+| Command | What it does |
+|---------|--------------|
+| `npm run dev` | Development server |
+| `npm run build` | Production build |
+| `npm run gen` | Rebuild `src/data/embeddings.json` |
+| `npm run lint` | ESLint |
 
 ## License
 
