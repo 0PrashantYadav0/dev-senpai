@@ -16,8 +16,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-20 pb-8 pt-10 sm:pt-16">
-      <section className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-stretch lg:gap-12">
-        <div aria-hidden className="hero-atmosphere" />
+      <section className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-stretch lg:gap-12">
         <div className="flex flex-col justify-center">
           <p className="mb-5 flex items-center gap-2 text-sm text-muted-foreground">
             <span className="size-1.5 rounded-full bg-signal" />
