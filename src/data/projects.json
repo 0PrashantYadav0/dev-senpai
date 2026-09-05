@@ -1,6 +1,168 @@
 {
   "projects": [
     {
+      "name": "raft-kv",
+      "description": "Distributed key-value store built from scratch on Raft: leader election, log replication, and snapshotting over a gRPC transport with durable bbolt storage. Kill the leader mid-write and a new one is elected in a few hundred milliseconds with no committed data lost. Passes the full suite under the Go race detector.",
+      "tags": [
+        "Go",
+        "Raft",
+        "gRPC",
+        "bbolt",
+        "Distributed Systems",
+        "Consensus"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/raft-kv",
+          "icon": "github"
+        }
+      ],
+      "language": "Go"
+    },
+    {
+      "name": "Limit Order Book",
+      "description": "Price-time-priority limit order book and matching engine in C++20 with zero dependencies: limit and market orders, O(1) cancel and modify, self-trade prevention, and sanitizer-clean builds. Benchmarked at about 6.97 million orders per second with a 68 ns p50 engine latency on Apple Silicon.",
+      "tags": [
+        "C++20",
+        "CMake",
+        "Low Latency",
+        "Matching Engine",
+        "Property Testing"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/limit-order-book",
+          "icon": "github"
+        }
+      ],
+      "language": "C++"
+    },
+    {
+      "name": "Event-Driven Backtesting Engine",
+      "description": "Backtesting engine for systematic trading strategies that mirrors a live system: a single FIFO event queue drives market, signal, order, and fill components, with transaction-cost and slippage modelling and walk-forward validation. Ships with momentum and pairs-trading strategies and a deterministic synthetic-data generator.",
+      "tags": [
+        "Python",
+        "NumPy",
+        "pandas",
+        "Quant Finance",
+        "Backtesting"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Event-Driven-Backtesting-Engine",
+          "icon": "github"
+        }
+      ],
+      "language": "Python"
+    },
+    {
+      "name": "AgentOps Cockpit",
+      "description": "Observability and auto-triage for AI agents. Instruments a real agent (Llama 3.2 on Ollama with live search and embedding retrieval) using OpenTelemetry GenAI semantic conventions, streams traces to self-hosted SigNoz, tracks token cost per model and user, and ships a Triage Copilot that reads the telemetry and explains what broke.",
+      "tags": [
+        "Python",
+        "OpenTelemetry",
+        "SigNoz",
+        "Ollama",
+        "LLM Agents",
+        "Observability"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/agentops-cockpit",
+          "icon": "github"
+        }
+      ],
+      "language": "Python"
+    },
+    {
+      "name": "QueryPilot",
+      "description": "Ask your telemetry anything. Turns natural language, PromQL, or LogQL into SigNoz Query Builder specs with a live result panel, plus a gallery of one-click demos such as secret-leak detection, orphan-span checks, and top-N endpoints by p99. Built for the SigNoz hackathon.",
+      "tags": [
+        "Python",
+        "PromQL",
+        "LogQL",
+        "SigNoz",
+        "LLMs",
+        "Observability"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/querypilot",
+          "icon": "github"
+        }
+      ],
+      "language": "Python"
+    },
+    {
+      "name": "SigNoz Beacon",
+      "description": "Turns live SigNoz alert state into an ambient signal: a lamp that glows green, breathes amber, and flashes red as systems misbehave. Ships a virtual browser orb driven over server-sent events, with a device adapter so an ESP32 LED strip or a Hue bulb drops in with a one-line change.",
+      "tags": [
+        "Python",
+        "SigNoz",
+        "Server-Sent Events",
+        "IoT",
+        "Alerting"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/SigNoz-Beacon",
+          "icon": "github"
+        }
+      ],
+      "language": "Python"
+    },
+    {
+      "name": "Mnemos",
+      "description": "A narrative RPG where the townsfolk run on a typed knowledge graph. Every character remembers what you did, who told them, and how they feel about you, and that memory spreads as gossip across graph edges. Runs locally and mirrors every event to Cognee Cloud when a key is present.",
+      "tags": [
+        "Python",
+        "Knowledge Graph",
+        "Cognee",
+        "LLMs",
+        "Game"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/Mnemos",
+          "icon": "github"
+        }
+      ],
+      "language": "Python"
+    },
+    {
+      "name": "Dev Senpai",
+      "description": "This site. A portfolio with a retrieval-augmented chatbot that answers questions from the resume and project notes: local MiniLM embeddings, BM25 with rank fusion and MMR, and Groq, Gemini, or ChatGPT behind one client with per-provider budgets and automatic fallback.",
+      "tags": [
+        "Next.js",
+        "TypeScript",
+        "RAG",
+        "Groq",
+        "Gemini",
+        "OpenAI",
+        "Tailwind CSS"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://prashantyadav.vercel.app",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/dev-senpai",
+          "icon": "github"
+        }
+      ],
+      "language": "TypeScript"
+    },
+    {
       "name": "GO-TERM",
       "description": "Intelligent terminal assistant built in Go and powered by Gemini AI for command suggestions and error resolution.",
       "image": "/go-term.png",
@@ -17,7 +179,8 @@
           "href": "https://github.com/0PrashantYadav0/GO-TERM",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Go"
     },
     {
       "name": "Million RPS Todo API",
@@ -39,7 +202,8 @@
           "href": "https://github.com/0PrashantYadav0/million-rps",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Go"
     },
     {
       "name": "De-Fi Scholarship",
@@ -66,7 +230,8 @@
           "href": "https://github.com/0PrashantYadav0/DeFi-Scholarship",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "Enterprise Ticketing System",
@@ -97,7 +262,8 @@
           "href": "https://github.com/0PrashantYadav0/b2b-saas-app",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "KubeStore",
@@ -119,7 +285,8 @@
           "href": "https://github.com/0prashantyadav0/KubeStore",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Go"
     },
     {
       "name": "RepoMind",
@@ -140,7 +307,8 @@
           "href": "https://github.com/0PrashantYadav0/RepoMind",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Python"
     },
     {
       "name": "Splitwise over QUIC",
@@ -161,7 +329,8 @@
           "href": "https://github.com/0PrashantYadav0/splitwise-quic",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Go"
     },
     {
       "name": "Kinetic",
@@ -182,7 +351,8 @@
           "href": "https://github.com/0PrashantYadav0/Kinetic",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "ScrapBot",
@@ -208,28 +378,32 @@
           "href": "https://github.com/0PrashantYadav0/ScrapBot",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Python"
     },
     {
-      "name": "VulnPilot-Go",
-      "description": "Comprehensive, AI-powered security vulnerability scanner with GitHub integration and intelligent code analysis.",
+      "name": "Vulnpilot",
+      "description": "AI-powered security automation platform. Integrates Nmap, Nikto, and SQLMap for multi-layer vulnerability detection (OWASP Top 10, SANS 25), analyses source code with Groq inside a no-code visual workflow builder, and scans GitHub repositories. Global top 11 at the Walmart Sparkathon.",
       "image": "/vulnpilot.png",
       "tags": [
-        "Go",
+        "React",
+        "TypeScript",
+        "Node.js",
+        "Django",
         "PostgreSQL",
-        "Redis",
+        "MongoDB",
         "Docker",
-        "Gemini AI",
-        "Groq",
-        "GitHub OAuth"
+        "Groq SDK",
+        "Security"
       ],
       "links": [
         {
           "name": "Source",
-          "href": "https://github.com/0PrashantYadav0/vulnpoint-go",
+          "href": "https://github.com/0PrashantYadav0/Vulnpilot",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "SimStack",
@@ -250,7 +424,8 @@
           "href": "https://github.com/0PrashantYadav0/SimStack",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Go"
     },
     {
       "name": "Stoxs",
@@ -277,7 +452,8 @@
           "href": "https://github.com/0PrashantYadav0/Stoxs",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Java"
     },
     {
       "name": "Server Monitoring Stack",
@@ -297,7 +473,8 @@
           "href": "https://github.com/0PrashantYadav0/grafana-prometheus-loki",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "JavaScript"
     },
     {
       "name": "End-to-End CI/CD Pipeline",
@@ -319,7 +496,8 @@
           "href": "https://github.com/0PrashantYadav0/CICD-Pipeline-Project",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Java"
     },
     {
       "name": "InDiet",
@@ -341,7 +519,8 @@
           "href": "https://github.com/0PrashantYadav0/Indiet",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "Enhanced ML Inference Engine",
@@ -367,7 +546,8 @@
           "href": "https://github.com/0PrashantYadav0/enhanced-ml-inference-engine",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "JavaScript"
     },
     {
       "name": "Expense Tracker",
@@ -390,7 +570,8 @@
           "href": "https://github.com/0PrashantYadav0/Expense-Tracking-App",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "Github Bot",
@@ -409,7 +590,8 @@
           "href": "https://github.com/0PrashantYadav0/github-bot",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "JavaScript"
     },
     {
       "name": "Personalized-SmartEd Go-Backend",
@@ -427,7 +609,8 @@
           "href": "https://github.com/Personalized-SmartEd/Go-Backend",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Go"
     },
     {
       "name": "Rustyestate",
@@ -454,7 +637,8 @@
           "href": "https://github.com/0PrashantYadav0/Rustyestate",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "JavaScript"
     },
     {
       "name": "HourMeet",
@@ -479,7 +663,8 @@
           "href": "https://github.com/0PrashantYadav0/HourMeet",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "Nexum (1st year)",
@@ -503,8 +688,14 @@
           "name": "Source",
           "href": "https://github.com/0PrashantYadav0/nexum-frontend",
           "icon": "github"
+        },
+        {
+          "name": "Backend",
+          "href": "https://github.com/0PrashantYadav0/nexum-backend",
+          "icon": "server"
         }
-      ]
+      ],
+      "language": "Java"
     },
     {
       "name": "CI/CD DevOps Pipeline",
@@ -525,7 +716,8 @@
           "href": "https://github.com/0PrashantYadav0/Github-Action-AgroCD",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Python"
     },
     {
       "name": "Student Hub",
@@ -543,7 +735,8 @@
           "href": "https://github.com/iiitl/student-hub",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "Youtube Backend In Nodejs",
@@ -564,7 +757,8 @@
           "href": "https://github.com/0PrashantYadav0/Youtube-Twitter-Backend",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "JavaScript"
     },
     {
       "name": "Restaurant Management Backend",
@@ -583,7 +777,8 @@
           "href": "https://github.com/0PrashantYadav0/Restaurant-Management-Backend",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Go"
     },
     {
       "name": "MeOW",
@@ -607,7 +802,8 @@
           "href": "https://github.com/0PrashantYadav0/MeOW",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "JavaScript"
     },
     {
       "name": "Pokedex",
@@ -630,7 +826,8 @@
           "href": "https://github.com/0PrashantYadav0/Pokedex",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "TypeScript"
     },
     {
       "name": "Smarted Frontend",
@@ -649,7 +846,8 @@
           "href": "https://github.com/0PrashantYadav0/Smarted",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "JavaScript"
     },
     {
       "name": "Floor Planner",
@@ -669,7 +867,8 @@
           "href": "https://github.com/0PrashantYadav0/Floor-Planner",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "JavaScript"
     },
     {
       "name": "Hand Out Gift",
@@ -685,7 +884,27 @@
           "href": "https://github.com/0PrashantYadav0/Hand_Out_Gifts",
           "icon": "github"
         }
-      ]
+      ],
+      "language": "Python"
+    },
+    {
+      "name": "TechDocs",
+      "description": "Hands-on technical deep dives that pair theory with runnable code and Mermaid diagrams, organised as a learning path from system-design fundamentals through networking, databases, security, and infrastructure to senior-level architecture judgement.",
+      "tags": [
+        "System Design",
+        "Documentation",
+        "Mermaid",
+        "Networking",
+        "Databases"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/TechDocs",
+          "icon": "github"
+        }
+      ],
+      "language": "Other"
     }
   ]
 }
