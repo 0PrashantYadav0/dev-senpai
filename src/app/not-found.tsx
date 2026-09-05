@@ -1,35 +1,28 @@
-import { ArrowLeftIcon } from "@radix-ui/react-icons";
-import LinkWithIcon from "../components/LinkWithIcon";
+import Link from "next/link";
 
 export default function NotFound() {
   return (
-    <article className="mt-8 flex flex-col gap-8 pb-16">
-      <div className="min-h-full px-4 sm:px-6 sm:py-24 md:grid md:place-items-center lg:px-8">
-        <div className="mx-auto max-w-max">
-          <section className="sm:flex">
-            <p className="title text-muted-foreground">404</p>
-            <div className="sm:ml-6">
-              <div className="sm:border-l sm:border-gray-200 sm:pl-6">
-                <h1 className="title sm:text-5xl">
-                  cannot find <i>leh</i>...
-                </h1>
-                <p className="mt-1 text-base text-muted-foreground">
-                  Maybe I renamed or deleted the page <i>liao</i>. Try again{" "}
-                  <i>lor</i>.
-                </p>
-              </div>
-              <div className="mt-10 flex space-x-3 sm:border-l sm:border-transparent sm:pl-6">
-                <LinkWithIcon
-                  href="/"
-                  text="back to home"
-                  icon={<ArrowLeftIcon className="size-5" />}
-                  position="left"
-                />
-              </div>
-            </div>
-          </section>
-        </div>
+    <div className="flex flex-col gap-6 pb-8 pt-16 sm:pt-24">
+      <p className="text-sm text-muted-foreground">404</p>
+      <h1 className="display text-4xl sm:text-5xl">That page is not here.</h1>
+      <p className="measure text-muted-foreground">
+        It may have moved when the site was redesigned. The work, projects, and
+        contact pages are still where the header says they are.
+      </p>
+      <div className="flex flex-wrap gap-3">
+        <Link
+          href="/"
+          className="inline-flex h-10 items-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90"
+        >
+          Back to home
+        </Link>
+        <Link
+          href="/projects"
+          className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:border-signal hover:bg-signal-soft"
+        >
+          See projects
+        </Link>
       </div>
-    </article>
+    </div>
   );
 }
