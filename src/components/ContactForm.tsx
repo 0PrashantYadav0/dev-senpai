@@ -3,14 +3,13 @@
 import { sendEmail } from "@/lib/actions";
 import { ContactFormSchema } from "@/lib/schemas";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { PaperPlaneIcon, ReloadIcon } from "@radix-ui/react-icons";
+import { Loader2 } from "lucide-react";
+import Link from "next/link";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
-import { Button } from "./ui/Button";
 import { Input } from "./ui/Input";
 import { Textarea } from "./ui/Textarea";
-import Link from "next/link";
 
 type Inputs = z.infer<typeof ContactFormSchema>;
 
@@ -22,95 +21,65 @@ export default function ContactForm() {
     formState: { errors, isSubmitting },
   } = useForm<Inputs>({
     resolver: zodResolver(ContactFormSchema),
-    defaultValues: {
-      name: "",
-      email: "",
-      message: "",
-    },
+    defaultValues: { name: "", email: "", message: "" },
   });
 
   const processForm: SubmitHandler<Inputs> = async (data) => {
     const result = await sendEmail(data);
-
     if (result.error) {
-      toast.error("An error occurred! Please try again later.");
+      toast.error("The message could not be sent. Email him directly instead.");
       return;
     }
-
-    toast.success("Message sent successfully!");
+    toast.success("Message sent. He usually replies within a day.");
     reset();
   };
 
   return (
-    <form onSubmit={handleSubmit(processForm)}>
-      <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-        {/* Name */}
-        <div className="h-16">
-          <Input
-            id="name"
-            type="text"
-            placeholder="Name"
-            autoComplete="given-name"
-            {...register("name")}
-          />
-          {errors.name?.message && (
-            <p className="input-error">{errors.name.message}</p>
-          )}
+    <form onSubmit={handleSubmit(processForm)} className="flex flex-col gap-5">
+      <div className="grid gap-5 sm:grid-cols-2">
+        <div>
+          <label htmlFor="name" className="mb-1.5 block text-sm">
+            Name
+          </label>
+          <Input id="name" type="text" autoComplete="name" {...register("name")} />
+          {errors.name?.message && <p className="input-error">{errors.name.message}</p>}
         </div>
-
-        {/* Email */}
-        <div className="h-16">
-          <Input
-            id="email"
-            type="email"
-            placeholder="Email"
-            autoComplete="email"
-            {...register("email")}
-          />
-
-          {errors.email?.message && (
-            <p className="input-error">{errors.email.message}</p>
-          )}
-        </div>
-
-        {/* Message */}
-        <div className="h-32 sm:col-span-2">
-          <Textarea
-            rows={4}
-            placeholder="Leave feedback about the site, career opportunities or just to say hello etc."
-            autoComplete="Message"
-            className="resize-none"
-            {...register("message")}
-          />
-
-          {errors.message?.message && (
-            <p className="input-error">{errors.message.message}</p>
-          )}
+        <div>
+          <label htmlFor="email" className="mb-1.5 block text-sm">
+            Email
+          </label>
+          <Input id="email" type="email" autoComplete="email" {...register("email")} />
+          {errors.email?.message && <p className="input-error">{errors.email.message}</p>}
         </div>
       </div>
-      <div className="mt-2">
-        <Button
+      <div>
+        <label htmlFor="message" className="mb-1.5 block text-sm">
+          Message
+        </label>
+        <Textarea
+          id="message"
+          rows={6}
+          placeholder="A role, a project, or a question about something on the site."
+          className="resize-y"
+          {...register("message")}
+        />
+        {errors.message?.message && <p className="input-error">{errors.message.message}</p>}
+      </div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <button
           type="submit"
           disabled={isSubmitting}
-          className="w-full disabled:opacity-50"
+          className="inline-flex h-10 shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-md bg-primary px-5 text-sm font-medium text-primary-foreground hover:opacity-90 disabled:opacity-50"
         >
-          {isSubmitting ? (
-            <div className="flex items-center">
-              <span>Sending...</span>
-              <ReloadIcon className="ml-2 animate-spin" />
-            </div>
-          ) : (
-            <div className="flex items-center">
-              <span>Send Message</span>
-              <PaperPlaneIcon className="ml-2" />
-            </div>
-          )}
-        </Button>
-        <p className="mt-4 text-xs text-muted-foreground">
-          By submitting this form, I agree to the{" "}
-          <Link href="/privacy" className="link font-semibold">
-            privacy&nbsp;policy.
+          {isSubmitting && <Loader2 className="size-4 animate-spin" />}
+          {isSubmitting ? "Sending" : "Send message"}
+        </button>
+        <p className="text-xs text-muted-foreground">
+          Your message is only used to reply to you. See the{" "}
+          <Link href="/privacy" className="link">
+            privacy policy
           </Link>
+          .
         </p>
       </div>
     </form>
