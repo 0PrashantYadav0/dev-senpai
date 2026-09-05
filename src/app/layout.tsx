@@ -1,21 +1,33 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
 import Providers from "@/components/Providers";
+import profile from "@/data/profile.json";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Calistoga, Inter } from "next/font/google";
+import { Bricolage_Grotesque } from "next/font/google";
 import "./globals.css";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" });
-const calistoga = Calistoga({
+const bricolage = Bricolage_Grotesque({
   subsets: ["latin"],
-  variable: "--font-serif",
-  weight: ["400"],
+  axes: ["opsz", "wdth"],
+  variable: "--font-sans",
+  display: "swap",
 });
 
 export const metadata: Metadata = {
-  title:"prashantyadav",
-  description: "My personal site to showcase my developer work and opinions.",
+  metadataBase: new URL(profile.site),
+  title: {
+    default: "Prashant Yadav",
+    template: "%s | Prashant Yadav",
+  },
+  description: profile.headline,
+  openGraph: {
+    title: "Prashant Yadav",
+    description: profile.headline,
+    url: profile.site,
+    siteName: "Prashant Yadav",
+    type: "website",
+  },
 };
 
 export default function RootLayout({
@@ -24,17 +36,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
-          "mx-auto flex min-h-screen max-w-3xl flex-col px-8 font-sans antialiased",
-          inter.variable,
-          calistoga.variable,
+          "flex min-h-screen flex-col font-sans antialiased",
+          bricolage.variable,
         )}
       >
         <Providers>
           <Header />
-          <main className="grow">{children}</main>
+          <main className="mx-auto w-full max-w-site grow px-5 sm:px-8">
+            {children}
+          </main>
           <Footer />
         </Providers>
       </body>
