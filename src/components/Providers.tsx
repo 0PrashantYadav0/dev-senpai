@@ -4,7 +4,7 @@ import { ChatProvider } from "@/contexts/ChatContext";
 import { ThemeProvider, useTheme } from "next-themes";
 import React from "react";
 import { Toaster } from "sonner";
-import Chat from "./Chat";
+import ChatDock from "./chat/ChatDock";
 
 export default function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -16,7 +16,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
     >
       <ChatProvider>
         {children}
-        <Chat />
+        <ChatDock />
       </ChatProvider>
       <ToastProvider />
     </ThemeProvider>
@@ -25,10 +25,8 @@ export default function Providers({ children }: { children: React.ReactNode }) {
 
 function ToastProvider() {
   const { resolvedTheme } = useTheme();
-
   return (
     <Toaster
-      className="mt-12"
       position="top-right"
       theme={resolvedTheme === "dark" ? "dark" : "light"}
     />
