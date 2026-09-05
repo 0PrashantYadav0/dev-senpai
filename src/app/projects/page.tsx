@@ -1,11 +1,26 @@
-import Projects from "@/components/Projects";
+import ProjectsBrowser from "@/components/projects/ProjectsBrowser";
+import data from "@/data/projects.json";
+import { projectSchema } from "@/lib/schemas";
+import type { Metadata } from "next";
 
-export default async function ProjectPage() {
+export const metadata: Metadata = {
+  title: "Projects",
+  description: "Everything Prashant has shipped, from Kubernetes platforms to a Pygame mini-game.",
+};
+
+export default function ProjectPage() {
+  const projects = projectSchema.parse(data).projects;
+
   return (
-    <article className="mt-8 flex flex-col gap-8 pb-16">
-      <h1 className="title">my projects.</h1>
-
-      <Projects />
-    </article>
+    <div className="flex flex-col gap-10 pb-8 pt-10 sm:pt-16">
+      <header>
+        <h1 className="display text-4xl sm:text-5xl">Projects</h1>
+        <p className="measure mt-4 text-muted-foreground sm:text-lg">
+          {projects.length} things built for hackathons, coursework, curiosity,
+          and production. Most link to source.
+        </p>
+      </header>
+      <ProjectsBrowser projects={projects} />
+    </div>
   );
 }
