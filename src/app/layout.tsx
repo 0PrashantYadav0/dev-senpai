@@ -45,7 +45,8 @@ export default function RootLayout({
       >
         <Providers>
           <Header />
-          <main className="mx-auto w-full max-w-site grow px-5 sm:px-8">
+          <main className="relative mx-auto w-full max-w-site grow px-5 sm:px-8">
+            <div aria-hidden className="site-atmosphere" />
             {children}
           </main>
           <Footer />

@@ -160,10 +160,17 @@
     }
   }
 
-  /* One atmospheric element: a low amber glow and a faint dot grid behind the hero chat. */
-  .hero-atmosphere {
+  /*
+    One atmospheric element, shared by every page: a low amber glow and a
+    faint dot grid in the top-right of the content column, where the chat sits
+    on the home page and the page title sits everywhere else.
+  */
+  .site-atmosphere {
     position: absolute;
-    inset: -6rem -4rem -4rem;
+    top: -4rem;
+    left: -6rem;
+    right: -6rem;
+    height: 46rem;
     z-index: -1;
     pointer-events: none;
     background:
