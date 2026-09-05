@@ -1,79 +1,90 @@
-import LinkWithIcon from "@/components/LinkWithIcon";
-import HeroSpline from "@/components/HeroSpline";
-import Projects from "@/components/Projects";
-import Socials from "@/components/Socials";
-import WorkPreview from "@/components/WorkPreview";
-import { Button } from "@/components/ui/Button";
-import { ArrowDownRight, ArrowRightIcon, FileDown } from "lucide-react";
+import ChatPanel from "@/components/chat/ChatPanel";
+import Achievements from "@/components/home/Achievements";
+import ContactStrip from "@/components/home/ContactStrip";
+import ExperienceLedger from "@/components/home/ExperienceLedger";
+import FeaturedProjects from "@/components/home/FeaturedProjects";
+import OpenSource from "@/components/home/OpenSource";
+import SectionHeading from "@/components/home/SectionHeading";
+import Skills from "@/components/home/Skills";
+import profile from "@/data/profile.json";
+import projectsData from "@/data/projects.json";
+import { FileText, Mail } from "lucide-react";
 import Link from "next/link";
 
-const DOB = 2003;
-const LIMIT = 2; // max show 2
-
 export default function Home() {
+  const projectCount = projectsData.projects.length;
+
   return (
-    <article className="mt-8 flex flex-col gap-16 pb-16">
-      <section className="flex flex-col items-start gap-6 animate-in fade-in slide-in-from-bottom-3 duration-700 md:flex-row-reverse md:items-center md:justify-between md:gap-8">
-        <HeroSpline />
-        <div className="flex flex-col">
-          <h1 className="title text-5xl">hi, prashant here</h1>
-          <p className="mt-4 max-w-xl font-light text-muted-foreground">
-            {new Date().getFullYear() - DOB - 1}-year-old software developer from
-            India. I build complex, high-performance systems — from voice AI
-            and Go microservices to full-stack products and cloud-native infra.
+    <div className="flex flex-col gap-20 pb-8 pt-10 sm:pt-16">
+      <section className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-stretch lg:gap-12">
+        <div aria-hidden className="hero-atmosphere" />
+        <div className="flex flex-col justify-center">
+          <p className="mb-5 flex items-center gap-2 text-sm text-muted-foreground">
+            <span className="size-1.5 rounded-full bg-signal" />
+            Graduating June 2027, open to roles
           </p>
-          <p className="mt-2 max-w-xl font-light text-muted-foreground">
-            I like shipping ambitious things, drinking instant coffee, and
-            watching{" "}
+          <h1 className="display text-[2.6rem] sm:text-6xl">
+            Prashant builds voice AI and the Go services that keep it on the
+            line.
+          </h1>
+          <p className="measure mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
+            Final-year computer science and AI student at IIIT Lucknow.
+            Interned at Walmart Global Tech and at Zomato twice, shipping
+            production voice bots, telephony microservices, and AI
+            observability agents. Contributor to stdlib-js.
+          </p>
+          <div className="mt-8 flex flex-wrap items-center gap-3">
             <Link
-              href="https://www.crunchyroll.com/"
+              href={profile.resume}
               target="_blank"
-              className="link font-semibold text-foreground"
+              className="inline-flex h-10 items-center gap-2 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
             >
-              Anime.
+              <FileText className="size-4" />
+              Download resume
             </Link>
-          </p>
-          <div className="mt-4 flex items-end gap-1">
-            <p className="font-semibold">Ask the chatbot anything about me</p>
-            <ArrowDownRight className="size-5 animate-bounce" />
+            <Link
+              href="/contact"
+              className="inline-flex h-10 items-center gap-2 rounded-md border px-4 text-sm font-medium transition-colors hover:border-signal hover:bg-signal-soft"
+            >
+              <Mail className="size-4" />
+              Get in touch
+            </Link>
           </div>
-          <section className="mt-8 flex items-center gap-8">
-            <Link href="/resume.pdf" target="_blank">
-              <Button variant="outline">
-                <span className="font-semibold">Resume</span>
-                <FileDown className="ml-2 size-5" />
-              </Button>
-            </Link>
-            <Socials />
-          </section>
+        </div>
+        <ChatPanel variant="inline" className="h-[31rem] lg:h-auto lg:min-h-[31rem]" />
+      </section>
+
+      <section>
+        <SectionHeading title="Experience" href="/experience" linkText="All work and education" />
+        <ExperienceLedger />
+      </section>
+
+      <section className="grid gap-12 md:grid-cols-2 md:gap-10">
+        <div>
+          <SectionHeading title="Open source" />
+          <OpenSource />
+        </div>
+        <div>
+          <SectionHeading title="Achievements" />
+          <Achievements />
         </div>
       </section>
 
-      <section className="flex flex-col gap-8">
-        <div className="flex justify-between">
-          <h2 className="title text-2xl sm:text-3xl">Experience</h2>
-          <LinkWithIcon
-            href="/experience"
-            position="right"
-            icon={<ArrowRightIcon className="size-5" />}
-            text="view more"
-          />
-        </div>
-        <WorkPreview />
+      <section>
+        <SectionHeading
+          title="Selected projects"
+          href="/projects"
+          linkText={`All ${projectCount} projects`}
+        />
+        <FeaturedProjects />
       </section>
 
-      <section className="flex flex-col gap-8">
-        <div className="flex justify-between">
-          <h2 className="title text-2xl sm:text-3xl">Featured projects</h2>
-          <LinkWithIcon
-            href="/projects"
-            position="right"
-            icon={<ArrowRightIcon className="size-5" />}
-            text="view more"
-          />
-        </div>
-        <Projects limit={LIMIT} />
+      <section>
+        <SectionHeading title="Skills" />
+        <Skills />
       </section>
-    </article>
+
+      <ContactStrip />
+    </div>
   );
 }
