@@ -36,17 +36,26 @@
       ]
     },
     {
-      "group": "Backend",
+      "group": "Backend and APIs",
       "items": [
         "Node.js",
         "Express",
         "Spring Boot",
         "Django",
         "FastAPI",
+        "Flask",
+        "Gin",
         "Bun",
         "Hono",
+        "Elysia",
+        "Deno",
+        "REST",
         "GraphQL",
-        "REST"
+        "gRPC",
+        "WebSockets",
+        "Server-Sent Events",
+        "HTMX",
+        "JWT auth"
       ]
     },
     {
@@ -56,7 +65,46 @@
         "Next.js",
         "Tailwind CSS",
         "Redux",
-        "shadcn/ui"
+        "shadcn/ui",
+        "TanStack Query and Router",
+        "Material UI",
+        "SCSS",
+        "Pixi.js",
+        "Vite"
+      ]
+    },
+    {
+      "group": "Databases and storage",
+      "items": [
+        "PostgreSQL",
+        "MySQL",
+        "MongoDB",
+        "Redis",
+        "SQLite",
+        "Turso",
+        "Neon",
+        "Supabase",
+        "Firebase",
+        "Appwrite",
+        "Drizzle",
+        "Prisma",
+        "Mongoose",
+        "bbolt"
+      ]
+    },
+    {
+      "group": "Distributed systems and networking",
+      "items": [
+        "Raft consensus",
+        "Kafka",
+        "Microservices",
+        "Multi-tenant architecture",
+        "SIP telephony",
+        "HTTP/3 and QUIC",
+        "WebTransport",
+        "Nginx",
+        "Low-latency C++",
+        "Matching engines"
       ]
     },
     {
@@ -65,24 +113,32 @@
         "Docker",
         "Kubernetes",
         "Helm",
+        "Kind and k3s",
         "GitHub Actions",
         "ArgoCD",
-        "AWS",
+        "GitOps",
+        "Jenkins",
+        "Trivy",
+        "SonarQube",
+        "AWS EKS and ECS",
         "Azure",
+        "Vercel",
+        "Render",
+        "Railway",
         "Linux",
         "Infrastructure as Code"
       ]
     },
     {
-      "group": "Databases",
+      "group": "Observability",
       "items": [
-        "PostgreSQL",
-        "MySQL",
-        "MongoDB",
-        "Redis",
-        "SQLite",
-        "Drizzle",
-        "Prisma"
+        "Prometheus",
+        "Grafana",
+        "Loki",
+        "OpenTelemetry",
+        "SigNoz",
+        "OpenObserve",
+        "PromQL and LogQL"
       ]
     },
     {
@@ -91,13 +147,36 @@
         "LLM integration",
         "RAG",
         "LangChain",
+        "Knowledge graphs (Cognee)",
+        "LLM agents and MCP",
         "Groq",
         "OpenAI",
         "Gemini",
+        "Cerebras",
+        "Ollama",
         "Deepgram",
         "ElevenLabs",
-        "MCP agents",
-        "Neural networks"
+        "Voice pipelines (NLU, TTS, STT, VAD)",
+        "Neural networks",
+        "NumPy and pandas"
+      ]
+    },
+    {
+      "group": "Web3",
+      "items": [
+        "Move on Aptos",
+        "Smart contracts",
+        "Thirdweb"
+      ]
+    },
+    {
+      "group": "Tools and practices",
+      "items": [
+        "Git and GitHub",
+        "Probot automation",
+        "Jira and Agile",
+        "System design",
+        "Competitive programming"
       ]
     }
   ],
