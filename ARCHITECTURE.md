@@ -1,137 +1,98 @@
-# RAG Chatbot — Architecture & How It Works
+# Dev Senpai: how the chatbot works
 
-This document explains how the Dev Senpai chatbot works end-to-end.
+Dev Senpai is the assistant on the portfolio. It answers questions about
+Prashant with retrieval-augmented generation (RAG): it finds the relevant
+portfolio cards first, then hands them to a language model as context.
 
----
-
-## Overview
-
-The chatbot uses **Retrieval-Augmented Generation (RAG)** — it finds relevant
-portfolio data first, then sends it as context to an LLM to generate a natural,
-human-like answer.
-
-```
-User Question
-  → Query Expansion
-  → Hybrid Retrieval (dense cosine + sparse BM25)
-  → Reciprocal Rank Fusion
-  → MMR diversity rerank
-  → Groq LLM
-  → Streamed Response
+```text
+question
+  → contextual query (folds in the previous turn for follow-ups)
+  → dense retrieval (MiniLM cosine)  +  sparse retrieval (BM25, stemmed)
+  → reciprocal rank fusion
+  → entity and intent boosts
+  → MMR diversity rerank, confidence floor
+  → system prompt (key facts + numbered cards)
+  → provider chain: visitor's choice → Groq → the rest
+  → streamed plain-text answer, cached if it was a first-turn question
 ```
 
----
+## Files
 
-## Tech Stack
+| File | Role |
+|------|------|
+| `scripts/generate.ts` | Builds readable cards from `src/data/*.json` and embeds them into `src/data/embeddings.json`. Run with `npm run gen`. |
+| `src/lib/embeddings.ts` | MiniLM-L6-v2 via `@xenova/transformers`, used at build time and lazily at request time. |
+| `src/lib/vectordb.ts` | The retrieval engine. Loads the index once, runs dense + sparse search, fuses, boosts, reranks. |
+| `src/lib/providers.ts` | Groq, Gemini, and ChatGPT behind one client (all three speak the OpenAI chat protocol). Holds per-provider budgets and the fallback order. |
+| `src/lib/ratelimit.ts` | `Budget` (per-provider per-minute and per-day caps) and `SlidingWindow` (per-visitor cap). |
+| `src/lib/cache.ts` | LRU with TTL for finished answers. |
+| `src/app/api/chat/route.ts` | `GET` lists configured providers. `POST` runs the pipeline and streams the answer. |
+| `src/contexts/ChatContext.tsx` | Client state: messages, chosen provider, per-answer metadata, open/closed dock. |
+| `src/components/chat/*` | The panel (used inline on the home page and as a dock elsewhere). |
 
-| Component | Technology | Purpose |
-|-----------|-----------|---------|
-| **Chat LLM** | [Groq](https://groq.com) (`llama-3.3-70b-versatile`) | Generates natural language responses |
-| **Embeddings** | [@xenova/transformers](https://github.com/xenova/transformers.js) (`all-MiniLM-L6-v2`) | 384-dim embeddings for docs (build time) and queries (runtime) |
-| **Vector Search** | Custom hybrid engine (dense + sparse + RRF + MMR) | Finds diverse, high-signal docs at query time |
-| **Frontend** | `useChat` from `ai/react` | Handles streaming UI |
-| **API** | Next.js API Route (`/api/chat`) | Orchestrates the RAG pipeline |
+## Content: cards, not pages
 
----
+`generate.ts` turns each fact cluster into one self-contained card:
 
-## How Data Flows
+- one card per job (`career.json`), degree (`education.json`), and project (`projects.json`)
+- from `profile.json`: an about card, a skills card, an open-source card, an achievements card, a college-roles card, and one card per FAQ entry
+- a contact card from `socials.json`
+- a lossy text extraction of the privacy page
 
-### 1. Embedding Generation (`npm run gen`)
+Cards are short enough that a single retrieved chunk usually answers the
+question. Long cards are split at 800 characters with 120 overlap.
 
-Run once at build time to index the portfolio content. Instead of embedding raw
-JSX/JSON, `generate.ts` builds **readable "cards"** — one self-contained,
-human-readable document per fact cluster (each job, each project, education,
-socials, a curated profile/skills card, and readable text extracted from the
-site pages).
+To change what the bot knows, edit the JSON files and run `npm run gen`.
 
-```
-src/data/career.json     ──┐
-src/data/education.json   ──┤
-src/data/projects.json    ──┼──→ Readable cards ──→ Text Splitter ──→ Local Embeddings ──→ embeddings.json
-src/data/socials.json     ──┤                                       (MiniLM-L6-v2)
-src/app/**/page.tsx       ──┘   (imports/JSX stripped to prose)
-```
+## Retrieval details (`vectordb.ts`)
 
-**Script:** `scripts/generate.ts`
+- **Contextual query.** Short questions or ones with pronouns ("what about there?") are merged with the last two user turns before retrieval. The model still sees the original question.
+- **Sparse index** is built once per process: stemmed tokens, document frequencies, average length. Synonym expansion maps casual words ("job", "stack", "hire") onto the vocabulary of the cards.
+- **Dense** search is cosine similarity over MiniLM vectors. If the model cannot load, the route continues with sparse only.
+- **Fusion** uses reciprocal rank fusion, which needs no score normalisation.
+- **Boosts.** A query that names a company, project, or institution boosts that card. A query about "experience", "projects", "education", "skills", "contact", "achievements", or "open source" nudges cards of that type.
+- **MMR** picks the final set for diversity so the model does not get five copies of the same card.
+- **Confidence floor.** Cards under a fused-score threshold are dropped, and the prompt says so when nothing is left.
 
-1. Converts each JSON record into clean prose (e.g. "Prashant worked as … at …").
-2. Extracts readable copy from the home/privacy/contact pages (JSX stripped).
-3. Adds a curated profile + skills card so key facts are always retrievable.
-4. Splits into ~700-char chunks (120 overlap) and embeds with MiniLM-L6-v2.
-5. Saves everything to `src/data/embeddings.json`.
+## Providers and quota (`providers.ts`, `ratelimit.ts`)
 
-### 2. Query Time (`POST /api/chat`)
+Each provider has a request budget (requests per minute and per day) taken
+from env vars with conservative free-tier defaults. Before every call the
+route reserves one request from the budget; if the budget is empty, or the
+provider recently returned 429, it moves to the next provider in the chain
+without touching the network. Upstream 429s put the provider into a cooldown
+based on its `Retry-After`.
 
-```
-User: "What did Prashant do at Nugget?"
-        │
-        ▼
-  Query expansion (synonyms/aliases)
-        │
-        ├── Dense: embed query → cosine similarity over all docs
-        └── Sparse: BM25 term-overlap with IDF weighting
-        │
-        ▼
-  Reciprocal Rank Fusion (robust to score-scale differences)
-        │
-        ▼
-  MMR rerank (drops redundant chunks, keeps variety)
-        │
-        ▼
-  System prompt (bio facts + retrieved context w/ source links)
-        │
-        ▼
-  Groq llama-3.3-70b → streamed, human-like answer
-```
+Order of attempts:
 
-If the embedding model can't load at request time, retrieval **degrades
-gracefully to pure sparse search** so the chat never hard-fails.
+1. the provider the visitor picked (or every configured provider in order for "Auto")
+2. Groq, because it is fast and has the largest free quota
+3. anything else that is configured
 
-**Handler:** `src/app/api/chat/route.ts`
+The response carries `X-Chat-Provider`, `X-Chat-Model`, `X-Chat-Cache`, and
+(when the first choice was skipped) `X-Chat-Fallback`, which the UI turns into
+the small "via Groq" line under an answer.
 
----
+## Keeping token use low
 
-## Key Files
+- Only the last 8 messages go to the model, each capped at 1,500 characters.
+- Retrieved context is capped at 6,000 characters; six cards normally, nine for list-style questions.
+- Answers are capped at 450 output tokens. Reasoning models get `reasoning_effort: low`.
+- First-turn questions are cached for 12 hours, so the suggested prompts cost one provider call in total.
+- Each visitor is limited to 20 questions a minute.
 
-### `src/lib/vectordb.ts`
-**Runtime hybrid search engine.** Loads pre-computed embeddings and performs:
-
-- `embedQuery()` — lazily embeds the query (MiniLM), falls back to sparse-only.
-- `cosineSimilarity()` — dense semantic scoring.
-- `buildSparseScorer()` — BM25-style lexical scoring with IDF.
-- `expandQuery()` — lightweight synonym expansion for casual phrasing.
-- `rrfFuse()` — Reciprocal Rank Fusion of dense + sparse rankings.
-- `mmrRerank()` — Maximal Marginal Relevance for diverse context.
-- `similaritySearch(query, k)` — returns top-k fused, reranked documents.
-
-### `src/lib/embeddings.ts`
-**Embedding model wrapper.** Wraps `@xenova/transformers` behind a
-LangChain-compatible interface. Used at build time by `generate.ts` and lazily
-at runtime by `vectordb.ts` (externalized via `serverComponentsExternalPackages`).
-
-### `src/app/api/chat/route.ts`
-**API endpoint.** Runs similarity search, builds a grounded system prompt with
-source links, and streams a plain-text response from Groq.
-
-### `scripts/generate.ts`
-**Embedding generator.** Builds readable cards from JSON + pages, chunks, embeds
-with MiniLM, and writes `src/data/embeddings.json`.
-
----
-
-## Environment Variables
+## Environment
 
 | Variable | Required | Purpose |
 |----------|----------|---------|
-| `GROQ_API_KEY` | yes | Groq API key for chat completions |
+| `GROQ_API_KEY` | one of the three | Groq (default model `openai/gpt-oss-120b`) |
+| `GEMINI_API_KEY` | one of the three | Gemini through its OpenAI-compatible endpoint (default `gemini-2.5-flash`) |
+| `OPENAI_API_KEY` | one of the three | ChatGPT (default `gpt-4.1-mini`) |
+| `*_MODEL` | no | Override a provider's model |
+| `*_RPM`, `*_RPD` | no | Override a provider's per-minute and per-day budget |
+| `RESEND_API_KEY` | for the contact form | Resend |
+| `GITHUB_TOKEN` | no | Higher rate limit for the live stdlib-js merged-PR count |
 
-No other API keys needed. Embeddings are generated locally.
-
----
-
-## Commands
-
-| Command | What it does |
-|---------|-------------|
-| `npm run gen` | Regenerate embeddings from all content sources |
-| `npm run dev` | Start the development server |
+Budgets live in server memory. On serverless hosts that means per warm
+instance, which is still enough to keep a single burst of traffic inside a
+free tier.
