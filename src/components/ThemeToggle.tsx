@@ -1,9 +1,8 @@
 "use client";
 
-import { MoonIcon, SunIcon } from "@radix-ui/react-icons";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { Button } from "./ui/Button";
 
 export default function ThemeToggle() {
   const { setTheme, resolvedTheme } = useTheme();
@@ -13,24 +12,24 @@ export default function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  if (!mounted) {
-    return null;
-  }
+  const dark = resolvedTheme === "dark";
 
   return (
-    <Button
-      size="icon"
-      variant="ghost"
-      onClick={() => {
-        setTheme(resolvedTheme === "dark" ? "light" : "dark");
-      }}
+    <button
+      type="button"
+      aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
+      onClick={() => setTheme(dark ? "light" : "dark")}
+      className="inline-flex size-9 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
     >
-      {resolvedTheme === "dark" ? (
-        <SunIcon className="size-4 text-orange-300" />
+      {mounted ? (
+        dark ? (
+          <Sun className="size-4" />
+        ) : (
+          <Moon className="size-4" />
+        )
       ) : (
-        <MoonIcon className="size-4 text-indigo-500" />
+        <span className="size-4" />
       )}
-      <span className="sr-only">Theme Toggle</span>
-    </Button>
+    </button>
   );
 }
