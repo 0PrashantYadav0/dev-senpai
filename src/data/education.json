@@ -1,15 +1,16 @@
 {
   "education": [
     {
-      "name": "Indian Institute of Information and Technology Lucknow",
-      "href": "https://www.digipen.edu.sg",
-      "title": "Bachelor of Science in Computer Science and Artificial Intelligence",
+      "name": "Indian Institute of Information Technology, Lucknow",
+      "href": "https://iiitl.ac.in",
+      "title": "B.Tech in Computer Science and Artificial Intelligence",
       "logo": "/iiitl.png",
       "start": "Aug 2023",
       "end": "Jun 2027",
       "description": [
-        "Coordinator of Web Wing, AXIOS (Techical Club Of IIITL)",
-        "Senior Member of FOSS Wing, AXIOS (Techical Club Of IIITL)"
+        "GPA 8.6",
+        "Coordinator of the Web Wing, AXIOS (technical society of IIITL)",
+        "Senior member of the FOSS Wing, AXIOS (technical society of IIITL)"
       ],
       "links": [
         {
@@ -22,12 +23,12 @@
     {
       "name": "Kendriya Vidyalaya No. 1 Ferozepur Cantt",
       "href": "https://no1ferozepur.kvs.ac.in/",
-      "title": "12th Board Examination",
+      "title": "Senior secondary (Class 12)",
       "logo": "/kvs.jpg",
       "start": "Apr 2021",
       "end": "May 2022",
       "description": [
-        "Scored 95.5% in the 12th Board Examination"
+        "Scored 95.5% in the Class 12 board examination"
       ]
     }
   ]

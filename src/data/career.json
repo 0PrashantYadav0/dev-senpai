@@ -1,7 +1,7 @@
 {
   "career": [
-        {
-      "name": "Walmart",
+    {
+      "name": "Walmart Global Tech",
       "href": "https://walmart.com",
       "title": "Software Developer Intern",
       "logo": "/walmart.png",
@@ -24,10 +24,11 @@
         "Grafana",
         "Prometheus",
         "Cloud Cost Optimization"
-      ]
+      ],
+      "location": "Onsite"
     },
     {
-      "name": "Nugget",
+      "name": "Nugget by Zomato",
       "href": "https://nugget.com",
       "title": "Engineering Intern",
       "logo": "/nugget.avif",
@@ -48,10 +49,11 @@
         "Microservices",
         "Multi-tenant Architecture",
         "PostgreSQL"
-      ]
+      ],
+      "location": "Onsite"
     },
     {
-      "name": "Eternal",
+      "name": "Eternal (Zomato)",
       "href": "https://eternal.com",
       "title": "Engineering Intern",
       "logo": "/eternal.avif",
@@ -75,12 +77,13 @@
         "AWS EKS/ECS",
         "IaC",
         "NLU / TTS / STT"
-      ]
+      ],
+      "location": "Onsite"
     },
     {
       "name": "UBIQCURE",
       "href": "http://ubiqcure.com/",
-      "title": "Full Stack Developer (Intern)",
+      "title": "Software Engineering Intern (Tech Lead)",
       "logo": "/ubiqcure.jpg",
       "start": "Aug 2024",
       "end": "Nov 2024",
@@ -98,7 +101,8 @@
         "CI/CD",
         "Jira",
         "Agile"
-      ]
+      ],
+      "location": "Remote"
     }
   ]
 }
