@@ -25,6 +25,8 @@ const project = z.object({
   description: z.string(),
   href: z.string().url().optional(),
   image: z.string().optional(),
+  /** Primary implementation language, used by the project filters. */
+  language: z.string().optional(),
   tags: z.array(z.string()),
   links: z.array(iconLink),
 });
@@ -36,6 +38,7 @@ const experience = z.object({
   href: z.string(),
   title: z.string(),
   logo: z.string(),
+  location: z.string().optional(),
   start: z.string(),
   end: z.string().optional(),
   description: z.array(z.string()).optional(),
