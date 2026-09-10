@@ -32,7 +32,8 @@
         "C++",
         "C",
         "SQL",
-        "Bash"
+        "Bash",
+        "WebAssembly"
       ]
     },
     {
@@ -53,6 +54,7 @@
         "GraphQL",
         "gRPC",
         "WebSockets",
+        "Socket.IO",
         "Server-Sent Events",
         "HTMX",
         "JWT auth"
@@ -70,7 +72,9 @@
         "Material UI",
         "SCSS",
         "Pixi.js",
-        "Vite"
+        "Vite",
+        "Framer Motion",
+        "Sanity CMS"
       ]
     },
     {
@@ -176,7 +180,8 @@
         "Probot automation",
         "Jira and Agile",
         "System design",
-        "Competitive programming"
+        "Competitive programming",
+        "Web scraping (BeautifulSoup)"
       ]
     }
   ],

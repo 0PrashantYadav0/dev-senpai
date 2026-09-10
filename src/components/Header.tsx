@@ -19,7 +19,7 @@ export default function Header() {
       <nav className="mx-auto flex h-14 w-full max-w-site items-center justify-between px-5 sm:px-8">
         <Link
           href="/"
-          className="text-[15px] font-medium tracking-tight hover:text-signal"
+          className="display-md whitespace-nowrap text-base leading-[1.15] hover:text-signal"
         >
           Prashant Yadav
         </Link>
