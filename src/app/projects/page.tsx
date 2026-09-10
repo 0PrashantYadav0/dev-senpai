@@ -1,6 +1,7 @@
 import ProjectsBrowser from "@/components/projects/ProjectsBrowser";
 import data from "@/data/projects.json";
 import { projectSchema } from "@/lib/schemas";
+import { markForProject } from "@/lib/techIcons";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,7 +10,10 @@ export const metadata: Metadata = {
 };
 
 export default function ProjectPage() {
-  const projects = projectSchema.parse(data).projects;
+  const projects = projectSchema.parse(data).projects.map((p) => ({
+    ...p,
+    mark: markForProject(p.language, p.tags),
+  }));
 
   return (
     <div className="flex flex-col gap-10 pb-8 pt-10 sm:pt-16">

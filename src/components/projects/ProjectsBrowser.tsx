@@ -1,6 +1,7 @@
 "use client";
 
 import type { Project } from "@/lib/schemas";
+import type { ProjectWithMark } from "./ProjectRow";
 import { cn } from "@/lib/utils";
 import { useMemo, useState } from "react";
 import ProjectRow from "./ProjectRow";
@@ -32,7 +33,7 @@ const AREA_FILTERS: Filter[] = [
 
 const ALL: Filter = { id: "all", label: "All", match: () => true };
 
-export default function ProjectsBrowser({ projects }: { projects: Project[] }) {
+export default function ProjectsBrowser({ projects }: { projects: ProjectWithMark[] }) {
   const [active, setActive] = useState<string>("all");
 
   const filter = useMemo(
