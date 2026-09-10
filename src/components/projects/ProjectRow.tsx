@@ -1,6 +1,8 @@
 import type { Project } from "@/lib/schemas";
+import { iconForProject, markColors } from "@/lib/techIcons";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
+import type { CSSProperties } from "react";
 import Icon from "../Icon";
 
 interface Props {
@@ -42,7 +44,7 @@ export default function ProjectRow({ project, layout }: Props) {
             className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
-          <Tile name={name} language={language} />
+          <Tile name={name} language={language} tags={tags} />
         )}
       </a>
 
@@ -90,8 +92,43 @@ export default function ProjectRow({ project, layout }: Props) {
   );
 }
 
-/** Typographic stand-in for projects without a screenshot. */
-function Tile({ name, language }: { name: string; language?: string }) {
+/** Stand-in for projects without a screenshot: the mark of the major tech
+ * it was built with, falling back to initials when no mark matches. */
+function Tile({
+  name,
+  language,
+  tags,
+}: {
+  name: string;
+  language?: string;
+  tags: string[];
+}) {
+  const tech = iconForProject(language, tags);
+
+  if (tech) {
+    const { dark, light } = markColors(tech.hex);
+    return (
+      <div className="absolute inset-0 flex flex-col p-3">
+        <span className="text-[11px] text-muted-foreground">
+          {language && language !== "Other" ? language : tech.title}
+        </span>
+        <span className="flex flex-1 items-center justify-center">
+          <svg
+            role="img"
+            viewBox="0 0 24 24"
+            aria-hidden
+            className="tech-mark size-12 opacity-80 transition-opacity group-hover:opacity-100 sm:size-14"
+            style={
+              { "--mark-dark": dark, "--mark-light": light } as CSSProperties
+            }
+          >
+            <path d={tech.path} />
+          </svg>
+        </span>
+      </div>
+    );
+  }
+
   const initials = name
     .split(/[\s-]+/)
     .filter(Boolean)
