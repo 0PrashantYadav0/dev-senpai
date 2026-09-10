@@ -1,4 +1,5 @@
-import { markColors, STACK } from "@/lib/techIcons";
+import { STACK } from "@/lib/stackList";
+import { markColors } from "@/lib/techIcons";
 import type { CSSProperties } from "react";
 
 /** Every stack shipped with so far, wearing its own brand colour. A server

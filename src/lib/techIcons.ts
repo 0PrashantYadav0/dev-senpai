@@ -1,97 +1,36 @@
 import {
-  siApachekafka,
-  siArgo,
   siBun,
   siCplusplus,
   siDjango,
   siDocker,
   siFastapi,
-  siFirebase,
   siFlask,
   siGin,
-  siGit,
-  siGithubactions,
-  siGnubash,
   siGo,
-  siGrafana,
-  siGraphql,
-  siHelm,
   siHono,
   siHtmx,
   siJavascript,
   siJenkins,
   siKubernetes,
-  siLangchain,
-  siLinux,
   siMermaid,
   siMongodb,
-  siMysql,
   siNextdotjs,
-  siNginx,
   siNodedotjs,
   siOpenjdk,
-  siOpentelemetry,
   siPostgresql,
-  siPrometheus,
   siPython,
   siReact,
   siRedis,
   siSpring,
-  siSqlite,
-  siSupabase,
-  siTailwindcss,
   siTypescript,
-  siWebassembly,
   type SimpleIcon,
 } from "simple-icons";
 
-export type { SimpleIcon };
+// This module is bundled into client JS (project tiles), so it imports only
+// the icons the tiles can use. The full home-page stack lives in
+// stackList.ts, which stays server-side.
 
-/** Everything shipped with so far, in the order it reads best: languages,
- * frontend, backend, data, infrastructure, observability, AI. */
-export const STACK: { icon: SimpleIcon; label?: string }[] = [
-  { icon: siGo },
-  { icon: siPython },
-  { icon: siTypescript },
-  { icon: siJavascript },
-  { icon: siCplusplus },
-  { icon: siOpenjdk, label: "Java" },
-  { icon: siGnubash, label: "Bash" },
-  { icon: siWebassembly, label: "WebAssembly" },
-  { icon: siReact },
-  { icon: siNextdotjs },
-  { icon: siTailwindcss, label: "Tailwind" },
-  { icon: siNodedotjs },
-  { icon: siSpring },
-  { icon: siDjango },
-  { icon: siFastapi },
-  { icon: siFlask },
-  { icon: siGin },
-  { icon: siBun },
-  { icon: siHono },
-  { icon: siGraphql },
-  { icon: siPostgresql },
-  { icon: siMysql },
-  { icon: siMongodb },
-  { icon: siRedis },
-  { icon: siSqlite },
-  { icon: siSupabase },
-  { icon: siFirebase },
-  { icon: siApachekafka, label: "Kafka" },
-  { icon: siDocker },
-  { icon: siKubernetes },
-  { icon: siHelm },
-  { icon: siNginx },
-  { icon: siGithubactions, label: "GitHub Actions" },
-  { icon: siArgo, label: "ArgoCD" },
-  { icon: siJenkins },
-  { icon: siLinux },
-  { icon: siGit },
-  { icon: siGrafana },
-  { icon: siPrometheus },
-  { icon: siOpentelemetry, label: "OpenTelemetry" },
-  { icon: siLangchain },
-];
+export type { SimpleIcon };
 
 /** Icons a project tile can fall back to, keyed by language or tag. */
 const BY_NAME: Record<string, SimpleIcon> = {
@@ -136,6 +75,25 @@ export function iconForProject(
     if (hit) return hit;
   }
   return undefined;
+}
+
+/** A serialisable tile mark, resolved on the server so simple-icons never
+ * reaches client JS. */
+export interface TechMark {
+  path: string;
+  title: string;
+  dark: string;
+  light: string;
+}
+
+export function markForProject(
+  language?: string,
+  tags: string[] = [],
+): TechMark | undefined {
+  const icon = iconForProject(language, tags);
+  if (!icon) return undefined;
+  const { dark, light } = markColors(icon.hex);
+  return { path: icon.path, title: icon.title, dark, light };
 }
 
 function hexToHsl(hex: string): [number, number, number] {

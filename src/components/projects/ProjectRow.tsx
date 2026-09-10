@@ -1,12 +1,15 @@
 import type { Project } from "@/lib/schemas";
-import { iconForProject, markColors } from "@/lib/techIcons";
+import type { TechMark } from "@/lib/techIcons";
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import type { CSSProperties } from "react";
 import Icon from "../Icon";
 
+/** A project plus the tile mark resolved server-side (see markForProject). */
+export type ProjectWithMark = Project & { mark?: TechMark };
+
 interface Props {
-  project: Project;
+  project: ProjectWithMark;
   /**
    * "row": thumbnail beside text, for the projects list.
    * "compact": small thumbnail above a short blurb, for the home page.
@@ -15,7 +18,7 @@ interface Props {
 }
 
 export default function ProjectRow({ project, layout }: Props) {
-  const { name, description, image, tags, links, href, language } = project;
+  const { name, description, image, tags, links, href, language, mark } = project;
   const primary = href ?? links.find((l) => l.name === "Website")?.href ?? links[0]?.href;
   const compact = layout === "compact";
 
@@ -44,7 +47,7 @@ export default function ProjectRow({ project, layout }: Props) {
             className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (
-          <Tile name={name} language={language} tags={tags} />
+          <Tile name={name} language={language} mark={mark} />
         )}
       </a>
 
@@ -97,20 +100,17 @@ export default function ProjectRow({ project, layout }: Props) {
 function Tile({
   name,
   language,
-  tags,
+  mark,
 }: {
   name: string;
   language?: string;
-  tags: string[];
+  mark?: TechMark;
 }) {
-  const tech = iconForProject(language, tags);
-
-  if (tech) {
-    const { dark, light } = markColors(tech.hex);
+  if (mark) {
     return (
       <div className="absolute inset-0 flex flex-col p-3">
         <span className="text-[11px] text-muted-foreground">
-          {language && language !== "Other" ? language : tech.title}
+          {language && language !== "Other" ? language : mark.title}
         </span>
         <span className="flex flex-1 items-center justify-center">
           <svg
@@ -119,10 +119,13 @@ function Tile({
             aria-hidden
             className="tech-mark size-12 opacity-80 transition-opacity group-hover:opacity-100 sm:size-14"
             style={
-              { "--mark-dark": dark, "--mark-light": light } as CSSProperties
+              {
+                "--mark-dark": mark.dark,
+                "--mark-light": mark.light,
+              } as CSSProperties
             }
           >
-            <path d={tech.path} />
+            <path d={mark.path} />
           </svg>
         </span>
       </div>
