@@ -10,7 +10,7 @@
   "summary": [
     "Prashant is a final-year B.Tech student in Computer Science and Artificial Intelligence at IIIT Lucknow (2023 to 2027, GPA 8.6).",
     "He has interned at Walmart Global Tech, Nugget by Zomato, Eternal (Zomato), and UBIQCURE, working on voice AI, Go microservices, telephony, data pipelines, AI observability agents, and cloud infrastructure.",
-    "He is a regular contributor to stdlib-js, the standard library for JavaScript, with more than 145 merged pull requests.",
+    "He is a regular contributor to stdlib-js, the standard library for JavaScript, with more than 160 merged pull requests.",
     "He likes shipping ambitious systems, instant coffee, and anime."
   ],
   "focus": [
@@ -192,7 +192,7 @@
     "start": "May 2024",
     "end": null,
     "description": [
-      "Authored more than 145 merged pull requests across the BLAS, LAPACK, and statistics packages (the live count is shown on the site).",
+      "Authored more than 160 merged pull requests across the BLAS, LAPACK, and statistics packages (the live count is shown on the site).",
       "Contributed C-level BLAS extensions and WebAssembly implementations that improve numerical-computing performance."
     ]
   },

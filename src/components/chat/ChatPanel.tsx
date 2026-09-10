@@ -17,11 +17,10 @@ const SUGGESTIONS = [
 ];
 
 interface Props {
-  variant: "inline" | "dock";
   className?: string;
 }
 
-export default function ChatPanel({ variant, className }: Props) {
+export default function ChatPanel({ className }: Props) {
   const {
     messages,
     input,
@@ -77,16 +76,14 @@ export default function ChatPanel({ variant, className }: Props) {
             Clear
           </button>
         )}
-        {variant === "dock" && (
-          <button
-            type="button"
-            onClick={close}
-            aria-label="Close chat"
-            className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
-          >
-            <X className="size-4" />
-          </button>
-        )}
+        <button
+          type="button"
+          onClick={close}
+          aria-label="Close chat"
+          className="rounded-full p-1.5 text-muted-foreground transition-colors hover:bg-secondary hover:text-foreground"
+        >
+          <X className="size-4" />
+        </button>
       </header>
 
       <div ref={scrollRef} className="min-h-0 flex-1 overflow-y-auto px-4 py-4">
