@@ -6,8 +6,8 @@
 const GITHUB_USER = "0PrashantYadav0";
 const STDLIB_REPO = "stdlib-js/stdlib";
 
-/** The number on the resume; shown when the live call fails. */
-export const MERGED_PR_FALLBACK = 145;
+/** A floor the count has already passed; shown when the live call fails. */
+export const MERGED_PR_FALLBACK = 160;
 
 export interface MergedPrCount {
   count: number;

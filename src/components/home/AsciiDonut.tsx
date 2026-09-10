@@ -113,7 +113,7 @@ export default function AsciiDonut({ className }: { className?: string }) {
     <pre
       ref={ref}
       aria-hidden
-      className={`donut overflow-hidden text-[7px] sm:text-[9px] lg:text-[11px] ${className ?? ""}`}
+      className={`donut overflow-hidden text-[8px] sm:text-[10px] lg:text-[12px] ${className ?? ""}`}
     >
       {FIRST_FRAME}
     </pre>

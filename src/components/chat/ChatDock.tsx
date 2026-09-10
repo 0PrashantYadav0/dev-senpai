@@ -22,10 +22,7 @@ export default function ChatDock() {
     <>
       {isOpen && (
         <div className="fixed inset-x-0 bottom-0 z-50 p-3 sm:inset-auto sm:bottom-6 sm:right-6 sm:w-[24rem] sm:p-0">
-          <ChatPanel
-            variant="dock"
-            className="h-[70vh] max-h-[36rem] shadow-2xl shadow-black/30 sm:h-[34rem]"
-          />
+          <ChatPanel className="h-[70vh] max-h-[36rem] shadow-2xl shadow-black/30 sm:h-[34rem]" />
         </div>
       )}
       {!isOpen && (

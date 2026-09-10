@@ -64,7 +64,7 @@ const BY_NAME: Record<string, SimpleIcon> = {
 
 /** The mark for a project without a screenshot: its language, else the first
  * recognisable tag. */
-export function iconForProject(
+function iconForProject(
   language?: string,
   tags: string[] = [],
 ): SimpleIcon | undefined {
