@@ -4,13 +4,25 @@ import Providers from "@/components/Providers";
 import profile from "@/data/profile.json";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Bricolage_Grotesque } from "next/font/google";
+import { Instrument_Sans, JetBrains_Mono, Young_Serif } from "next/font/google";
 import "./globals.css";
 
-const bricolage = Bricolage_Grotesque({
+const instrument = Instrument_Sans({
   subsets: ["latin"],
-  axes: ["opsz", "wdth"],
   variable: "--font-sans",
+  display: "swap",
+});
+
+const youngSerif = Young_Serif({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-display",
+  display: "swap",
+});
+
+const jetbrains = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
   display: "swap",
 });
 
@@ -40,13 +52,14 @@ export default function RootLayout({
       <body
         className={cn(
           "flex min-h-screen flex-col font-sans antialiased",
-          bricolage.variable,
+          instrument.variable,
+          youngSerif.variable,
+          jetbrains.variable,
         )}
       >
         <Providers>
           <Header />
           <main className="relative mx-auto w-full max-w-site grow px-5 sm:px-8">
-            <div aria-hidden className="site-atmosphere" />
             {children}
           </main>
           <Footer />

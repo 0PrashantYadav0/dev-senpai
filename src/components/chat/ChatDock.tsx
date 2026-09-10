@@ -2,16 +2,11 @@
 
 import { useChatbot } from "@/contexts/ChatContext";
 import { MessageSquareText } from "lucide-react";
-import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import ChatPanel from "./ChatPanel";
 
-/**
- * On every page except home the chat lives in a dock in the corner. The home
- * page embeds the same panel in the hero instead.
- */
+/** The chat lives in a dock in the corner on every page. */
 export default function ChatDock() {
-  const pathname = usePathname();
   const { isOpen, open, close, messages } = useChatbot();
 
   useEffect(() => {
@@ -22,8 +17,6 @@ export default function ChatDock() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, close]);
-
-  if (pathname === "/") return null;
 
   return (
     <>

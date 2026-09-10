@@ -11,7 +11,8 @@ export default function Footer() {
             {profile.email}
           </a>
           <p className="text-xs text-muted-foreground">
-            &copy; {new Date().getFullYear()} Prashant Kumar Yadav.{" "}
+            &copy; {new Date().getFullYear()} Prashant Kumar Yadav. Built by
+            hand, fuelled by instant coffee.{" "}
             <Link href="/privacy" className="link">
               Privacy
             </Link>
