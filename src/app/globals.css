@@ -3,58 +3,59 @@
 @tailwind utilities;
 
 /*
-  Tokens. Petrol ink with a single amber signal colour. Dark is the default
-  look; light mode swaps the ground for a pale mist and darkens the amber so
-  it stays readable on it.
+  Tokens. Espresso ground with cream ink and one copper signal colour, so the
+  many-hued tech marks in the stack strip stay the only polychrome element.
+  Dark is the default look; light mode swaps the ground for warm paper and
+  deepens the copper so it keeps its contrast.
 */
 @layer base {
   :root {
-    --background: 170 16% 93%; /* #ECF1F0 mist */
-    --foreground: 202 53% 9%; /* #0B1B24 petrol ink */
-    --card: 0 0% 100%;
-    --card-foreground: 202 53% 9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 202 53% 9%;
-    --primary: 202 53% 9%;
-    --primary-foreground: 187 20% 95%;
-    --secondary: 180 12% 88%;
-    --secondary-foreground: 202 53% 9%;
-    --muted: 180 12% 88%;
-    --muted-foreground: 191 15% 36%; /* #4E6469 */
-    --accent: 180 12% 88%;
-    --accent-foreground: 202 53% 9%;
+    --background: 36 30% 94%; /* #F4EFE6 paper */
+    --foreground: 22 30% 11%; /* #241A14 roast ink */
+    --card: 38 40% 97%;
+    --card-foreground: 22 30% 11%;
+    --popover: 38 40% 97%;
+    --popover-foreground: 22 30% 11%;
+    --primary: 22 30% 11%;
+    --primary-foreground: 36 33% 92%;
+    --secondary: 34 22% 87%;
+    --secondary-foreground: 22 30% 11%;
+    --muted: 34 22% 87%;
+    --muted-foreground: 24 12% 38%; /* #6D5F55 */
+    --accent: 34 22% 87%;
+    --accent-foreground: 22 30% 11%;
     --destructive: 0 72% 42%;
     --destructive-foreground: 0 0% 100%;
-    --border: 188 17% 82%; /* #C9D6D8 */
-    --input: 188 17% 76%;
-    --ring: 39 83% 33%;
-    --signal: 39 83% 33%; /* #9A6A0F amber, dark enough for AA on mist */
-    --signal-soft: 39 83% 33% / 0.12;
+    --border: 32 16% 79%; /* #D3C9BC */
+    --input: 32 16% 72%;
+    --ring: 27 62% 32%;
+    --signal: 27 62% 32%; /* #85511F copper, dark enough for AA on paper */
+    --signal-soft: 27 62% 32% / 0.12;
     --radius: 0.375rem;
   }
 
   .dark {
-    --background: 202 53% 9%; /* #0B1B24 */
-    --foreground: 187 20% 92%; /* #E7EEEF paper */
-    --card: 199 49% 12%; /* #10252F panel */
-    --card-foreground: 187 20% 92%;
-    --popover: 199 49% 12%;
-    --popover-foreground: 187 20% 92%;
-    --primary: 187 20% 92%;
-    --primary-foreground: 202 53% 9%;
-    --secondary: 199 37% 16%;
-    --secondary-foreground: 187 20% 92%;
-    --muted: 199 37% 16%;
-    --muted-foreground: 193 15% 63%; /* #93A8AE */
-    --accent: 199 37% 16%;
-    --accent-foreground: 187 20% 92%;
+    --background: 22 28% 8%; /* #1A130F espresso */
+    --foreground: 36 33% 89%; /* #EDE5D6 cream */
+    --card: 24 24% 12%; /* #261D17 panel */
+    --card-foreground: 36 33% 89%;
+    --popover: 24 24% 12%;
+    --popover-foreground: 36 33% 89%;
+    --primary: 36 33% 89%;
+    --primary-foreground: 22 28% 8%;
+    --secondary: 24 20% 16%;
+    --secondary-foreground: 36 33% 89%;
+    --muted: 24 20% 16%;
+    --muted-foreground: 30 12% 62%; /* #A99C8B */
+    --accent: 24 20% 16%;
+    --accent-foreground: 36 33% 89%;
     --destructive: 0 62% 50%;
     --destructive-foreground: 0 0% 100%;
-    --border: 199 37% 19%; /* #1E3641 */
-    --input: 199 37% 24%;
-    --ring: 38 88% 60%;
-    --signal: 38 88% 60%; /* #F3B23E amber */
-    --signal-soft: 38 88% 60% / 0.14;
+    --border: 25 16% 20%; /* #3B322B */
+    --input: 25 16% 26%;
+    --ring: 27 60% 58%;
+    --signal: 27 60% 58%; /* #D4874E copper */
+    --signal-soft: 27 60% 58% / 0.14;
   }
 }
 
@@ -68,8 +69,6 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-optical-sizing: auto;
-    font-feature-settings: "ss01", "cv11";
   }
   ::selection {
     background: hsl(var(--signal) / 0.35);
@@ -79,19 +78,20 @@
     outline-offset: 2px;
   }
 
-  /* Display type: Bricolage at large optical sizes, tight and slightly narrow. */
+  /* Display type: Young Serif, one weight, set tight. The serif against the
+     mono machine output is the site's voice: a person who talks to machines. */
   .display {
-    font-weight: 500;
-    letter-spacing: -0.02em;
-    line-height: 1.02;
-    font-variation-settings: "wdth" 92;
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.08;
     text-wrap: balance;
   }
   .display-md {
-    font-weight: 500;
-    letter-spacing: -0.015em;
-    line-height: 1.1;
-    font-variation-settings: "wdth" 95;
+    font-family: var(--font-display), Georgia, serif;
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    line-height: 1.15;
     text-wrap: balance;
   }
 
@@ -132,7 +132,7 @@
   }
   .chat-md code {
     @apply rounded bg-secondary px-1 py-0.5 text-[0.85em];
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   }
 
   /* Typing cursor for the greeting; hidden when the visitor prefers less motion. */
@@ -160,25 +160,14 @@
     }
   }
 
-  /*
-    One atmospheric element, shared by every page: a low amber glow and a
-    faint dot grid in the top-right of the content column, where the chat sits
-    on the home page and the page title sits everywhere else.
-  */
-  .site-atmosphere {
-    position: absolute;
-    top: -4rem;
-    left: -6rem;
-    right: -6rem;
-    height: 46rem;
-    z-index: -1;
-    pointer-events: none;
-    background:
-      radial-gradient(38rem 24rem at 78% 40%, hsl(var(--signal) / 0.13), transparent 70%),
-      radial-gradient(hsl(var(--foreground) / 0.09) 1px, transparent 1px);
-    background-size: 100% 100%, 22px 22px;
-    -webkit-mask-image: radial-gradient(60% 70% at 70% 45%, #000 30%, transparent 100%);
-    mask-image: radial-gradient(60% 70% at 70% 45%, #000 30%, transparent 100%);
+  /* The hand-rolled donut.c render in the hero. Sized in ch so the torus
+     keeps its proportions at any breakpoint. */
+  .donut {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    color: hsl(var(--signal));
+    line-height: 1.05;
+    letter-spacing: 0;
+    user-select: none;
   }
 
   /* Chat panel surface: a hairline top highlight gives it a lift without a drop shadow. */
