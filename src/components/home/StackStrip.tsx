@@ -1,71 +1,14 @@
-import {
-  siApachekafka,
-  siCplusplus,
-  siDjango,
-  siDocker,
-  siFastapi,
-  siGithubactions,
-  siGo,
-  siGrafana,
-  siHelm,
-  siJavascript,
-  siKubernetes,
-  siMongodb,
-  siNextdotjs,
-  siNodedotjs,
-  siOpenjdk,
-  siPostgresql,
-  siPrometheus,
-  siPython,
-  siReact,
-  siRedis,
-  siSpring,
-  siTypescript,
-  type SimpleIcon,
-} from "simple-icons";
+import { markColors, STACK } from "@/lib/techIcons";
+import type { CSSProperties } from "react";
 
-/** Marks shown on the home page; every one is a stack something shipped with. */
-const STACK: { icon: SimpleIcon; label?: string }[] = [
-  { icon: siGo },
-  { icon: siPython },
-  { icon: siTypescript },
-  { icon: siJavascript },
-  { icon: siCplusplus },
-  { icon: siOpenjdk, label: "Java" },
-  { icon: siReact },
-  { icon: siNextdotjs },
-  { icon: siNodedotjs },
-  { icon: siSpring },
-  { icon: siDjango },
-  { icon: siFastapi },
-  { icon: siPostgresql },
-  { icon: siMongodb },
-  { icon: siRedis },
-  { icon: siApachekafka, label: "Kafka" },
-  { icon: siDocker },
-  { icon: siKubernetes },
-  { icon: siHelm },
-  { icon: siGrafana },
-  { icon: siPrometheus },
-  { icon: siGithubactions, label: "GitHub Actions" },
-];
-
-/** Near-black brand marks vanish on the espresso ground; hand those the ink colour. */
-function markColor(hex: string): string | undefined {
-  const n = parseInt(hex, 16);
-  const r = (n >> 16) & 255;
-  const g = (n >> 8) & 255;
-  const b = n & 255;
-  const luminance = 0.299 * r + 0.587 * g + 0.114 * b;
-  return luminance < 60 ? undefined : `#${hex}`;
-}
-
+/** Every stack shipped with so far, wearing its own brand colour. A server
+ * component, so the SVGs cost no client JS. */
 export default function StackStrip() {
   return (
     <ul className="flex flex-wrap items-center gap-x-5 gap-y-3">
       {STACK.map(({ icon, label }) => {
         const name = label ?? icon.title;
-        const color = markColor(icon.hex);
+        const { dark, light } = markColors(icon.hex);
         return (
           <li
             key={icon.slug}
@@ -75,9 +18,10 @@ export default function StackStrip() {
               role="img"
               viewBox="0 0 24 24"
               aria-hidden
-              className="size-4 shrink-0"
-              style={color ? { fill: color } : undefined}
-              fill={color ? undefined : "currentColor"}
+              className="tech-mark size-4 shrink-0"
+              style={
+                { "--mark-dark": dark, "--mark-light": light } as CSSProperties
+              }
             >
               <path d={icon.path} />
             </svg>

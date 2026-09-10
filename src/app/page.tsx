@@ -20,19 +20,25 @@ export default function Home() {
       <section className="flex flex-col gap-12">
         <div className="grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-14">
           <div>
-            <h1 className="display text-[2.4rem] sm:text-[3.25rem]">
-              I build voice AI that picks up the phone, and the systems that
-              keep it on the line.
+            <h1 className="display text-[2.6rem] sm:text-6xl">
+              hi, prashant here{" "}
+              <span aria-hidden className="inline-block">
+                👋
+              </span>
             </h1>
             <p className="measure mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-              Final-year CS and AI student at IIIT Lucknow. Four internships
-              in, at Walmart Global Tech, Zomato twice, and UBIQCURE, plus
-              145+ pull requests merged into stdlib-js. The stack changes; the
-              shipping doesn&apos;t.
+              {new Date().getFullYear() - profile.birthYear - 1}-year-old
+              software developer from India. I like building complex systems,
+              instant coffee, and anime.
+            </p>
+            <p className="measure mt-3 text-base leading-relaxed text-muted-foreground sm:text-lg">
+              Lately that means voice AI that picks up real phone calls, Go
+              microservices behind it, and 145+ pull requests merged into
+              stdlib-js.
             </p>
             <p className="mt-5 text-sm text-muted-foreground">
-              Graduating June 2027. Open to backend, infrastructure, and
-              applied-AI roles.
+              Graduating from IIIT Lucknow in June 2027. Open to backend,
+              infrastructure, and applied-AI roles.
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <Link
