@@ -44,12 +44,18 @@ function renderFrame(A: number, B: number): string {
     }
   }
 
-  let out = "";
+  const rows: string[] = [];
   for (let row = 0; row < H; row++) {
-    out += chars.slice(row * W, (row + 1) * W).join("") + "\n";
+    rows.push(chars.slice(row * W, (row + 1) * W).join(""));
   }
-  return out;
+  return rows.join("\n");
 }
+
+/* The opening angle, chosen because the hole reads immediately. Rendered on
+   the server too, so the hero arrives at full size with no layout shift. */
+const START_A = 5.6;
+const START_B = 0.2;
+const FIRST_FRAME = renderFrame(START_A, START_B);
 
 export default function AsciiDonut({ className }: { className?: string }) {
   const ref = useRef<HTMLPreElement>(null);
@@ -58,18 +64,12 @@ export default function AsciiDonut({ className }: { className?: string }) {
     const pre = ref.current;
     if (!pre) return;
 
-    let A = 5.6; // a flattering opening angle: the hole reads immediately
-    let B = 0.2;
+    let A = START_A;
+    let B = START_B;
     let raf = 0;
     let last = 0;
     let visible = true;
-
-    const reduceMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)",
-    ).matches;
-
-    pre.textContent = renderFrame(A, B);
-    if (reduceMotion) return;
+    let animating = false;
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
@@ -80,15 +80,32 @@ export default function AsciiDonut({ className }: { className?: string }) {
       pre.textContent = renderFrame(A, B);
     };
 
+    const start = () => {
+      if (animating) return;
+      animating = true;
+      raf = requestAnimationFrame(tick);
+    };
+    const stop = () => {
+      if (!animating) return;
+      animating = false;
+      cancelAnimationFrame(raf);
+    };
+
+    // Follow the OS setting live, not just its value at mount.
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const applyMotion = () => (motion.matches ? stop() : start());
+
     const observer = new IntersectionObserver(([entry]) => {
       visible = entry.isIntersecting;
     });
     observer.observe(pre);
-    raf = requestAnimationFrame(tick);
+    applyMotion();
+    motion.addEventListener("change", applyMotion);
 
     return () => {
-      cancelAnimationFrame(raf);
+      stop();
       observer.disconnect();
+      motion.removeEventListener("change", applyMotion);
     };
   }, []);
 
@@ -97,6 +114,8 @@ export default function AsciiDonut({ className }: { className?: string }) {
       ref={ref}
       aria-hidden
       className={`donut overflow-hidden text-[7px] sm:text-[9px] lg:text-[11px] ${className ?? ""}`}
-    />
+    >
+      {FIRST_FRAME}
+    </pre>
   );
 }
