@@ -8,12 +8,26 @@ out.
 ## Stack
 
 - Next.js 14 (App Router), TypeScript, Tailwind CSS
-- Young Serif, Instrument Sans, and JetBrains Mono via `next/font`; the hero's 3D torus is a hand-rolled donut.c-style renderer, no 3D library
+- Young Serif, Instrument Sans, JetBrains Mono, and Silkscreen via `next/font`
 - Retrieval: local MiniLM embeddings (`@xenova/transformers`), BM25, reciprocal rank fusion, MMR. No database, the index is a JSON file.
 - Generation: Groq, Gemini, and OpenAI through one OpenAI-compatible client, with per-provider budgets, automatic fallback, and an answer cache.
 - Contact form: Resend
+- Live GitHub numbers: contribution calendar, pull requests by state, cached for an hour on the server
 
 Details of the chatbot pipeline are in [ARCHITECTURE.md](./ARCHITECTURE.md).
+
+## The look
+
+Black ground with a blue signal colour; light mode is white. Everything sits
+in one centred column with dashed rails, and nothing on the page is an image
+asset:
+
+- The hero's 3D torus is a hand-rolled donut.c-style renderer drawn into a `<pre>`. No 3D library.
+- The banner is pixel art drawn on a canvas at a third resolution: night with a moon and stars in dark mode, day with drifting clouds in light mode, plus a clock showing Lucknow time.
+- The page ground is a faint line grid with a few traces travelling along it.
+
+All three stop moving under `prefers-reduced-motion`. Design notes and the
+token system are in [CLAUDE.md](./CLAUDE.md).
 
 ## Run it
 
@@ -25,6 +39,9 @@ npm run dev
 ```
 
 Open <http://localhost:3000>.
+
+`GITHUB_TOKEN` is optional. Without it the GitHub section still works; the
+token only raises the API rate limit.
 
 ## Update the content
 
