@@ -73,8 +73,8 @@ export default async function Home() {
             Go services that keep it on the line.
           </li>
           <li>
-            {mergedEverywhere}+ pull requests merged across open source, most
-            of them into{" "}
+            {mergedEverywhere}+ pull requests merged into other people&apos;s projects,
+            most of them into{" "}
             <a
               href={profile.openSource.href}
               target="_blank"

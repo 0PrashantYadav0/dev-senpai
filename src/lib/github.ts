@@ -84,7 +84,7 @@ export async function getContributions(): Promise<Contributions | null> {
 }
 
 /* ------------------------------------------------------------------ */
-/* Pull requests across every repository                               */
+/* Pull requests into other people's repositories                  */
 /* ------------------------------------------------------------------ */
 
 export type PrState = "merged" | "open" | "closed";
@@ -105,9 +105,9 @@ export interface PrBucket {
 export type PullRequests = Record<PrState, PrBucket>;
 
 const PR_QUERIES: Record<PrState, string> = {
-  merged: "is:pr+is:merged",
-  open: "is:pr+is:open",
-  closed: "is:pr+is:closed+is:unmerged",
+  merged: `is:pr+is:merged+-user:${GITHUB_USER}`,
+  open: `is:pr+is:open+-user:${GITHUB_USER}`,
+  closed: `is:pr+is:closed+is:unmerged+-user:${GITHUB_USER}`,
 };
 
 interface SearchItem {

@@ -30,33 +30,33 @@ type Palette = {
 };
 
 const NIGHT: Palette = {
-  sky: ["#070504", "#0b0806", "#120c08", "#1a110b", "#26170e", "#382013"],
-  glow: "#4a2a16",
-  disc: "#ede5d6",
-  hills: ["#3b291c", "#291b12", "#17100b"],
-  grass: "#0f0a07",
-  blade: "#1c1410",
-  cloud: "#1b1410",
-  star: "#ede5d6",
+  sky: ["#03050a", "#050914", "#080e1d", "#0b1428", "#0f1a33", "#142240"],
+  glow: "#1c2d55",
+  disc: "#e6ecf2",
+  hills: ["#1b2745", "#121b30", "#0a1020"],
+  grass: "#070b14",
+  blade: "#101a2c",
+  cloud: "#3a4d78",
+  star: "#e6ecf2",
   skin: "#d9a97a",
-  cloth: "#4a3323",
-  laptop: "#3a2a1f",
-  screen: ["#d4874e", "#ede5d6", "#b86f3b"],
+  cloth: "#2b3a5a",
+  laptop: "#1f2a40",
+  screen: ["#3d8ef5", "#e6ecf2", "#2f6fd0"],
 };
 
 const DAY: Palette = {
-  sky: ["#e6d9c6", "#ebdfcc", "#f0e5d3", "#f3e8d6", "#f6ecd9", "#f7e3c5"],
-  glow: "#f2cf9f",
-  disc: "#c97a3a",
-  hills: ["#dccdb8", "#cbb79f", "#b9a389"],
-  grass: "#a48d71",
-  blade: "#b39b7e",
-  cloud: "#fffaf2",
+  sky: ["#cfe3f7", "#d8e9f9", "#e0eefb", "#e8f2fc", "#eff6fd", "#f4f8fe"],
+  glow: "#dbe9f8",
+  disc: "#fff0b8",
+  hills: ["#b9cbe3", "#9db4d4", "#7f99bf"],
+  grass: "#6f8ab0",
+  blade: "#8aa3c5",
+  cloud: "#ffffff",
   star: "#ffffff",
-  skin: "#c98a5a",
-  cloth: "#5a4030",
-  laptop: "#3a2a1f",
-  screen: ["#85511F", "#ffffff", "#a86a37"],
+  skin: "#d9a97a",
+  cloth: "#2b3a5a",
+  laptop: "#1f2a40",
+  screen: ["#1a5fd0", "#ffffff", "#2f6fd0"],
 };
 
 /* A person sitting cross-legged with a laptop, 11 wide by 9 tall.
@@ -134,8 +134,8 @@ export default function Banner() {
         phase: Math.random() * Math.PI * 2,
         speed: 0.6 + Math.random() * 1.6,
       }));
-      clouds = Array.from({ length: 4 }, (_, i) => ({
-        x: (W / 4) * i + Math.random() * 20,
+      clouds = Array.from({ length: 5 }, (_, i) => ({
+        x: (W / 5) * i + Math.random() * 20,
         y: 4 + Math.random() * (H * 0.24),
         w: 14 + Math.floor(Math.random() * 14),
         speed: 1.2 + Math.random() * 1.4,
@@ -185,15 +185,15 @@ export default function Banner() {
         for (const s of stars) {
           const a = 0.35 + 0.65 * (0.5 + 0.5 * Math.sin(t * s.speed + s.phase));
           if (a > 0.55) px(s.x, s.y, p.star);
-          else if (a > 0.4) px(s.x, s.y, "#7a6d5a");
+          else if (a > 0.4) px(s.x, s.y, "#7c8aa6");
         }
         if (shoot) {
-          for (let i = 0; i < 6; i++) px(shoot.x - i * 1.4, shoot.y - i, i < 2 ? p.star : "#8a7a62");
+          for (let i = 0; i < 6; i++) px(shoot.x - i * 1.4, shoot.y - i, i < 2 ? p.star : "#93a2c0");
         }
       }
 
       // The disc: a crescent moon at night, the sun by day.
-      const cx = Math.floor(W * 0.76);
+      const cx = Math.floor(W * 0.52); // left of the clock at every width
       const cy = Math.floor(H * 0.24);
       const r = Math.max(6, Math.floor(H * 0.12));
       for (let y = -r; y <= r; y++) {
@@ -222,7 +222,7 @@ export default function Banner() {
         ];
         rows.forEach(([off, len], i) => {
           ctx.fillStyle = dark ? p.cloud : p.cloud;
-          ctx.globalAlpha = dark ? 0.7 : 1;
+          ctx.globalAlpha = dark ? 0.95 : 1;
           ctx.fillRect(Math.floor(cx0 + off), Math.floor(c.y + i), len, 1);
           ctx.globalAlpha = 1;
         });
@@ -342,7 +342,7 @@ export default function Banner() {
   return (
     <div className="banner relative h-[176px] w-full overflow-hidden sm:h-[220px]">
       <canvas ref={ref} aria-hidden className="block h-full w-full [image-rendering:pixelated]" />
-      <PixelClock className="absolute left-3 top-3" />
+      <PixelClock className="absolute right-3 top-3" />
     </div>
   );
 }

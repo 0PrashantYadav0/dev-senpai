@@ -45,8 +45,8 @@ After editing any of them run `npm run gen` so Dev Senpai's index
 
 ## Design system (redesign of Sep 2026)
 
-The look is "the polyglot's workbench": espresso dark ground, cream ink, one
-copper signal colour. Dark is the default theme; light mode is warm paper.
+The look is "the polyglot's workbench": black ground, cool off-white ink, one
+blue signal colour. Dark is the default theme; light mode is white.
 
 - Tokens live in `src/app/globals.css` as HSL CSS variables consumed by
   `tailwind.config.ts` (shadcn-style). Retheme by editing the variables only;
@@ -61,7 +61,7 @@ copper signal colour. Dark is the default theme; light mode is warm paper.
   that spans the viewport with a tick at each rail. On the home page an
   `IndexRail` lists the sections in the right margin at `xl` and up.
 - Ground: `src/components/layout/WorkbenchGrid.tsx` draws a faint line grid
-  on a fixed canvas with a few copper traces running along it. Static under
+  on a fixed canvas with a few blue traces running along it. Static under
   `prefers-reduced-motion`.
 - Banner: `src/components/home/Banner.tsx` is a pixel-art landscape drawn
   on a canvas at a third of the size (night in dark mode, day in light),

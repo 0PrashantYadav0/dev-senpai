@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react";
 
 /**
- * The page ground: a fine line grid with a few copper traces travelling
+ * The page ground: a fine line grid with a few blue traces travelling
  * along it, like signals on a board. Drawn on one fixed canvas behind
  * everything. Under reduced motion only the grid is drawn; the traces are
  * skipped entirely. Pauses while the tab is hidden.
@@ -42,7 +42,7 @@ export default function WorkbenchGrid() {
 
     const css = () => getComputedStyle(document.documentElement);
     let ink = "0 0% 50%";
-    let signal = "27 60% 58%";
+    let signal = "212 90% 62%";
     const readTokens = () => {
       const s = css();
       ink = s.getPropertyValue("--foreground").trim() || ink;

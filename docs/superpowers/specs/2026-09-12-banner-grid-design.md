@@ -18,15 +18,15 @@ Borrow from VengeanceUI where it fits.
 ## Background
 
 `WorkbenchGrid`: fixed canvas behind everything. A 48px line grid at very
-low opacity, a handful of copper traces that travel along grid lines and
+low opacity, a handful of blue traces that travel along grid lines and
 fade. Static grid only under `prefers-reduced-motion`. Pauses when the tab
 is hidden.
 
 ## Banner
 
 `Banner`: canvas drawn at 1/3 resolution and upscaled with smoothing off so
-it reads as pixel art. Dark theme: night over hills, copper crescent moon,
-twinkling stars, a shooting star now and then. Light theme: day, copper sun,
+it reads as pixel art. Dark theme: night over hills, pale crescent moon,
+twinkling stars, a shooting star now and then. Light theme: day, pale sun,
 drifting pixel clouds. Both: three parallax hill layers, grass band, a
 pixel figure at a laptop whose screen blinks. Edges fade into the page.
 `PixelClock` (Silkscreen via next/font) shows Asia/Kolkata time, bottom right.
