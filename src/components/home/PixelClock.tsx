@@ -25,14 +25,14 @@ export default function PixelClock({ className }: { className?: string }) {
   return (
     <time
       className={cn(
-        "font-pixel inline-flex items-baseline gap-1.5 rounded-sm bg-background/70 px-2.5 py-1.5 text-sm leading-none text-foreground backdrop-blur-[2px] sm:text-base",
+        "font-pixel inline-flex items-baseline gap-1.5 rounded-sm bg-background/70 px-3 py-2 text-base leading-none text-foreground backdrop-blur-[2px] sm:text-lg",
         className,
       )}
       title="Current time in Lucknow, India"
       aria-live="off"
     >
       <span className="tabular-nums">{now ?? "--:--:--"}</span>
-      <span className="text-[11px] text-muted-foreground">IST</span>
+      <span className="text-xs text-muted-foreground">IST</span>
     </time>
   );
 }
