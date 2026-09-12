@@ -1,4 +1,3 @@
-import dynamicIconImports from "lucide-react/dynamicIconImports";
 import { z } from "zod";
 
 export const ContactFormSchema = z.object({
@@ -13,10 +12,13 @@ export const ContactFormSchema = z.object({
   message: z.string().min(1, { message: "Message is required." }),
 });
 
+export const iconName = z.enum(["github", "globe", "server", "linkedin", "mail", "x"]);
+export type IconName = z.infer<typeof iconName>;
+
 const iconLink = z.object({
   name: z.string(),
   href: z.string().url(),
-  icon: z.custom<keyof typeof dynamicIconImports>(),
+  icon: iconName,
 });
 export type IconLink = z.infer<typeof iconLink>;
 

@@ -1,15 +1,18 @@
+"use client";
+
+import { useChatbot } from "@/contexts/ChatContext";
 import profile from "@/data/profile.json";
 import Link from "next/link";
 
 export default function ContactStrip() {
+  const { open } = useChatbot();
+
   return (
     <section className="rounded-lg border bg-card p-6 sm:p-8">
-      <h2 className="display-md text-2xl sm:text-3xl">
-        Hiring for backend, infrastructure, or applied AI?
-      </h2>
+      <h2 className="display-md text-2xl sm:text-3xl">Want to know more about me?</h2>
       <p className="measure mt-3 text-muted-foreground">
-        Prashant graduates in June 2027 and is open to internships and
-        full-time roles. Send a note and he will reply from{" "}
+        Ask Dev Senpai anything about my work, or send a note and I will reply
+        from{" "}
         <a href={`mailto:${profile.email}`} className="link">
           {profile.email}
         </a>
@@ -22,13 +25,13 @@ export default function ContactStrip() {
         >
           Send a message
         </Link>
-        <Link
-          href={profile.resume}
-          target="_blank"
+        <button
+          type="button"
+          onClick={open}
           className="inline-flex h-10 items-center rounded-md border px-4 text-sm font-medium hover:border-signal hover:bg-signal-soft"
         >
-          Open resume
-        </Link>
+          Ask Dev Senpai
+        </button>
       </div>
     </section>
   );

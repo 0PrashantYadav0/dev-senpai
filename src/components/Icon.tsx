@@ -1,21 +1,40 @@
-import React, { lazy, Suspense } from 'react';
-import { LucideProps } from 'lucide-react';
-import dynamicIconImports from 'lucide-react/dynamicIconImports';
+import { Github, Globe, Linkedin, Mail, Server, type LucideProps } from "lucide-react";
+import { siX } from "simple-icons";
 
-const fallback = <div style={{ background: '#ddd', width: 24, height: 24 }}/>
+/**
+ * The handful of link icons the data files use, bundled statically so they
+ * render on first paint (the old per-name lazy import flashed a grey box).
+ * Lucide covers all but X, whose mark comes from simple-icons.
+ */
+const LUCIDE: Record<string, typeof Github> = {
+  github: Github,
+  globe: Globe,
+  server: Server,
+  linkedin: Linkedin,
+  mail: Mail,
+};
 
-interface IconProps extends Omit<LucideProps, 'ref'> {
-  name: keyof typeof dynamicIconImports;
+interface IconProps extends Omit<LucideProps, "ref"> {
+  name: string;
 }
 
-const Icon = ({ name, ...props }: IconProps) => {
-  const LucideIcon = lazy(dynamicIconImports[name]);
-
-  return (
-    <Suspense fallback={fallback}>
-      <LucideIcon {...props} />
-    </Suspense>
-  );
+export default function Icon({ name, ...props }: IconProps) {
+  if (name === "x") {
+    const { className, style, size = 24, "aria-hidden": hidden } = props;
+    return (
+      <svg
+        viewBox="0 0 24 24"
+        width={size}
+        height={size}
+        fill="currentColor"
+        className={className}
+        style={style}
+        aria-hidden={hidden}
+      >
+        <path d={siX.path} />
+      </svg>
+    );
+  }
+  const Lucide = LUCIDE[name];
+  return Lucide ? <Lucide {...props} /> : null;
 }
-
-export default Icon

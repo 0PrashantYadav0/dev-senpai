@@ -46,10 +46,7 @@ export default async function Home() {
       </div>
 
       <section id="intro" className="relative z-10 scroll-mt-20">
-        <div className="-mt-[88px] flex flex-col gap-2 sm:-mt-[112px] sm:flex-row sm:items-center sm:gap-6">
-          <div className="-ml-2 shrink-0 sm:-ml-3">
-            <AsciiDonut className="text-[7px] sm:text-[8.5px] md:text-[9.5px]" />
-          </div>
+        <div className="-mt-[88px] flex flex-col-reverse gap-2 sm:-mt-[112px] sm:flex-row sm:items-center sm:justify-between sm:gap-6">
           <div className="min-w-0 sm:pt-6">
             <h1 className="display text-[2.2rem] leading-[0.95] sm:text-[2.9rem]">
               hi, prashant here{" "}
@@ -60,6 +57,9 @@ export default async function Home() {
             <p className="mt-3 text-sm text-muted-foreground">
               {age}, {profile.location}. Final year at IIIT Lucknow.
             </p>
+          </div>
+          <div className="-mr-2 shrink-0 sm:-mr-3">
+            <AsciiDonut className="text-[7px] sm:text-[8.5px] md:text-[9.5px]" />
           </div>
         </div>
 
@@ -86,8 +86,7 @@ export default async function Home() {
             .
           </li>
           <li>
-            Graduating in June 2027. Open to backend, infrastructure, and
-            applied-AI roles.
+            Graduating in June 2027. Building new software that makes an impact.
           </li>
         </ul>
 

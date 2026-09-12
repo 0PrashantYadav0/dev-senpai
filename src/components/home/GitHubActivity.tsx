@@ -1,49 +1,19 @@
 import StatsCounter from "@/components/vui/StatsCounter";
-import {
-  GITHUB_USER,
-  getContributions,
-  getPullRequests,
-  getRecentActivity,
-  timeAgo,
-  type Activity,
-} from "@/lib/github";
-import {
-  GitCommitHorizontal,
-  GitPullRequestArrow,
-  CircleDot,
-  MessageSquare,
-  FolderPlus,
-  Star,
-  Activity as ActivityIcon,
-} from "lucide-react";
+import { GITHUB_USER, getContributions, getPullRequests, timeAgo } from "@/lib/github";
 import ContributionGraph from "./ContributionGraph";
 import PullRequestTabs from "./PullRequestTabs";
 
-const ICONS: Record<Activity["kind"], typeof Star> = {
-  push: GitCommitHorizontal,
-  pr: GitPullRequestArrow,
-  issue: CircleDot,
-  comment: MessageSquare,
-  create: FolderPlus,
-  star: Star,
-  other: ActivityIcon,
-};
-
 /**
- * What GitHub says about the work: the calendar, the numbers, the pull
- * requests by state, and the last few public events. Everything is
- * fetched on the server and cached for an hour; any block whose data did
- * not arrive is left out rather than shown empty.
+ * What GitHub says about the work: the calendar, the numbers, and the pull
+ * requests by state. Everything is fetched on the server and cached for an
+ * hour; any block whose data did not arrive is left out rather than shown
+ * empty.
  */
 export default async function GitHubActivity() {
-  const [contributions, prs, activity] = await Promise.all([
-    getContributions(),
-    getPullRequests(),
-    getRecentActivity(),
-  ]);
+  const [contributions, prs] = await Promise.all([getContributions(), getPullRequests()]);
   const now = Date.now();
 
-  if (!contributions && !prs && activity.length === 0) {
+  if (!contributions && !prs) {
     return (
       <p className="text-sm text-muted-foreground">
         GitHub is not answering right now.{" "}
@@ -85,40 +55,7 @@ export default async function GitHubActivity() {
         </dl>
       )}
 
-      <div className="grid gap-8 md:grid-cols-[3fr_2fr]">
-        {prs && <PullRequestTabs data={prs} ages={ages} user={GITHUB_USER} />}
-
-        {activity.length > 0 && (
-          <div className="min-w-0">
-            <h3 className="text-base font-medium">Lately</h3>
-            <ol className="mt-3 flex flex-col gap-3">
-              {activity.map((a) => {
-                const Icon = ICONS[a.kind];
-                return (
-                  <li key={a.url + a.text} className="flex gap-3 text-sm">
-                    <Icon className="mt-0.5 size-4 shrink-0 text-muted-foreground" aria-hidden />
-                    <div className="min-w-0">
-                      <a
-                        href={a.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="line-clamp-2 hover:text-signal"
-                      >
-                        {a.text}
-                      </a>
-                      <p className="truncate text-xs text-muted-foreground">
-                        {a.repo.replace(`${GITHUB_USER}/`, "")}
-                        <span className="mx-1.5 opacity-50">·</span>
-                        {timeAgo(a.at, now)}
-                      </p>
-                    </div>
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-        )}
-      </div>
+      {prs && <PullRequestTabs data={prs} ages={ages} user={GITHUB_USER} />}
     </div>
   );
 }
