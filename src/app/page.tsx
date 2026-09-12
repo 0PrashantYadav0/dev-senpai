@@ -46,12 +46,12 @@ export default async function Home() {
       </div>
 
       <section id="intro" className="relative z-10 scroll-mt-20">
-        <div className="-mt-[88px] flex flex-col gap-2 sm:-mt-[104px] sm:flex-row sm:items-end sm:gap-6">
+        <div className="-mt-[88px] flex flex-col gap-2 sm:-mt-[112px] sm:flex-row sm:items-center sm:gap-6">
           <div className="-ml-2 shrink-0 sm:-ml-3">
             <AsciiDonut className="text-[7px] sm:text-[8.5px] md:text-[9.5px]" />
           </div>
-          <div className="min-w-0 pb-1">
-            <h1 className="display text-[2.2rem] leading-none sm:text-[2.5rem]">
+          <div className="min-w-0 sm:pt-6">
+            <h1 className="display text-[2.2rem] leading-[0.95] sm:text-[2.9rem]">
               hi, prashant here{" "}
               <span aria-hidden className="inline-block">
                 👋
