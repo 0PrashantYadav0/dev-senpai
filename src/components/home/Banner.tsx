@@ -249,7 +249,7 @@ export default function Banner() {
       }
 
       // The figure, sitting on the grass towards the right, clear of the donut.
-      const fx = Math.floor(W * 0.6);
+      const fx = Math.floor(W * 0.5);
       const fy = gy - FIGURE.length;
       FIGURE.forEach((row, ry) => {
         [...row].forEach((ch, rx) => {
@@ -341,7 +341,7 @@ export default function Banner() {
   return (
     <div className="banner relative h-[176px] w-full overflow-hidden sm:h-[220px]">
       <canvas ref={ref} aria-hidden className="block h-full w-full [image-rendering:pixelated]" />
-      <PixelClock className="absolute bottom-3 right-3" />
+      <PixelClock className="absolute right-3 top-3" />
     </div>
   );
 }
