@@ -13,7 +13,7 @@ export default function FeaturedProjects() {
     .map((p) => ({ ...p, mark: markForProject(p.language, p.tags) }));
 
   return (
-    <ul className="grid grid-cols-2 gap-x-5 gap-y-8 lg:grid-cols-4">
+    <ul className="grid gap-x-6 gap-y-8 sm:grid-cols-2">
       {featured.map((p) => (
         <li key={p.name}>
           <ProjectRow project={p} layout="compact" />

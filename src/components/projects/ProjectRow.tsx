@@ -43,7 +43,7 @@ export default function ProjectRow({ project, layout }: Props) {
             src={image}
             alt={`${name} screenshot`}
             fill
-            sizes={compact ? "(min-width: 1024px) 15vw, 45vw" : "(min-width: 640px) 13rem, 100vw"}
+            sizes={compact ? "(min-width: 640px) 20rem, 100vw" : "(min-width: 640px) 13rem, 100vw"}
             className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (

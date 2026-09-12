@@ -53,15 +53,41 @@ copper signal colour. Dark is the default theme; light mode is warm paper.
   components use semantic classes (`bg-background`, `text-signal`, ...).
 - Type: Young Serif for display (`.display`, `.display-md`, one weight),
   Instrument Sans for body, JetBrains Mono strictly for machine output (the
-  donut, code in chat). Loaded in `src/app/layout.tsx` via `next/font`.
+  donut, code in chat), Silkscreen (`.font-pixel`) only for the banner clock.
+  Loaded in `src/app/layout.tsx` via `next/font`.
+- Layout: one centred column, `max-w-site` (44rem), with dashed rails on
+  both edges (`.column`) and a `--gutter` variable for the side padding.
+  Sections are separated by `src/components/layout/Rule.tsx`, a dashed rule
+  that spans the viewport with a tick at each rail. On the home page an
+  `IndexRail` lists the sections in the right margin at `xl` and up.
+- Ground: `src/components/layout/WorkbenchGrid.tsx` draws a faint line grid
+  on a fixed canvas with a few copper traces running along it. Static under
+  `prefers-reduced-motion`.
+- Banner: `src/components/home/Banner.tsx` is a pixel-art landscape drawn
+  on a canvas at a third of the size (night in dark mode, day in light),
+  with `PixelClock` showing Lucknow time. No image assets; edit the
+  palettes and the `FIGURE` sprite in that file to change the scene.
 - The hero's 3D element is `src/components/home/AsciiDonut.tsx`, a hand-rolled
   donut.c-style torus rendered into a `<pre>`. No 3D library; keep it that
-  way. It pauses off-screen and freezes under `prefers-reduced-motion`.
-- `src/components/home/StackStrip.tsx` shows tech marks from `simple-icons`
-  in brand colours (near-black marks fall back to the ink colour). It is a
-  server component so the SVGs cost no client JS.
-- Deliberate restraint: no gradient washes, no dot grids, no glow effects,
-  no card shadows. The donut is the one decorative element.
+  way. It pauses off-screen and freezes under `prefers-reduced-motion`. It
+  overlaps the banner's lower edge on the home page.
+- Brand marks come from `simple-icons`: `src/lib/stackList.ts` for the
+  stack strip, `src/lib/skillMarks.ts` for the skill chips. Both are
+  server-only so the SVG paths never reach client JS.
+- Pieces adapted from VengeanceUI (github.com/Ashutoshx7/VengeanceUI) live
+  in `src/components/vui/` and are rewritten without framer-motion or three.
+- Deliberate restraint: no gradient washes, no glow effects, no card
+  shadows. The banner, the donut, and the grid traces are the only motion.
+
+## GitHub data
+
+`src/lib/github.ts` fetches, with an hour of caching and a fallback for each:
+the merged-into-stdlib count (hero), the contribution calendar (through
+github-contributions-api.jogruber.de, no token), pull requests by state
+(search API), and recent public events. `GITHUB_TOKEN` in `.env` is optional
+and only raises the rate limit. Any block whose data fails is hidden, never
+shown empty. Tailwind purges class names built from template strings, so
+the heat-map levels are spelled out in `ContributionGraph.tsx`.
 
 ## Architecture
 

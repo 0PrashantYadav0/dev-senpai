@@ -1,6 +1,6 @@
 "use client";
 
-import { cn } from "@/lib/utils";
+import LineHoverLink from "@/components/vui/LineHoverLink";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
@@ -15,35 +15,31 @@ export default function Header() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur">
-      <nav className="mx-auto flex h-14 w-full max-w-site items-center justify-between px-5 sm:px-8">
+    <header className="sticky top-0 z-40 border-b border-dashed bg-background/85 backdrop-blur">
+      <nav className="flex h-13 items-center justify-between px-[var(--gutter)] py-3">
         <Link
           href="/"
-          className="display-md whitespace-nowrap text-base leading-[1.15] hover:text-signal"
+          className="display-md mr-3 whitespace-nowrap text-[15px] leading-[1.15] hover:text-signal sm:text-base"
         >
           Prashant Yadav
         </Link>
-        <ul className="flex items-center gap-1 sm:gap-2">
+        <ul className="flex items-center gap-3.5 sm:gap-6">
           {navLinks.map((nav) => {
             const active = pathname === nav.href || pathname.startsWith(nav.href + "/");
             return (
               <li key={nav.href}>
-                <Link
+                <LineHoverLink
                   href={nav.href}
+                  active={active}
                   aria-current={active ? "page" : undefined}
-                  className={cn(
-                    "inline-flex h-9 items-center rounded-md px-2.5 text-sm transition-colors sm:px-3",
-                    active
-                      ? "text-foreground underline decoration-signal decoration-2 underline-offset-[10px]"
-                      : "text-muted-foreground hover:text-foreground",
-                  )}
+                  className="text-[13px] sm:text-sm"
                 >
                   {nav.name}
-                </Link>
+                </LineHoverLink>
               </li>
             );
           })}
-          <li className="ml-1">
+          <li>
             <ThemeToggle />
           </li>
         </ul>
