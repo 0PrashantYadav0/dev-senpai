@@ -1,10 +1,11 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import WorkbenchGrid from "@/components/layout/WorkbenchGrid";
 import Providers from "@/components/Providers";
 import profile from "@/data/profile.json";
 import { cn } from "@/lib/utils";
 import type { Metadata } from "next";
-import { Instrument_Sans, JetBrains_Mono, Young_Serif } from "next/font/google";
+import { Instrument_Sans, JetBrains_Mono, Silkscreen, Young_Serif } from "next/font/google";
 import "./globals.css";
 
 const instrument = Instrument_Sans({
@@ -23,6 +24,14 @@ const youngSerif = Young_Serif({
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-mono",
+  display: "swap",
+});
+
+/* Pixel face, used only by the clock on the banner. */
+const silkscreen = Silkscreen({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-pixel",
   display: "swap",
 });
 
@@ -55,14 +64,16 @@ export default function RootLayout({
           instrument.variable,
           youngSerif.variable,
           jetbrains.variable,
+          silkscreen.variable,
         )}
       >
         <Providers>
-          <Header />
-          <main className="relative mx-auto w-full max-w-site grow px-5 sm:px-8">
-            {children}
-          </main>
-          <Footer />
+          <WorkbenchGrid />
+          <div className="column relative z-10 mx-auto flex w-full max-w-site grow flex-col">
+            <Header />
+            <main className="relative grow px-[var(--gutter)]">{children}</main>
+            <Footer />
+          </div>
         </Providers>
       </body>
     </html>

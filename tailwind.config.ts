@@ -56,9 +56,13 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
         display: ["var(--font-display)", "Georgia", "serif"],
         mono: ["var(--font-mono)", "ui-monospace", "SFMono-Regular", "Menlo", "monospace"],
+        pixel: ["var(--font-pixel)", "Courier New", "monospace"],
       },
       maxWidth: {
-        site: "64rem",
+        site: "44rem",
+      },
+      spacing: {
+        13: "3.25rem",
       },
       keyframes: {
         wave: {

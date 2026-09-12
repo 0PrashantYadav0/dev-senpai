@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="grid gap-12 pb-8 pt-10 sm:pt-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] lg:gap-20">
+    <div className="flex flex-col gap-12 pb-8 pt-10 sm:pt-14">
       <header>
         <h1 className="display text-4xl sm:text-5xl">Contact</h1>
         <p className="measure mt-4 text-muted-foreground sm:text-lg">
