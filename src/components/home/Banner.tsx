@@ -48,9 +48,9 @@ const DAY: Palette = {
   sky: ["#e6d9c6", "#ebdfcc", "#f0e5d3", "#f3e8d6", "#f6ecd9", "#f7e3c5"],
   glow: "#f2cf9f",
   disc: "#c97a3a",
-  hills: ["#cdbba2", "#b8a289", "#9e8568"],
-  grass: "#8a7157",
-  blade: "#a08867",
+  hills: ["#dccdb8", "#cbb79f", "#b9a389"],
+  grass: "#a48d71",
+  blade: "#b39b7e",
   cloud: "#fffaf2",
   star: "#ffffff",
   skin: "#c98a5a",
@@ -248,8 +248,9 @@ export default function Banner() {
         if (x % 9 === 0) px(x + sway, gy - 2, p.blade);
       }
 
-      // The figure, sitting on the grass towards the right, clear of the donut.
-      const fx = Math.floor(W * 0.5);
+      // The figure sits on the grass to the left, clear of the donut on the
+      // right; on a phone the donut spans the column, so it moves right.
+      const fx = Math.floor(W * (W * PX < 640 ? 0.85 : 0.22));
       const fy = gy - FIGURE.length;
       FIGURE.forEach((row, ry) => {
         [...row].forEach((ch, rx) => {
@@ -341,7 +342,7 @@ export default function Banner() {
   return (
     <div className="banner relative h-[176px] w-full overflow-hidden sm:h-[220px]">
       <canvas ref={ref} aria-hidden className="block h-full w-full [image-rendering:pixelated]" />
-      <PixelClock className="absolute right-3 top-3" />
+      <PixelClock className="absolute left-3 top-3" />
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import Footer from "@/components/Footer";
 import Header from "@/components/Header";
+import Quote from "@/components/layout/Quote";
+import Rule from "@/components/layout/Rule";
 import WorkbenchGrid from "@/components/layout/WorkbenchGrid";
 import Providers from "@/components/Providers";
 import profile from "@/data/profile.json";
@@ -72,6 +74,10 @@ export default function RootLayout({
           <div className="column relative z-10 mx-auto flex w-full max-w-site grow flex-col">
             <Header />
             <main className="relative grow px-[var(--gutter)]">{children}</main>
+            <div className="px-[var(--gutter)]">
+              <Rule />
+              <Quote />
+            </div>
             <Footer />
           </div>
         </Providers>
