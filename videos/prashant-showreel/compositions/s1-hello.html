@@ -1,0 +1,230 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      S1 HELLO (0 - 1.875 s). Blueprint: typewriter-reveal (Hook variant, adapted).
+      Rules: context-sensitive-cursor, discrete-text-sequence, cursor-click-ripple, svg-path-draw.
+      A cursor types "hi, prashant here" in his casual voice. The cursor pops into a
+      blue dot, and the dot unzips the signal line across the frame; the letters fall
+      into the line as it passes under them. Hand-off: a flat 3px blue line at y=540.
+    -->
+    <template id="s1-template">
+      <style>
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+        #s1-world {
+          position: absolute;
+          inset: 0;
+          transform-origin: 960px 540px;
+        }
+        #s1-type {
+          position: absolute;
+          left: 507px;
+          top: 440px;
+          height: 84px;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 84px;
+          line-height: 84px;
+          color: #e6ebf0;
+          white-space: pre;
+          letter-spacing: 0;
+        }
+        .s1-ch {
+          display: inline-block;
+          width: 50.4px;
+          text-align: center;
+          transform-origin: 50% 100%;
+        }
+        #s1-cursor {
+          position: absolute;
+          left: 509px;
+          top: 446px;
+          width: 46px;
+          height: 80px;
+          background: #4798f5;
+          transform-origin: 50% 100%;
+        }
+        #s1-dot {
+          position: absolute;
+          left: -9px;
+          top: -9px;
+          width: 18px;
+          height: 18px;
+          border-radius: 50%;
+          background: #4798f5;
+        }
+        #s1-ring {
+          position: absolute;
+          left: -40px;
+          top: -40px;
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          border: 2px solid #4798f5;
+          box-sizing: border-box;
+        }
+        #s1-node {
+          position: absolute;
+          left: 0;
+          top: 540px;
+          width: 0;
+          height: 0;
+        }
+        #s1-line {
+          position: absolute;
+          left: 0;
+          top: 538.5px;
+          width: 1920px;
+          height: 3px;
+          background: #4798f5;
+        }
+        .s1-head {
+          position: absolute;
+          top: 540px;
+          left: 0;
+          width: 0;
+          height: 0;
+        }
+        .s1-head i {
+          position: absolute;
+          left: -5px;
+          top: -5px;
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: #e6ebf0;
+        }
+        .s1-head b {
+          position: absolute;
+          top: -1.5px;
+          height: 3px;
+          width: 140px;
+        }
+        #s1-head-l b {
+          left: 0;
+          background: linear-gradient(90deg, rgba(230, 235, 240, 0.9), rgba(71, 152, 245, 0));
+        }
+        #s1-head-r b {
+          right: 0;
+          background: linear-gradient(270deg, rgba(230, 235, 240, 0.9), rgba(71, 152, 245, 0));
+        }
+      </style>
+      <div id="root" data-composition-id="s1-hello" data-width="1920" data-height="1080" data-duration="1.875">
+        <div id="s1-world">
+          <div id="s1-type"></div>
+          <div id="s1-cursor"></div>
+          <div id="s1-line"></div>
+          <div class="s1-head" id="s1-head-l"><b></b><i></i></div>
+          <div class="s1-head" id="s1-head-r"><b></b><i></i></div>
+          <div id="s1-node"><div id="s1-ring"></div><div id="s1-dot"></div></div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const TEXT = "hi, prashant here";
+          // Same schedule as the key presses in audio/score.mjs.
+          const TYPE_T = [0.3, 0.345, 0.392, 0.47, 0.512, 0.55, 0.59, 0.628, 0.668, 0.705, 0.745, 0.786, 0.84, 0.88, 0.918, 0.957, 0.996];
+          const LEFT = 507;
+          const CW = 50.4;
+          const DOT_X = LEFT + TEXT.length * CW + 25; // where the cursor block sits after typing
+          const LINE_Y = 540;
+          const UNZIP_T = 1.25;
+          const UNZIP_D = 0.4;
+
+          const typeEl = document.getElementById("s1-type");
+          const chars = [...TEXT].map((c) => {
+            const s = document.createElement("span");
+            s.className = "s1-ch";
+            s.textContent = c;
+            typeEl.appendChild(s);
+            return s;
+          });
+
+          const tl = gsap.timeline({ paused: true });
+          // Same push as the ground camera, so the grid and the type share one lens.
+          tl.fromTo("#s1-world", { scale: 1 }, { scale: 1.03, duration: 1.6, ease: "sine.inOut" }, 0);
+          tl.to("#s1-world", { scale: 1.065, duration: 0.275, ease: "power2.in" }, 1.6);
+
+          // Letters appear on their key presses; the cursor steps with them.
+          chars.forEach((el, i) => {
+            tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none", immediateRender: true }, TYPE_T[i]);
+            tl.set("#s1-cursor", { x: (i + 1) * CW }, TYPE_T[i]);
+          });
+          // Blink before and after typing (steps, never fades).
+          tl.set("#s1-cursor", { opacity: 0 }, 0);
+          tl.set("#s1-cursor", { opacity: 1 }, 0.06);
+          tl.set("#s1-cursor", { opacity: 0 }, 0.18);
+          tl.set("#s1-cursor", { opacity: 1 }, 0.26);
+          tl.set("#s1-cursor", { opacity: 0 }, 1.06);
+          tl.set("#s1-cursor", { opacity: 1 }, 1.11);
+
+          // The cursor collapses into the dot, which drops onto the line.
+          tl.fromTo("#s1-cursor", { scaleX: 1, scaleY: 1, y: 0 }, { scaleX: 0.39, scaleY: 0.225, y: 12, duration: 0.09, ease: "power3.in" }, 1.15);
+          tl.set("#s1-cursor", { opacity: 0 }, 1.24);
+          gsap.set("#s1-node", { x: DOT_X });
+          tl.fromTo("#s1-dot", { scale: 0, y: -40 }, { scale: 1, y: 0, duration: 0.16, ease: "back.out(3)" }, 1.2);
+          tl.fromTo("#s1-ring", { scale: 0.15, opacity: 0 }, { scale: 0.3, opacity: 0.9, duration: 0.03, ease: "none" }, 1.2);
+          tl.to("#s1-ring", { scale: 1.6, opacity: 0, duration: 0.45, ease: "expo.out" }, 1.23);
+          tl.to("#s1-dot", { scale: 0.45, duration: 0.24, ease: "power2.out" }, 1.36);
+          tl.to("#s1-dot", { opacity: 0, duration: 0.2, ease: "power1.in" }, 1.6);
+
+          // The line unzips from the dot to both edges.
+          tl.fromTo("#s1-line", { scaleX: 0, transformOrigin: DOT_X + "px 50%" }, { scaleX: 1, duration: UNZIP_D, ease: "power3.out" }, UNZIP_T);
+          const headEase = gsap.parseEase("power3.out");
+          tl.fromTo("#s1-head-l", { x: DOT_X }, { x: -30, duration: UNZIP_D, ease: "power3.out" }, UNZIP_T);
+          tl.fromTo("#s1-head-r", { x: DOT_X }, { x: 1950, duration: UNZIP_D, ease: "power3.out" }, UNZIP_T);
+          tl.fromTo(".s1-head", { opacity: 0 }, { opacity: 1, duration: 0.04, ease: "none" }, UNZIP_T);
+          tl.to(".s1-head", { opacity: 0, duration: 0.12, ease: "power1.in" }, UNZIP_T + UNZIP_D - 0.1);
+
+          // Each letter falls into the line when the left head passes under it.
+          const crossTime = (x) => {
+            const target = (DOT_X - x) / (DOT_X + 30);
+            let lo = 0;
+            let hi = 1;
+            for (let k = 0; k < 30; k++) {
+              const mid = (lo + hi) / 2;
+              if (headEase(mid) < target) lo = mid;
+              else hi = mid;
+            }
+            return UNZIP_T + lo * UNZIP_D;
+          };
+          chars.forEach((el, i) => {
+            const cx = LEFT + (i + 0.5) * CW;
+            tl.fromTo(el, { y: 0, scaleY: 1, opacity: 1 }, { y: 30, scaleY: 0.08, opacity: 0, duration: 0.13, ease: "power2.in", immediateRender: false }, crossTime(cx));
+          });
+
+          // Tension before the drop: the line thickens and shivers, then goes still.
+          const jit = { a: 0 };
+          const hash = (n) => {
+            let x = Math.imul(n ^ 0x27d4eb2d, 0x165667b1);
+            return (((x ^ (x >>> 15)) >>> 0) % 1000) / 1000 - 0.5;
+          };
+          tl.fromTo(
+            jit,
+            { a: 0 },
+            {
+              a: 1,
+              duration: 0.21,
+              ease: "power2.in",
+              onUpdate: () => {
+                const f = Math.floor(tl.time() * 60);
+                gsap.set("#s1-line", { scaleY: 1 + 0.45 * jit.a, y: hash(f) * 3 * jit.a });
+              },
+            },
+            1.63,
+          );
+          tl.set("#s1-line", { scaleY: 1, y: 0 }, 1.845);
+
+          window.__timelines["s1-hello"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

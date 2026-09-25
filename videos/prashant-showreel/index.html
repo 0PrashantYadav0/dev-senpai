@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=1920, height=1080" />
+    <title>Prashant Kumar Yadav — Showreel</title>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.14.2/dist/gsap.min.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        width: 1920px;
+        height: 1080px;
+        overflow: hidden;
+        background: #060709;
+      }
+      #root {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background: #060709;
+      }
+      #root > div[data-composition-src] {
+        position: absolute;
+        inset: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <!--
+      SIGNAL: one blue line, fifteen seconds, no cuts.
+      128 BPM, 8 bars; every scene is exactly one bar (1.875 s) and hands the
+      line to the next one at the same position, so the joins read as one shot.
+    -->
+    <div id="root" data-composition-id="main" data-start="0" data-width="1920" data-height="1080" data-duration="15">
+      <div id="ground" data-composition-id="ground" data-composition-src="compositions/ground.html" data-start="0" data-duration="15" data-track-index="0" data-width="1920" data-height="1080"></div>
+
+      <div id="s1-hello" data-composition-id="s1-hello" data-composition-src="compositions/s1-hello.html" data-start="0" data-duration="1.875" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="s2-voice" data-composition-id="s2-voice" data-composition-src="compositions/s2-voice.html" data-start="1.875" data-duration="1.875" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="s3-line" data-composition-id="s3-line" data-composition-src="compositions/s3-line.html" data-start="3.75" data-duration="1.875" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="s4-observe" data-composition-id="s4-observe" data-composition-src="compositions/s4-observe.html" data-start="5.625" data-duration="1.875" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="s5-stdlib" data-composition-id="s5-stdlib" data-composition-src="compositions/s5-stdlib.html" data-start="7.5" data-duration="1.875" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="s6-stack" data-composition-id="s6-stack" data-composition-src="compositions/s6-stack.html" data-start="9.375" data-duration="1.875" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="s7-wins" data-composition-id="s7-wins" data-composition-src="compositions/s7-wins.html" data-start="11.25" data-duration="1.875" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="s8-contact" data-composition-id="s8-contact" data-composition-src="compositions/s8-contact.html" data-start="13.125" data-duration="1.875" data-track-index="1" data-width="1920" data-height="1080"></div>
+
+      <div id="chrome" data-composition-id="chrome" data-composition-src="compositions/chrome.html" data-start="0" data-duration="15" data-track-index="3" data-width="1920" data-height="1080"></div>
+
+      <audio id="score" src="assets/audio/score.wav" data-start="0" data-duration="15" data-track-index="10" data-volume="1"></audio>
+    </div>
+    <script>
+      window.__timelines["main"] = gsap.timeline({ paused: true });
+    </script>
+  </body>
+</html>
