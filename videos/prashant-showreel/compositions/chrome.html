@@ -1,0 +1,238 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      Reel chrome that runs over all eight scenes: registration marks, the dashed
+      column rails from the portfolio (the left one carries a playhead), timecode,
+      the scene index, the Lucknow coordinates, and a seeded film grain.
+    -->
+    <template id="chrome-template">
+      <style>
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "Instrument Sans"; font-weight: 400 700; font-stretch: 75% 100%; font-display: block; src: url("assets/fonts/InstrumentSans-400_700-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          pointer-events: none;
+          color: #e6ebf0;
+          font-family: "JetBrains Mono", monospace;
+        }
+        #chrome-frame {
+          position: absolute;
+          inset: 0;
+        }
+        .chrome-mark {
+          position: absolute;
+          width: 24px;
+          height: 24px;
+        }
+        .chrome-mark::before,
+        .chrome-mark::after {
+          content: "";
+          position: absolute;
+          background: rgba(230, 235, 240, 0.5);
+        }
+        .chrome-mark::before {
+          left: 11px;
+          top: 0;
+          width: 2px;
+          height: 24px;
+        }
+        .chrome-mark::after {
+          left: 0;
+          top: 11px;
+          width: 24px;
+          height: 2px;
+        }
+        #chrome-mark-tl { left: 60px; top: 60px; }
+        #chrome-mark-tr { right: 60px; top: 60px; }
+        #chrome-mark-bl { left: 60px; bottom: 60px; }
+        #chrome-mark-br { right: 60px; bottom: 60px; }
+        .chrome-rail {
+          position: absolute;
+          top: 132px;
+          width: 12px;
+          height: 816px;
+        }
+        #chrome-rail-l { left: 90px; }
+        #chrome-rail-r { right: 90px; }
+        .chrome-rail svg {
+          display: block;
+          width: 12px;
+          height: 816px;
+          overflow: visible;
+        }
+        #chrome-playhead {
+          position: absolute;
+          left: -4px;
+          top: -6px;
+          width: 20px;
+          height: 12px;
+        }
+        .chrome-label {
+          position: absolute;
+          font-size: 20px;
+          line-height: 24px;
+          letter-spacing: 0.08em;
+          white-space: pre;
+        }
+        #chrome-id { left: 132px; top: 60px; color: #929caa; }
+        #chrome-id b { color: #e6ebf0; font-weight: 400; }
+        #chrome-tc { right: 132px; top: 60px; color: #e6ebf0; font-variant-numeric: tabular-nums; }
+        #chrome-tc span { color: #929caa; }
+        #chrome-scene { left: 132px; bottom: 60px; }
+        #chrome-scene-n { color: #4798f5; }
+        #chrome-scene-of { color: #929caa; }
+        #chrome-scene-name {
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          letter-spacing: 0.2em;
+          color: #e6ebf0;
+          margin-left: 18px;
+        }
+        #chrome-geo { right: 132px; bottom: 60px; color: #929caa; }
+        #chrome-grain {
+          position: absolute;
+          left: -192px;
+          top: -192px;
+          width: 2304px;
+          height: 1464px;
+          background-repeat: repeat;
+          mix-blend-mode: screen;
+          opacity: 0.075;
+        }
+      </style>
+      <div id="root" data-composition-id="chrome" data-width="1920" data-height="1080" data-duration="15">
+        <div id="chrome-frame">
+          <div class="chrome-mark" id="chrome-mark-tl"></div>
+          <div class="chrome-mark" id="chrome-mark-tr"></div>
+          <div class="chrome-mark" id="chrome-mark-bl"></div>
+          <div class="chrome-mark" id="chrome-mark-br"></div>
+          <div class="chrome-rail" id="chrome-rail-l">
+            <svg viewBox="0 0 12 816" aria-hidden="true">
+              <line x1="2" y1="0" x2="2" y2="816" stroke="rgba(230,235,240,0.28)" stroke-width="2" stroke-dasharray="4 6" />
+              <g id="chrome-ticks-l" stroke="rgba(230,235,240,0.32)" stroke-width="2"></g>
+            </svg>
+            <svg id="chrome-playhead" viewBox="0 0 20 12" aria-hidden="true">
+              <path d="M0 0 L12 6 L0 12 Z" fill="#4798f5" />
+            </svg>
+          </div>
+          <div class="chrome-rail" id="chrome-rail-r">
+            <svg viewBox="0 0 12 816" aria-hidden="true">
+              <line x1="10" y1="0" x2="10" y2="816" stroke="rgba(230,235,240,0.28)" stroke-width="2" stroke-dasharray="4 6" />
+              <g id="chrome-ticks-r" stroke="rgba(230,235,240,0.32)" stroke-width="2"></g>
+            </svg>
+          </div>
+          <div class="chrome-label" id="chrome-id"><b>PKY</b>  /  SHOWREEL 2026</div>
+          <div class="chrome-label" id="chrome-tc"><span>TC </span>00:00:00:00</div>
+          <div class="chrome-label" id="chrome-scene"><span id="chrome-scene-n">01</span><span id="chrome-scene-of">/08</span><span id="chrome-scene-name">HELLO</span></div>
+          <div class="chrome-label" id="chrome-geo">LUCKNOW  26.85°N 80.95°E</div>
+        </div>
+        <div id="chrome-grain"></div>
+      </div>
+      <script>
+        (function () {
+          const SCENES = [
+            [0, "HELLO"],
+            [1.875, "VOICE AI"],
+            [3.75, "ON THE LINE"],
+            [5.625, "OBSERVABILITY"],
+            [7.5, "OPEN SOURCE"],
+            [9.375, "STACK"],
+            [11.25, "WINS"],
+            [13.125, "CONTACT"],
+          ];
+          const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789#%&*+/<>";
+          const hash = (n) => {
+            let x = Math.imul(n ^ 0x9e3779b9, 0x85ebca6b);
+            x = Math.imul(x ^ (x >>> 13), 0xc2b2ae35);
+            return ((x ^ (x >>> 16)) >>> 0) / 4294967296;
+          };
+          const scramble = (target, p, seed) => {
+            // Characters settle left to right; the rest flicker, re-seeded every 3 frames.
+            const q = Math.floor(p * 20);
+            let out = "";
+            for (let i = 0; i < target.length; i++) {
+              const ch = target[i];
+              if (ch === " " || i < p * target.length * 1.15) out += ch;
+              else out += GLYPHS[Math.floor(hash(seed * 131 + i * 17 + q) * GLYPHS.length)];
+            }
+            return out;
+          };
+
+          // Rail ticks every 48px, longer every fourth.
+          ["l", "r"].forEach((side) => {
+            const g = document.getElementById("chrome-ticks-" + side);
+            let d = "";
+            for (let y = 0, k = 0; y <= 816; y += 48, k++) {
+              const len = k % 4 === 0 ? 10 : 5;
+              d += side === "l" ? '<line x1="2" y1="' + y + '" x2="' + (2 + len) + '" y2="' + y + '"/>' : '<line x1="' + (10 - len) + '" y1="' + y + '" x2="10" y2="' + y + '"/>';
+            }
+            g.innerHTML = d;
+          });
+
+          // Seeded grain tile.
+          const tile = document.createElement("canvas");
+          tile.width = 256;
+          tile.height = 256;
+          const tc = tile.getContext("2d");
+          const img = tc.createImageData(256, 256);
+          for (let i = 0; i < 256 * 256; i++) {
+            const v = Math.floor(Math.pow(hash(i + 7), 2.2) * 255);
+            img.data[i * 4] = v;
+            img.data[i * 4 + 1] = v;
+            img.data[i * 4 + 2] = v;
+            img.data[i * 4 + 3] = 255;
+          }
+          tc.putImageData(img, 0, 0);
+          const grain = document.getElementById("chrome-grain");
+          grain.style.backgroundImage = "url(" + tile.toDataURL() + ")";
+
+          const tcEl = document.getElementById("chrome-tc");
+          const nEl = document.getElementById("chrome-scene-n");
+          const nameEl = document.getElementById("chrome-scene-name");
+          const idEl = document.getElementById("chrome-id");
+          const geoEl = document.getElementById("chrome-geo");
+          const head = document.getElementById("chrome-playhead");
+          const pad = (v) => String(v).padStart(2, "0");
+
+          function update(t) {
+            const f = Math.floor(t * 60 + 1e-6);
+            tcEl.innerHTML = "<span>TC </span>00:00:" + pad(Math.floor(f / 60)) + ":" + pad(f % 60);
+            let s = 0;
+            for (let i = 0; i < SCENES.length; i++) if (t >= SCENES[i][0]) s = i;
+            const since = t - SCENES[s][0];
+            nEl.textContent = pad(s + 1);
+            const intro = Math.max(0, Math.min(1, (t - 0.4) / 0.45));
+            const p = s === 0 ? intro : Math.max(0, Math.min(1, since / 0.3));
+            nameEl.textContent = scramble(SCENES[s][1], p, s + 1);
+            idEl.innerHTML = intro >= 1 ? "<b>PKY</b>  /  SHOWREEL 2026" : "<b>" + scramble("PKY", intro, 91) + "</b>" + scramble("  /  SHOWREEL 2026", intro, 92);
+            geoEl.textContent = scramble("LUCKNOW  26.85°N 80.95°E", intro, 93);
+            // Playhead runs down the left rail for the length of the reel.
+            head.style.transform = "translateY(" + ((t / 15) * 816).toFixed(2) + "px)";
+            // Grain steps at 24 fps.
+            const gf = Math.floor(t * 24);
+            grain.style.transform = "translate(" + Math.floor(hash(gf * 3 + 1) * 384 - 192) + "px," + Math.floor(hash(gf * 3 + 2) * 384 - 192) + "px)";
+          }
+
+          const tl = gsap.timeline({ paused: true });
+          // Chrome arrives with the first cursor blink.
+          tl.fromTo(".chrome-mark", { opacity: 0, scale: 0.4, rotation: -90 }, { opacity: 1, scale: 1, rotation: 0, duration: 0.6, ease: "back.out(2)", stagger: 0.06 }, 0.3);
+          tl.fromTo(".chrome-rail svg:first-child", { scaleY: 0, transformOrigin: "50% 50%" }, { scaleY: 1, duration: 0.9, ease: "expo.out" }, 0.35);
+          tl.fromTo("#chrome-playhead", { opacity: 0 }, { opacity: 1, duration: 0.3, ease: "power1.out" }, 0.8);
+          tl.fromTo(["#chrome-id", "#chrome-tc", "#chrome-scene", "#chrome-geo"], { opacity: 0 }, { opacity: 1, duration: 0.25, ease: "power1.out", stagger: 0.06 }, 0.4);
+          // The lockup gets the frame to itself; the chrome steps back.
+          tl.to("#chrome-frame", { opacity: 0.55, duration: 0.5, ease: "sine.inOut" }, 13.5);
+          const clock = { t: 0 };
+          tl.to(clock, { t: 15, duration: 15, ease: "none", onUpdate: () => update(clock.t) }, 0);
+          update(0);
+          window.__timelines["chrome"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

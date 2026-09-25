@@ -1,0 +1,408 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      S4 OBSERVABILITY (global 5.625 - 7.5 s). Rules: chart-scrub-readout (the scanline),
+      ai-tracking-box (the agent's lock, in the signal blue), stat-bars-and-fills (log
+      bars), motion-blur-streak (the whip out).
+      The line splits into three lanes, one per source the Walmart agents read: OpenObserve
+      logs as bars, Grafana latency as a line, Prometheus rate as steps. A scanline sweeps
+      to the anomaly and, on the bell, the agent locks all three spikes together: root
+      cause. Hand-off: lanes converge to one line at y=540 while the camera whips right.
+    -->
+    <template id="s4-template">
+      <style>
+        @font-face { font-family: "Young Serif"; font-weight: 400; font-display: block; src: url("assets/fonts/YoungSerif-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "Instrument Sans"; font-weight: 400 700; font-stretch: 75% 100%; font-display: block; src: url("assets/fonts/InstrumentSans-400_700-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          color: #e6ebf0;
+        }
+        #s4-world {
+          position: absolute;
+          inset: 0;
+          filter: url("#s4-mb");
+        }
+        /* Wider than the frame so the whip never runs out of canvas. */
+        #s4-cv {
+          position: absolute;
+          left: -960px;
+          top: 0;
+          width: 3840px;
+          height: 1080px;
+        }
+        #s4-head {
+          position: absolute;
+          left: 192px;
+          top: 128px;
+          height: 124px;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 104px;
+          line-height: 124px;
+          letter-spacing: -0.015em;
+          white-space: pre;
+        }
+        #s4-head-text {
+          display: block;
+        }
+        #s4-head-text em {
+          font-style: normal;
+          color: #4798f5;
+        }
+        #s4-head-bar {
+          position: absolute;
+          left: 0;
+          top: 8px;
+          width: 5px;
+          height: 108px;
+          background: #4798f5;
+        }
+        .s4-lab {
+          position: absolute;
+          left: 192px;
+          font-family: "JetBrains Mono", monospace;
+          white-space: pre;
+        }
+        .s4-lab b {
+          display: block;
+          font-weight: 400;
+          font-size: 24px;
+          line-height: 30px;
+          letter-spacing: 0.06em;
+          color: #e6ebf0;
+        }
+        .s4-lab span {
+          display: block;
+          font-size: 19px;
+          line-height: 24px;
+          color: #929caa;
+        }
+        #s4-lab-0 { top: 332px; }
+        #s4-lab-1 { top: 472px; }
+        #s4-lab-2 { top: 612px; }
+        #s4-ret {
+          position: absolute;
+          left: 1316px;
+          top: 272px;
+          width: 152px;
+          height: 440px;
+        }
+        .s4-br {
+          position: absolute;
+          width: 28px;
+          height: 28px;
+          border-color: #4798f5;
+          border-style: solid;
+          border-width: 0;
+        }
+        .s4-br.tl { left: 0; top: 0; border-top-width: 4px; border-left-width: 4px; }
+        .s4-br.tr { right: 0; top: 0; border-top-width: 4px; border-right-width: 4px; }
+        .s4-br.bl { left: 0; bottom: 0; border-bottom-width: 4px; border-left-width: 4px; }
+        .s4-br.brr { right: 0; bottom: 0; border-bottom-width: 4px; border-right-width: 4px; }
+        #s4-ret-tag {
+          position: absolute;
+          left: 168px;
+          top: -2px;
+          padding: 6px 12px;
+          background: #4798f5;
+          color: #060709;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 20px;
+          line-height: 24px;
+          letter-spacing: 0.08em;
+          white-space: pre;
+        }
+        #s4-ret-found {
+          position: absolute;
+          left: 168px;
+          top: 40px;
+          padding: 4px 12px 8px 12px;
+          background: #060709;
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          font-size: 34px;
+          line-height: 40px;
+          color: #e6ebf0;
+          white-space: pre;
+        }
+        #s4-ret-found span {
+          display: block;
+          font-family: "JetBrains Mono", monospace;
+          font-weight: 400;
+          font-size: 20px;
+          line-height: 28px;
+          color: #929caa;
+        }
+        #s4-cred {
+          position: absolute;
+          left: 192px;
+          top: 876px;
+        }
+        #s4-cred b {
+          display: block;
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          font-size: 32px;
+          line-height: 44px;
+        }
+        #s4-cred span {
+          display: block;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 22px;
+          line-height: 32px;
+          color: #929caa;
+          white-space: pre;
+        }
+        #s4-defs {
+          position: absolute;
+          width: 0;
+          height: 0;
+        }
+      </style>
+      <div id="root" data-composition-id="s4-observe" data-width="1920" data-height="1080" data-duration="1.875">
+        <svg id="s4-defs" aria-hidden="true">
+          <filter id="s4-mb" x="-20%" y="0%" width="140%" height="100%" color-interpolation-filters="sRGB">
+            <feGaussianBlur id="s4-mb-node" in="SourceGraphic" stdDeviation="0 0" />
+          </filter>
+        </svg>
+        <div id="s4-world">
+          <div id="s4-head"><span id="s4-head-text">AI <em>observability</em> agents</span><div id="s4-head-bar"></div></div>
+          <div class="s4-lab" id="s4-lab-0"><b>OPENOBSERVE</b><span>logs</span></div>
+          <div class="s4-lab" id="s4-lab-1"><b>GRAFANA</b><span>latency</span></div>
+          <div class="s4-lab" id="s4-lab-2"><b>PROMETHEUS</b><span>metrics</span></div>
+          <canvas id="s4-cv" width="3840" height="1080" data-layout-allow-overflow data-layout-allow-occlusion></canvas>
+          <div id="s4-ret">
+            <div class="s4-br tl"></div><div class="s4-br tr"></div><div class="s4-br bl"></div><div class="s4-br brr"></div>
+            <div id="s4-ret-tag">AGENT · MCP</div>
+            <div id="s4-ret-found">root cause<span>3 sources, one spike</span></div>
+          </div>
+          <div id="s4-cred">
+            <b>Walmart Global Tech</b>
+            <span>2026  ·  agent skills over MCP  ·  cloud cost cuts</span>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const W = 1920;
+          const LANES = [400, 540, 680];
+          const X0 = 420;
+          const X1 = 1728;
+          const SPIKE = 1392;
+          const LOCK = 0.938; // global 6.563, the lock-on bell
+          const easeCache = {};
+          const E = (n) => easeCache[n] || (easeCache[n] = gsap.parseEase(n));
+          const c01 = (v) => Math.max(0, Math.min(1, v));
+
+          // Deterministic value noise.
+          const h = (n) => {
+            let x = Math.imul((n | 0) ^ 0x3c6ef372, 0x27d4eb2d);
+            x ^= x >>> 15;
+            x = Math.imul(x, 0x165667b1);
+            return ((x ^ (x >>> 16)) >>> 0) / 4294967296;
+          };
+          const vn = (x, seed) => {
+            const i = Math.floor(x);
+            const f = x - i;
+            const u = f * f * (3 - 2 * f);
+            return h(i * 7 + seed * 131) * (1 - u) + h((i + 1) * 7 + seed * 131) * u;
+          };
+          const spike = (x, w) => Math.exp(-Math.pow((x - SPIKE) / w, 2));
+          const S = [
+            (x) => 0.16 + 0.34 * vn(x / 38, 1) + 0.2 * vn(x / 9, 2) * 0.5 + 0.95 * spike(x, 26),
+            (x) => 0.3 + 0.16 * Math.sin(x / 140) + 0.22 * vn(x / 60, 3) + 0.72 * spike(x, 34),
+            (x) => {
+              const v = 0.26 + 0.24 * vn(x / 170, 5) + 0.1 * Math.sin(x / 260);
+              return Math.round(v * 8) / 8 + (Math.abs(x - SPIKE) < 44 ? 0.55 : 0);
+            },
+          ];
+
+          // Camera x shared with the ground: power3.inOut whip from 7.2 to 7.8 global.
+          const p3io = E("power3.inOut");
+          const whipX = (t) => {
+            const g = t + 5.625;
+            if (g <= 7.2) return 0;
+            return -1200 * p3io(c01((g - 7.2) / 0.6));
+          };
+          const whipV = (t) => {
+            const p = c01((t + 5.625 - 7.2) / 0.6);
+            if (p <= 0 || p >= 1) return 0;
+            return 2000 * (p < 0.5 ? 12 * p * p : 12 * (1 - p) * (1 - p));
+          };
+
+          // Lane geometry over time: split out, then converge before the whip.
+          function laneY(i, t) {
+            const out = E("expo.out")(c01((t - 0.02) / 0.4));
+            const back = E("power3.in")(c01((t - 1.46) / 0.3));
+            return 540 + (LANES[i] - 540) * out * (1 - back);
+          }
+          // Data amplitude: arrives left to right like a live feed, flattens on the way out.
+          function dataAmp(x, t) {
+            const front = E("power2.out")(c01((t - 0.06) / 0.5)) * 1700 + X0 - 100;
+            const inA = c01((front - x) / 260);
+            const outA = 1 - E("power2.in")(c01((t - 1.4) / 0.3));
+            const edge = c01((x - X0) / 60) * c01((X1 - x) / 60);
+            return inA * outA * edge;
+          }
+          const scanX = (t) => X0 + (SPIKE - X0) * E("power2.inOut")(c01((t - 0.36) / (LOCK - 0.36)));
+
+          const cv = document.getElementById("s4-cv");
+          const ctx = cv.getContext("2d");
+          function draw(t) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, 3840, 1080);
+            ctx.setTransform(1, 0, 0, 1, 960, 0);
+            const H = 100;
+            // Lane 0: log volume as bars rising off the lane.
+            {
+              const y = laneY(0, t);
+              ctx.fillStyle = "rgba(71,152,245,0.62)";
+              for (let x = X0; x <= X1; x += 16) {
+                const a = dataAmp(x, t);
+                if (a <= 0.01) continue;
+                const v = S[0](x) * H * a;
+                const hot = Math.abs(x - SPIKE) < 30 && t >= LOCK;
+                ctx.fillStyle = hot ? "#e6ebf0" : "rgba(71,152,245,0.62)";
+                ctx.fillRect(x - 4, y - v, 9, v);
+              }
+              ctx.strokeStyle = "#4798f5";
+              ctx.lineWidth = 3;
+              ctx.beginPath();
+              ctx.moveTo(-800, y);
+              ctx.lineTo(W + 800, y);
+              ctx.stroke();
+            }
+            // Lane 1: latency as the line itself, with a faint wash under it.
+            {
+              const y = laneY(1, t);
+              ctx.beginPath();
+              for (let x = -800; x <= W + 800; x += 4) {
+                const yy = y - S[1](x) * H * dataAmp(x, t);
+                if (x === -800) ctx.moveTo(x, yy);
+                else ctx.lineTo(x, yy);
+              }
+              ctx.lineTo(W + 800, y);
+              ctx.lineTo(-800, y);
+              ctx.closePath();
+              ctx.fillStyle = "rgba(71,152,245,0.1)";
+              ctx.fill();
+              ctx.beginPath();
+              for (let x = -800; x <= W + 800; x += 4) {
+                const yy = y - S[1](x) * H * dataAmp(x, t);
+                if (x === -800) ctx.moveTo(x, yy);
+                else ctx.lineTo(x, yy);
+              }
+              ctx.strokeStyle = "#4798f5";
+              ctx.lineWidth = 3;
+              ctx.lineJoin = "round";
+              ctx.stroke();
+            }
+            // Lane 2: rate as a step line.
+            {
+              const y = laneY(2, t);
+              ctx.beginPath();
+              let prev = y;
+              ctx.moveTo(-800, y);
+              for (let x = X0 - 60; x <= X1 + 60; x += 12) {
+                const yy = y - S[2](x) * H * dataAmp(x, t);
+                ctx.lineTo(x, prev);
+                ctx.lineTo(x, yy);
+                prev = yy;
+              }
+              ctx.lineTo(X1 + 60, y);
+              ctx.lineTo(W + 800, y);
+              ctx.strokeStyle = "#4798f5";
+              ctx.lineWidth = 3;
+              ctx.lineJoin = "miter";
+              ctx.stroke();
+            }
+            // Scanline: scrubs to the anomaly, then becomes the correlation line.
+            const sOn = c01((t - 0.36) / 0.08) * (1 - c01((t - 1.42) / 0.12));
+            if (sOn > 0) {
+              const sx = scanX(t);
+              const locked = t >= LOCK;
+              const ys = LANES.map((_, i) => laneY(i, t) - S[i](sx) * H * dataAmp(sx, t));
+              if (!locked) {
+                ctx.strokeStyle = "rgba(230,235,240," + (0.7 * sOn).toFixed(3) + ")";
+                ctx.lineWidth = 2;
+                ctx.setLineDash([]);
+                ctx.beginPath();
+                ctx.moveTo(sx, 300);
+                ctx.lineTo(sx, 712);
+                ctx.stroke();
+              } else {
+                const draw01 = E("power2.out")(c01((t - LOCK) / 0.16));
+                ctx.strokeStyle = "rgba(71,152,245," + sOn.toFixed(3) + ")";
+                ctx.lineWidth = 3;
+                ctx.setLineDash([8, 7]);
+                ctx.beginPath();
+                ctx.moveTo(sx, ys[0]);
+                ctx.lineTo(sx, ys[0] + (ys[2] - ys[0]) * draw01);
+                ctx.stroke();
+                ctx.setLineDash([]);
+              }
+              // Readout dots where the scanline meets each trace.
+              ys.forEach((yy) => {
+                ctx.fillStyle = locked ? "#e6ebf0" : "rgba(230,235,240," + (0.9 * sOn).toFixed(3) + ")";
+                ctx.beginPath();
+                ctx.arc(sx, yy, locked ? 8 : 5, 0, Math.PI * 2);
+                ctx.fill();
+                if (locked) {
+                  const k = c01((t - LOCK) / 0.45);
+                  ctx.strokeStyle = "rgba(71,152,245," + (0.9 * (1 - k)).toFixed(3) + ")";
+                  ctx.lineWidth = 2;
+                  ctx.beginPath();
+                  ctx.arc(sx, yy, 8 + 34 * E("expo.out")(k), 0, Math.PI * 2);
+                  ctx.stroke();
+                }
+              });
+            }
+          }
+
+          const mbNode = document.getElementById("s4-mb-node");
+          const world = document.getElementById("s4-world");
+          function frame(t) {
+            draw(t);
+            // The whip: move with the ground camera, smeared along x at the camera's speed.
+            world.style.transform = "translateX(" + whipX(t).toFixed(2) + "px)";
+            const blur = Math.min(24, (whipV(t) / 6000) * 24);
+            mbNode.setAttribute("stdDeviation", blur.toFixed(2) + " 0");
+          }
+
+          const tl = gsap.timeline({ paused: true });
+          const clock = { t: 0 };
+          tl.to(clock, { t: 1.875, duration: 1.875, ease: "none", onUpdate: () => frame(clock.t) }, 0);
+
+          // Headline: wiped on by its own little scanline.
+          tl.fromTo("#s4-head-text", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.42, ease: "power2.inOut" }, 0.04);
+          tl.fromTo("#s4-head-bar", { x: 0, opacity: 1 }, { x: 1180, duration: 0.42, ease: "power2.inOut" }, 0.04);
+          tl.to("#s4-head-bar", { opacity: 0, duration: 0.12, ease: "power1.in" }, 0.44);
+          // Type rides the whip out; it thins only in the last frames, under full blur.
+          tl.to(["#s4-head", "#s4-cred", "#s4-lab-0", "#s4-lab-1", "#s4-lab-2"], { opacity: 0.2, duration: 0.1, ease: "power1.in" }, 1.775);
+
+          // Lane labels decode in with the split.
+          [0, 1, 2].forEach((i) => {
+            tl.fromTo("#s4-lab-" + i, { opacity: 0, x: -24 }, { opacity: 1, x: 0, duration: 0.35, ease: "expo.out" }, 0.1 + i * 0.05);
+          });
+
+          // The agent's lock: brackets snap in from wide, tag and verdict follow.
+          tl.fromTo("#s4-ret", { scale: 1.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.28, ease: "back.out(1.7)" }, LOCK - 0.04);
+          tl.fromTo("#s4-ret-tag", { opacity: 0, x: -12 }, { opacity: 1, x: 0, duration: 0.22, ease: "power3.out" }, LOCK + 0.1);
+          tl.fromTo("#s4-ret-found", { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.3, ease: "power3.out" }, LOCK + 0.16);
+          tl.to("#s4-ret", { opacity: 0, scale: 0.92, duration: 0.18, ease: "power2.in" }, 1.44);
+
+          tl.fromTo("#s4-cred", { opacity: 0, x: -36 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.469);
+
+          frame(0);
+          window.__timelines["s4-observe"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      S8 CONTACT (global 13.125 - 15 s). Blueprint: logo-assemble-lockup (Brand_Outro,
+      morph-chain: one unbroken chain, then a long static hold). Rules: svg-path-draw,
+      waterfall-entry, context-sensitive-cursor, typewriter (gsap-effects).
+      On the final hit the dot left by the donut throws a shock ring and unzips the
+      line across the frame, the way it did in S1. His name rises out of the line; the
+      URL types in under it with the same blue cursor that opened the reel, and the
+      cursor keeps blinking over the hold.
+    -->
+    <template id="s8-template">
+      <style>
+        @font-face { font-family: "Young Serif"; font-weight: 400; font-display: block; src: url("assets/fonts/YoungSerif-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "Instrument Sans"; font-weight: 400 700; font-stretch: 75% 100%; font-display: block; src: url("assets/fonts/InstrumentSans-400_700-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          color: #e6ebf0;
+        }
+        #s8-world {
+          position: absolute;
+          inset: 0;
+          transform-origin: 960px 540px;
+        }
+        #s8-line {
+          position: absolute;
+          left: -960px;
+          top: 538.5px;
+          width: 3840px;
+          height: 3px;
+          background: #4798f5;
+        }
+        .s8-head {
+          position: absolute;
+          left: 0;
+          top: 540px;
+          width: 0;
+          height: 0;
+        }
+        .s8-head i {
+          position: absolute;
+          left: -6px;
+          top: -6px;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #e6ebf0;
+        }
+        /* 13px here reads as S7's 18px dot once the 1.36 push is applied. */
+        #s8-dot {
+          position: absolute;
+          left: 1293.5px;
+          top: 533.5px;
+          width: 13px;
+          height: 13px;
+          border-radius: 50%;
+          background: #e6ebf0;
+        }
+        #s8-shock {
+          position: absolute;
+          left: 1300px;
+          top: 540px;
+          width: 0;
+          height: 0;
+        }
+        #s8-shock div {
+          position: absolute;
+          left: -300px;
+          top: -300px;
+          width: 600px;
+          height: 600px;
+          box-sizing: border-box;
+          border-radius: 50%;
+          border: 3px solid #4798f5;
+        }
+        #s8-eyebrow {
+          position: absolute;
+          left: 0;
+          top: 350px;
+          width: 1920px;
+          text-align: center;
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          font-size: 24px;
+          line-height: 30px;
+          letter-spacing: 0.32em;
+          color: #929caa;
+          white-space: pre;
+        }
+        #s8-name {
+          position: absolute;
+          left: 0;
+          top: 398px;
+          width: 1920px;
+          height: 138px;
+          overflow: hidden;
+          text-align: center;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 128px;
+          line-height: 138px;
+          letter-spacing: -0.02em;
+          white-space: pre;
+        }
+        .s8-ch {
+          display: inline-block;
+        }
+        #s8-url {
+          position: absolute;
+          left: 0;
+          top: 584px;
+          width: 1920px;
+          height: 60px;
+          text-align: center;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 44px;
+          line-height: 60px;
+          color: #4798f5;
+          white-space: pre;
+        }
+        #s8-url-text {
+          display: inline-block;
+          vertical-align: top;
+        }
+        .s8-u {
+          display: inline-block;
+          width: 26.4px;
+        }
+        #s8-cursor {
+          display: inline-block;
+          vertical-align: top;
+          margin-top: 5px;
+          margin-left: 4px;
+          width: 24px;
+          height: 50px;
+          background: #4798f5;
+        }
+        #s8-meta {
+          position: absolute;
+          left: 0;
+          top: 690px;
+          width: 1920px;
+          text-align: center;
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          font-size: 26px;
+          line-height: 34px;
+          letter-spacing: 0.24em;
+          color: #e6ebf0;
+          white-space: pre;
+        }
+        #s8-meta span {
+          color: #4798f5;
+        }
+      </style>
+      <div id="root" data-composition-id="s8-contact" data-width="1920" data-height="1080" data-duration="1.875">
+        <div id="s8-world">
+          <div id="s8-shock"><div></div></div>
+          <div id="s8-line"></div>
+          <div class="s8-head" id="s8-head-l"><i></i></div>
+          <div class="s8-head" id="s8-head-r"><i></i></div>
+          <div id="s8-dot"></div>
+          <div id="s8-eyebrow">CODE, CREATE, AND CONQUER.</div>
+          <div id="s8-name"></div>
+          <div id="s8-url"><span id="s8-url-text"></span><span id="s8-cursor"></span></div>
+          <div id="s8-meta">AI ENGINEER  <span>·</span>  IIIT LUCKNOW ’27</div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const DOT_X = 1300;
+          const NAME = "Prashant Kumar Yadav";
+          const URL = "prashantyadav.vercel.app";
+
+          const nameEl = document.getElementById("s8-name");
+          const nameChars = [...NAME].map((c) => {
+            const s = document.createElement("span");
+            s.className = "s8-ch";
+            s.textContent = c;
+            nameEl.appendChild(s);
+            return s;
+          });
+          const urlEl = document.getElementById("s8-url-text");
+          const urlChars = [...URL].map((c) => {
+            const s = document.createElement("span");
+            s.className = "s8-u";
+            s.textContent = c;
+            urlEl.appendChild(s);
+            return s;
+          });
+
+          const tl = gsap.timeline({ paused: true });
+          // Camera: pull back from the S7 push (1.36) to rest, then a slow push over the hold.
+          tl.fromTo("#s8-world", { scale: 1.36 }, { scale: 1, duration: 0.5, ease: "expo.out" }, 0);
+          tl.to("#s8-world", { scale: 1.025, duration: 1.375, ease: "sine.inOut" }, 0.5);
+
+          // The hit: the dot flares, throws one ring, and unzips the line both ways.
+          tl.fromTo("#s8-dot", { scale: 1 }, { scale: 1.9, duration: 0.05, ease: "power2.out" }, 0);
+          tl.to("#s8-dot", { scale: 0, duration: 0.3, ease: "power2.in" }, 0.05);
+          tl.fromTo("#s8-shock div", { scale: 0.03, opacity: 0.95 }, { scale: 1.6, opacity: 0, duration: 0.7, ease: "expo.out" }, 0);
+          tl.fromTo("#s8-line", { scaleX: 0, transformOrigin: DOT_X + 960 + "px 50%" }, { scaleX: 1, duration: 0.42, ease: "power4.out" }, 0.02);
+          tl.fromTo("#s8-head-l", { x: DOT_X, opacity: 1 }, { x: -60, duration: 0.42, ease: "power4.out" }, 0.02);
+          tl.fromTo("#s8-head-r", { x: DOT_X, opacity: 1 }, { x: 1980, duration: 0.42, ease: "power4.out" }, 0.02);
+          tl.to(".s8-head", { opacity: 0, duration: 0.1, ease: "power1.in" }, 0.36);
+
+          // His name rises out of the line, centre letters first.
+          const mid = (NAME.length - 1) / 2;
+          nameChars.forEach((el, i) => {
+            const d = Math.abs(i - mid) / mid;
+            tl.fromTo(el, { yPercent: 105 }, { yPercent: 0, duration: 0.6, ease: "expo.out" }, 0.12 + d * 0.16);
+          });
+          // Eyebrow tracks in: each glyph slides toward the centre as the line fades up.
+          const eb = document.getElementById("s8-eyebrow");
+          const ebText = eb.textContent;
+          eb.textContent = "";
+          const ebChars = [...ebText].map((c) => {
+            const s = document.createElement("span");
+            s.style.display = "inline-block";
+            s.textContent = c;
+            eb.appendChild(s);
+            return s;
+          });
+          const ebMid = (ebChars.length - 1) / 2;
+          tl.fromTo("#s8-eyebrow", { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.4);
+          ebChars.forEach((el, i) => tl.fromTo(el, { x: (i - ebMid) * 7 }, { x: 0, duration: 0.8, ease: "expo.out" }, 0.4));
+
+          // The URL types under the line; the cursor that opened the reel rides it.
+          tl.set("#s8-cursor", { opacity: 0 }, 0);
+          tl.set("#s8-cursor", { opacity: 1 }, 0.56);
+          urlChars.forEach((el, i) => {
+            tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.001, ease: "none", immediateRender: true }, 0.6 + i * 0.016);
+          });
+          tl.fromTo("#s8-cursor", { x: -URL.length * 26.4 }, { x: 0, duration: URL.length * 0.016, ease: "steps(" + URL.length + ")" }, 0.6);
+          tl.fromTo("#s8-meta", { opacity: 0, y: 16 }, { opacity: 1, y: 0, duration: 0.5, ease: "power3.out" }, 0.86);
+          // Blink through the hold, ending on.
+          [1.12, 1.37, 1.62].forEach((t) => {
+            tl.set("#s8-cursor", { opacity: 0 }, t);
+            tl.set("#s8-cursor", { opacity: 1 }, t + 0.125);
+          });
+
+          window.__timelines["s8-contact"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

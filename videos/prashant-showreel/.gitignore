@@ -1,0 +1,5 @@
+# Renders and HyperFrames working files are reproducible and large
+# (a delivery render is ~200MB, over GitHub's 100MB file limit).
+renders/
+.hyperframes/
+node_modules/
