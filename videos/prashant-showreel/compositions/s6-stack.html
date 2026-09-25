@@ -1,0 +1,316 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      S6 STACK (global 9.375 - 11.25 s). Rules: vertical-spring-ticker (the reel),
+      hacker-flip-3d (the wall decodes, flat variant), motion-blur-streak (reel smear,
+      roll smear on the rail).
+      The camera finishes its 90-degree roll, so stdlib's main line is now a vertical
+      rail. "fluent in" on one side, a slot reel of his languages on the other, landing
+      on "Go." with the score's clicks. Then the rest of the workbench decodes around it:
+      the tools from the résumé, a scan lights them, and the shipped projects sit below.
+      Hand-off: only the rail remains, vertical at x=960.
+    -->
+    <template id="s6-template">
+      <style>
+        @font-face { font-family: "Young Serif"; font-weight: 400; font-display: block; src: url("assets/fonts/YoungSerif-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "Instrument Sans"; font-weight: 400 700; font-stretch: 75% 100%; font-display: block; src: url("assets/fonts/InstrumentSans-400_700-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          color: #e6ebf0;
+        }
+        #s6-cv {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+        }
+        #s6-world {
+          position: absolute;
+          inset: 0;
+          transform-origin: 960px 540px;
+        }
+        #s6-fluent {
+          position: absolute;
+          right: 1008px;
+          top: 462px;
+          height: 150px;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 124px;
+          line-height: 150px;
+          letter-spacing: -0.015em;
+          white-space: pre;
+          text-align: right;
+        }
+        #s6-reel {
+          position: absolute;
+          left: 1008px;
+          top: 462px;
+          width: 820px;
+          height: 150px;
+          overflow: hidden;
+          filter: url("#s6-rb");
+        }
+        #s6-strip {
+          position: absolute;
+          left: 0;
+          top: 0;
+        }
+        .s6-word {
+          display: block;
+          height: 150px;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 124px;
+          line-height: 150px;
+          letter-spacing: -0.015em;
+          color: #4798f5;
+          white-space: pre;
+        }
+        .s6-cell {
+          position: absolute;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 26px;
+          line-height: 32px;
+          white-space: pre;
+          color: #929caa;
+          padding-left: 22px;
+        }
+        .s6-cell::before {
+          content: "";
+          position: absolute;
+          left: 0;
+          top: 12px;
+          width: 8px;
+          height: 8px;
+          background: #31363f;
+        }
+        .s6-cell.s6-lit {
+          color: #e6ebf0;
+        }
+        .s6-cell.s6-lit::before {
+          background: #4798f5;
+        }
+        #s6-ship-k {
+          position: absolute;
+          left: 192px;
+          top: 872px;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 22px;
+          line-height: 40px;
+          letter-spacing: 0.18em;
+          color: #929caa;
+        }
+        .s6-ship {
+          position: absolute;
+          top: 866px;
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          font-size: 36px;
+          line-height: 44px;
+          color: #e6ebf0;
+          white-space: pre;
+        }
+        .s6-ship span {
+          display: block;
+          font-family: "JetBrains Mono", monospace;
+          font-weight: 400;
+          font-size: 19px;
+          line-height: 24px;
+          color: #929caa;
+        }
+        #s6-defs {
+          position: absolute;
+          width: 0;
+          height: 0;
+        }
+      </style>
+      <div id="root" data-composition-id="s6-stack" data-width="1920" data-height="1080" data-duration="1.875">
+        <svg id="s6-defs" aria-hidden="true">
+          <filter id="s6-rb" x="-5%" y="-40%" width="110%" height="180%" color-interpolation-filters="sRGB">
+            <feGaussianBlur id="s6-rb-node" in="SourceGraphic" stdDeviation="0 0" />
+          </filter>
+        </svg>
+        <canvas id="s6-cv" width="1920" height="1080"></canvas>
+        <div id="s6-world">
+          <div id="s6-fluent">fluent in</div>
+          <div id="s6-reel"><div id="s6-strip"></div></div>
+          <div id="s6-wall"></div>
+          <div id="s6-ship-k">SHIPPED</div>
+          <div class="s6-ship" id="s6-ship-0" style="left: 456px">KubeStore<span>k8s store platform</span></div>
+          <div class="s6-ship" id="s6-ship-1" style="left: 744px">Vulnpilot<span>AI security</span></div>
+          <div class="s6-ship" id="s6-ship-2" style="left: 1032px">ScrapBot<span>scraper + RAG</span></div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const CX = 960;
+          const CY = 540;
+          const easeCache = {};
+          const E = (n) => easeCache[n] || (easeCache[n] = gsap.parseEase(n));
+          const c01 = (v) => Math.max(0, Math.min(1, v));
+
+          // Camera: the last half of the 90-degree roll (ground 9.18-9.57), then the push toward S7.
+          const roll = (t) => 90 * E("expo.inOut")(c01((t + 9.375 - 9.18) / 0.39)) - 90;
+          const zoom = (t) => 1 + 0.3 * E("expo.inOut")(c01((t + 9.375 - 11.05) / 0.55));
+
+          // Reel: lands on the score's clicks (global 9.45 ... 10.31).
+          const WORDS = ["Python", "TypeScript", "C++", "Java", "SQL", "Bash", "C", "JavaScript", "Go."];
+          const CLICK = [0.075, 0.16, 0.25, 0.35, 0.465, 0.6, 0.76, 0.935];
+          const RH = 150;
+          const strip = document.getElementById("s6-strip");
+          WORDS.forEach((w) => {
+            const d = document.createElement("span");
+            d.className = "s6-word";
+            d.textContent = w;
+            strip.appendChild(d);
+          });
+          function reelPos(t) {
+            let pos = 0;
+            for (let j = 0; j < CLICK.length; j++) {
+              if (t < CLICK[j]) break;
+              const last = j === CLICK.length - 1;
+              const dur = last ? 0.34 : Math.min(0.07, ((CLICK[j + 1] || 1) - CLICK[j]) * 0.7);
+              const e = last ? E("back.out(2.2)") : E("power3.out");
+              pos = j + e(c01((t - CLICK[j]) / dur));
+            }
+            return pos;
+          }
+
+          // The wall: tools from the résumé, six columns around the reel band.
+          const TOOLS = [
+            "Node.js", "Express", "Spring Boot", "Django", "FastAPI", "Bun",
+            "Hono", "GraphQL", "React", "Next.js", "Tailwind", "Redux",
+            "Docker", "Kubernetes", "Helm", "GitHub Actions", "ArgoCD", "AWS",
+            "Azure", "Linux", "PostgreSQL", "MySQL", "MongoDB", "Redis",
+            "SQLite", "Prisma", "LangChain", "RAG", "WebAssembly", "MCP",
+          ];
+          const COLS = [192, 456, 720, 1032, 1296, 1560];
+          const ROWS = [204, 276, 348, 708, 780];
+          const wall = document.getElementById("s6-wall");
+          const cells = TOOLS.map((name, i) => {
+            const col = i % 6;
+            const row = Math.floor(i / 6);
+            const el = document.createElement("div");
+            el.className = "s6-cell";
+            el.style.left = COLS[col] + "px";
+            el.style.top = ROWS[row] + "px";
+            wall.appendChild(el);
+            const x = COLS[col] + 90;
+            const y = ROWS[row] + 16;
+            // Decode ripples outward from the rail and the reel band.
+            const dist = Math.hypot((x - CX) / 900, (y - CY) / 420);
+            return { el, name, x, t0: 0.95 + dist * 0.22 + (i % 3) * 0.012 };
+          });
+          const GLYPHS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789#%&*+/<>=";
+          const hash = (n) => {
+            let x = Math.imul(n ^ 0x2545f491, 0x9e3779b1);
+            x ^= x >>> 15;
+            x = Math.imul(x, 0x85ebca77);
+            return ((x ^ (x >>> 13)) >>> 0) / 4294967296;
+          };
+          const SWEEP0 = 1.22;
+          const SWEEP1 = 1.52;
+          const sweepX = (t) => 150 + 1700 * E("power2.inOut")(c01((t - SWEEP0) / (SWEEP1 - SWEEP0)));
+          function wallAt(t) {
+            const out = t >= 1.56;
+            cells.forEach((c, i) => {
+              const p = out ? 1 - c01((t - 1.56 - (Math.abs(c.x - CX) / 900) * 0.12) / 0.14) : c01((t - c.t0) / 0.26);
+              if (p <= 0) {
+                c.el.textContent = "";
+                c.el.style.opacity = "0";
+                return;
+              }
+              c.el.style.opacity = "1";
+              const q = Math.floor(t * 40);
+              let s = "";
+              for (let k = 0; k < c.name.length; k++) {
+                const ch = c.name[k];
+                s += ch === " " || k < p * c.name.length * 1.1 ? ch : GLYPHS[Math.floor(hash(i * 97 + k * 13 + q) * GLYPHS.length)];
+              }
+              c.el.textContent = out ? s.slice(0, Math.ceil(c.name.length * p)) : s;
+              const lit = t >= SWEEP0 && sweepX(t) > c.x - 90;
+              c.el.classList.toggle("s6-lit", lit);
+            });
+          }
+
+          // Rail and sweep on the canvas, the rail smeared by the roll.
+          const cv = document.getElementById("s6-cv");
+          const ctx = cv.getContext("2d");
+          function drawRail(rDeg, z, alpha) {
+            const a = (rDeg * Math.PI) / 180;
+            const cs = Math.cos(a) * z;
+            const sn = Math.sin(a) * z;
+            ctx.setTransform(cs, sn, -sn, cs, CX - cs * CX + sn * CY, CY - sn * CX - cs * CY);
+            ctx.globalAlpha = alpha;
+            ctx.strokeStyle = "#4798f5";
+            ctx.lineWidth = 3 / z;
+            ctx.beginPath();
+            ctx.moveTo(CX, -900);
+            ctx.lineTo(CX, 1980);
+            ctx.stroke();
+            ctx.globalAlpha = 1;
+          }
+          function draw(t) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, 1920, 1080);
+            const r0 = roll(t);
+            const r1 = roll(t - 1 / 120);
+            const n = Math.max(1, Math.min(14, Math.ceil(Math.abs(r0 - r1) * 1.6)));
+            for (let s = 0; s < n; s++) drawRail(n === 1 ? r0 : roll(t - (s / (n - 1)) / 120), zoom(t), 1 / n + (n > 1 ? 0.04 : 0));
+            // Scan bar through the wall.
+            if (t >= SWEEP0 && t <= SWEEP1 + 0.08) {
+              const x = sweepX(t);
+              const k = 1 - c01((t - SWEEP1) / 0.08);
+              const z = zoom(t);
+              ctx.setTransform(z, 0, 0, z, CX - z * CX, CY - z * CY);
+              ctx.fillStyle = "rgba(71,152,245," + (0.9 * k).toFixed(3) + ")";
+              ctx.fillRect(x - 2, 180, 4, 250);
+              ctx.fillRect(x - 2, 690, 4, 140);
+            }
+          }
+
+          const world = document.getElementById("s6-world");
+          const rbNode = document.getElementById("s6-rb-node");
+          function frame(t) {
+            draw(t);
+            world.style.transform = "rotate(" + roll(t).toFixed(3) + "deg) scale(" + zoom(t).toFixed(4) + ")";
+            const pos = reelPos(t);
+            strip.style.transform = "translateY(" + (-pos * RH).toFixed(2) + "px)";
+            const v = Math.abs(reelPos(t) - reelPos(t - 1 / 60)) * RH;
+            rbNode.setAttribute("stdDeviation", "0 " + Math.min(28, v * 0.45).toFixed(2));
+            wallAt(t);
+          }
+
+          const tl = gsap.timeline({ paused: true });
+          const clock = { t: 0 };
+          tl.to(clock, { t: 1.875, duration: 1.875, ease: "none", onUpdate: () => frame(clock.t) }, 0);
+
+          // "fluent in" slides out from the rail; the reel window opens from it.
+          tl.fromTo("#s6-fluent", { x: 90, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "expo.out" }, 0.06);
+          tl.fromTo("#s6-reel", { clipPath: "inset(0% 100% 0% 0%)" }, { clipPath: "inset(0% 0% 0% 0%)", duration: 0.4, ease: "expo.out" }, 0.06);
+          // Landing punch on "Go."
+          tl.fromTo("#s6-fluent", { y: 0 }, { y: 6, duration: 0.06, ease: "power2.out", immediateRender: false }, 0.935);
+          tl.to("#s6-fluent", { y: 0, duration: 0.25, ease: "power2.out" }, 1.0);
+
+          // Shipped row arrives after the wall.
+          tl.fromTo("#s6-ship-k", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.out" }, 1.08);
+          [0, 1, 2].forEach((i) => tl.fromTo("#s6-ship-" + i, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.35, ease: "expo.out" }, 1.12 + i * 0.06));
+
+          // Out: everything leaves the rail alone. Type slides away from it on both sides.
+          tl.to("#s6-fluent", { x: -120, opacity: 0, duration: 0.22, ease: "power3.in" }, 1.56);
+          tl.to("#s6-reel", { x: 120, opacity: 0, duration: 0.22, ease: "power3.in" }, 1.56);
+          tl.to(["#s6-ship-k", "#s6-ship-0", "#s6-ship-1", "#s6-ship-2"], { opacity: 0, y: 16, duration: 0.18, ease: "power2.in", stagger: 0.02 }, 1.56);
+
+          frame(0);
+          window.__timelines["s6-stack"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

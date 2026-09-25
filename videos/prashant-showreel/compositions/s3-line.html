@@ -1,0 +1,302 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      S3 ON THE LINE (global 3.75 - 5.625 s). Blueprint: spatial-pan-stations (adapted:
+      stations on one line, a packet instead of a camera). Rules: svg-path-draw,
+      kinetic-beat-slam (word build on the eighths), cursor-click-ripple (node pings).
+      His headline, "...the Go services that keep it on the line.", with "on the line."
+      sitting on the signal itself. To the right the line steps into a call route:
+      dialer -> SIP -> Go -> LLM bot -> human agent, each node pinging on the score's
+      bells. Hand-off: the route flattens back to a 3px line at y=540.
+    -->
+    <template id="s3-template">
+      <style>
+        @font-face { font-family: "Young Serif"; font-weight: 400; font-display: block; src: url("assets/fonts/YoungSerif-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "Instrument Sans"; font-weight: 400 700; font-stretch: 75% 100%; font-display: block; src: url("assets/fonts/InstrumentSans-400_700-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          color: #e6ebf0;
+        }
+        #s3-world {
+          position: absolute;
+          inset: 0;
+        }
+        #s3-svg {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 1920px;
+          height: 1080px;
+          overflow: visible;
+        }
+        .s3-hl {
+          position: absolute;
+          left: 192px;
+          height: 118px;
+          overflow: hidden;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 104px;
+          line-height: 118px;
+          letter-spacing: -0.015em;
+          white-space: pre;
+        }
+        /* Baselines at 302, 412 and 522: the last line rests on the signal at y=540. */
+        #s3-h1 { top: 210px; }
+        #s3-h2 { top: 320px; }
+        #s3-h3 { top: 430px; }
+        .s3-w {
+          display: inline-block;
+        }
+        .s3-go {
+          color: #4798f5;
+        }
+        .s3-node {
+          position: absolute;
+          width: 0;
+          height: 0;
+        }
+        .s3-dot {
+          position: absolute;
+          left: -13px;
+          top: -13px;
+          width: 26px;
+          height: 26px;
+          box-sizing: border-box;
+          border-radius: 50%;
+          border: 3px solid #4798f5;
+          background: #060709;
+        }
+        .s3-dot i {
+          position: absolute;
+          left: 4px;
+          top: 4px;
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #e6ebf0;
+        }
+        .s3-ring {
+          position: absolute;
+          left: -30px;
+          top: -30px;
+          width: 60px;
+          height: 60px;
+          box-sizing: border-box;
+          border-radius: 50%;
+          border: 2px solid #4798f5;
+        }
+        .s3-lab {
+          position: absolute;
+          left: -110px;
+          width: 220px;
+          text-align: center;
+          font-family: "JetBrains Mono", monospace;
+          white-space: pre;
+        }
+        .s3-name {
+          top: -84px;
+          font-size: 24px;
+          line-height: 28px;
+          letter-spacing: 0.08em;
+          color: #e6ebf0;
+        }
+        .s3-sub {
+          top: -54px;
+          font-size: 19px;
+          line-height: 24px;
+          color: #929caa;
+        }
+        /* The low node hangs its labels below the line instead. */
+        #s3-node-3 .s3-name { top: 28px; }
+        #s3-node-3 .s3-sub { top: 58px; }
+        #s3-tag {
+          position: absolute;
+          left: 192px;
+          top: 876px;
+        }
+        #s3-tag .s3-t1 {
+          display: block;
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          font-size: 32px;
+          line-height: 44px;
+        }
+        #s3-tag .s3-t2 {
+          display: block;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 22px;
+          line-height: 32px;
+          color: #929caa;
+          white-space: pre;
+        }
+      </style>
+      <div id="root" data-composition-id="s3-line" data-width="1920" data-height="1080" data-duration="1.875">
+        <div id="s3-world">
+          <div class="s3-hl" id="s3-h1"><span class="s3-w">the </span><span class="s3-w s3-go">Go </span><span class="s3-w">services</span></div>
+          <div class="s3-hl" id="s3-h2"><span class="s3-w">that </span><span class="s3-w">keep </span><span class="s3-w">it</span></div>
+          <div class="s3-hl" id="s3-h3"><span class="s3-w">on </span><span class="s3-w">the </span><span class="s3-w">line.</span></div>
+          <svg id="s3-svg" viewBox="0 0 1920 1080" aria-hidden="true">
+            <path id="s3-route" d="M-400 540 L2320 540" fill="none" stroke="#4798f5" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" />
+            <path id="s3-trail" d="" fill="none" stroke="#e6ebf0" stroke-width="3.5" stroke-linecap="round" />
+          </svg>
+          <div id="s3-nodes"></div>
+          <div id="s3-tag">
+            <span class="s3-t1">Nugget by Zomato</span>
+            <span class="s3-t2">multi-tenant voice  ·  tata 1mg, volohealth</span>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const BASE = 540;
+          // Route: flats centred on the nodes, 45-degree hops between levels.
+          const V = [
+            [-400, 540], [1044, 540], [1140, 444], [1212, 444], [1308, 540],
+            [1380, 540], [1476, 636], [1548, 636], [1644, 540], [2320, 540],
+          ];
+          const NODES = [
+            { x: 1008, seg: 0, name: "DIALER", sub: "ozonetel" },
+            { x: 1176, seg: 2, name: "SIP", sub: "in + outbound" },
+            { x: 1344, seg: 4, name: "GO", sub: "microservices" },
+            { x: 1512, seg: 6, name: "LLM BOT", sub: "ticketing" },
+            { x: 1680, seg: 8, name: "AGENT", sub: "live handover" },
+          ];
+          // Nodes ping on the score's bells (global 4.219 ... 5.156).
+          const HIT = [0.469, 0.703, 0.938, 1.172, 1.406];
+
+          const nodesEl = document.getElementById("s3-nodes");
+          NODES.forEach((n, i) => {
+            const el = document.createElement("div");
+            el.className = "s3-node";
+            el.id = "s3-node-" + i;
+            el.innerHTML =
+              '<div class="s3-ring"></div><div class="s3-dot"><i></i></div>' +
+              '<div class="s3-lab s3-name">' + n.name + '</div><div class="s3-lab s3-sub">' + n.sub + "</div>";
+            nodesEl.appendChild(el);
+          });
+
+          // Each raised vertex has its own morph amount (0 = flat, 1 = routed), a pure
+          // function of time: springs up left to right, lies back down before the hand-off.
+          const backOut = gsap.parseEase("back.out(1.6)");
+          const inOut = gsap.parseEase("power3.inOut");
+          const clamp01 = (v) => Math.max(0, Math.min(1, v));
+          function morphAt(x, t) {
+            const lag = (x - 1040) / 600;
+            const s0 = 0.04 + lag * 0.14;
+            const e0 = 1.5 + (1 - lag) * 0.05;
+            if (t < e0) return backOut(clamp01((t - s0) / 0.42));
+            return 1 - inOut(clamp01((t - e0) / 0.3));
+          }
+          let now = 0;
+          const pts = () => V.map(([x, y]) => [x, BASE + (y - BASE) * morphAt(x, now)]);
+          const routeEl = document.getElementById("s3-route");
+          const trailEl = document.getElementById("s3-trail");
+
+          function lengths(P) {
+            const cum = [0];
+            for (let i = 1; i < P.length; i++) cum.push(cum[i - 1] + Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]));
+            return cum;
+          }
+          function at(P, cum, d) {
+            let i = 1;
+            while (i < P.length - 1 && cum[i] < d) i++;
+            const seg = cum[i] - cum[i - 1] || 1;
+            const u = Math.max(0, Math.min(1, (d - cum[i - 1]) / seg));
+            return [P[i - 1][0] + (P[i][0] - P[i - 1][0]) * u, P[i - 1][1] + (P[i][1] - P[i - 1][1]) * u];
+          }
+          // Distance of a node (by x on its flat) along the current route.
+          function nodeDist(P, cum, n) {
+            const a = P[n.seg];
+            const b = P[n.seg + 1];
+            const u = (n.x - a[0]) / (b[0] - a[0]);
+            return cum[n.seg] + (cum[n.seg + 1] - cum[n.seg]) * u;
+          }
+          // The packet: enters from the left edge, then keeps the bell schedule node to node.
+          function packetDist(t, P, cum) {
+            const d = NODES.map((n) => nodeDist(P, cum, n));
+            const T = [0.16, ...HIT, 1.62];
+            const D = [cum[0] + 400, ...d, d[4] + 380];
+            if (t <= T[0]) return -1;
+            for (let k = 1; k < T.length; k++) if (t <= T[k]) return D[k - 1] + ((D[k] - D[k - 1]) * (t - T[k - 1])) / (T[k] - T[k - 1]);
+            return -1;
+          }
+
+          function render(t) {
+            now = t;
+            const P = pts();
+            routeEl.setAttribute("d", "M" + P.map((p) => p[0].toFixed(1) + " " + p[1].toFixed(1)).join(" L"));
+            const cum = lengths(P);
+            NODES.forEach((n, i) => {
+              const d = nodeDist(P, cum, n);
+              const p = at(P, cum, d);
+              document.getElementById("s3-node-" + i).style.transform = "translate(" + p[0].toFixed(1) + "px," + p[1].toFixed(1) + "px)";
+            });
+            const pd = packetDist(t, P, cum);
+            if (pd < 0) {
+              trailEl.setAttribute("d", "");
+              return;
+            }
+            let d = "";
+            const TRAIL = 170;
+            for (let s = 0; s <= 10; s++) {
+              const q = at(P, cum, Math.max(0, pd - TRAIL + (TRAIL * s) / 10));
+              d += (s ? " L" : "M") + q[0].toFixed(1) + " " + q[1].toFixed(1);
+            }
+            trailEl.setAttribute("d", d);
+          }
+
+          const tl = gsap.timeline({ paused: true });
+          // A slow truck left, half the grid's speed, for parallax.
+          tl.fromTo("#s3-world", { x: 0 }, { x: -60, duration: 1.875, ease: "sine.inOut" }, 0);
+
+          const clock = { t: 0 };
+          tl.to(clock, { t: 1.875, duration: 1.875, ease: "none", onUpdate: () => render(clock.t) }, 0);
+          tl.fromTo("#s3-trail", { opacity: 1 }, { opacity: 0, duration: 0.14, ease: "power1.in" }, 1.5);
+
+          // Headline: words step in on the eighths, each line from a different side.
+          const lines = ["#s3-h1", "#s3-h2", "#s3-h3"];
+          lines.forEach((sel, li) => {
+            const words = document.querySelectorAll(sel + " .s3-w");
+            words.forEach((w, wi) => {
+              const t0 = li * 0.117 + wi * 0.045;
+              if (li === 2) {
+                // "on the line." drops onto the line and lands on beat two.
+                tl.fromTo(w, { yPercent: -120, opacity: 0 }, { yPercent: 0, opacity: 1, duration: 0.34, ease: "back.out(2.2)" }, 0.14 + wi * 0.05);
+              } else {
+                tl.fromTo(w, { yPercent: 100 }, { yPercent: 0, duration: 0.5, ease: "expo.out" }, t0);
+              }
+              // Out: the words leave with the call, to the right, last word first.
+              tl.to(w, { x: 160, opacity: 0, duration: 0.22, ease: "power3.in" }, 1.48 + li * 0.04 + (words.length - 1 - wi) * 0.03);
+            });
+          });
+
+          // Nodes: dots pop in just ahead of the packet, ping as it passes.
+          NODES.forEach((n, i) => {
+            const id = "#s3-node-" + i;
+            tl.fromTo(id + " .s3-dot", { scale: 0 }, { scale: 1, duration: 0.24, ease: "back.out(2)" }, 0.12 + i * 0.05);
+            tl.fromTo(id + " .s3-dot i", { scale: 0 }, { scale: 1, duration: 0.12, ease: "back.out(3)" }, HIT[i]);
+            tl.fromTo(id + " .s3-ring", { scale: 0.4, opacity: 0 }, { scale: 0.5, opacity: 1, duration: 0.02, ease: "none" }, HIT[i]);
+            tl.to(id + " .s3-ring", { scale: 2.2, opacity: 0, duration: 0.5, ease: "expo.out" }, HIT[i] + 0.02);
+            tl.fromTo(id + " .s3-name", { opacity: 0, y: 10 }, { opacity: 1, y: 0, duration: 0.25, ease: "power3.out" }, HIT[i] - 0.08);
+            tl.fromTo(id + " .s3-sub", { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.25, ease: "power3.out" }, HIT[i] - 0.02);
+            tl.to([id + " .s3-name", id + " .s3-sub"], { opacity: 0, duration: 0.14, ease: "power1.in" }, 1.5 + i * 0.025);
+            tl.to(id + " .s3-dot", { scale: 0, duration: 0.18, ease: "back.in(2)" }, 1.56 + i * 0.03);
+          });
+
+          tl.fromTo("#s3-tag", { opacity: 0, x: -36 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.938);
+          tl.to("#s3-tag", { opacity: 0, x: -24, duration: 0.18, ease: "power2.in" }, 1.55);
+
+          render(0);
+          window.__timelines["s3-line"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
