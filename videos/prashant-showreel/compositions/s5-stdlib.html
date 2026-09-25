@@ -1,0 +1,384 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      S5 OPEN SOURCE (global 7.5 - 9.375 s). Blueprint: dataviz-countup (adapted: the
+      number sits on the line, the graph grows under it). Rules: counting-dynamic-scale,
+      vertical-spring-ticker (odometer columns), svg-path-draw, motion-blur-streak.
+      The line is stdlib's main branch. Branches fork into grid lanes and merge back, one
+      pop per tick of the score, while an odometer rolls to 145+ and lands on the bell.
+      Everything is pinned to the workbench grid. Entry: the whip from S4. Exit: the
+      camera starts its 90-degree roll; at the cut the main line lies at 45 degrees.
+    -->
+    <template id="s5-template">
+      <style>
+        @font-face { font-family: "Young Serif"; font-weight: 400; font-display: block; src: url("assets/fonts/YoungSerif-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "Instrument Sans"; font-weight: 400 700; font-stretch: 75% 100%; font-display: block; src: url("assets/fonts/InstrumentSans-400_700-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          color: #e6ebf0;
+        }
+        #s5-cv {
+          position: absolute;
+          left: -960px;
+          top: 0;
+          width: 3840px;
+          height: 1080px;
+        }
+        #s5-hud {
+          position: absolute;
+          inset: 0;
+          transform-origin: 960px 540px;
+          filter: url("#s5-mb");
+        }
+        #s5-count {
+          position: absolute;
+          left: 168px;
+          top: 222px;
+          height: 330px;
+          display: flex;
+          align-items: flex-start;
+        }
+        .s5-col {
+          position: relative;
+          width: 176px;
+          height: 330px;
+          overflow: hidden;
+        }
+        .s5-strip {
+          position: absolute;
+          left: 0;
+          top: 0;
+          width: 176px;
+        }
+        .s5-dg {
+          display: block;
+          height: 330px;
+          text-align: center;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 300px;
+          line-height: 330px;
+          color: #e6ebf0;
+        }
+        #s5-plus {
+          position: relative;
+          width: 170px;
+          height: 330px;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 300px;
+          line-height: 330px;
+          color: #4798f5;
+          text-align: center;
+        }
+        #s5-side {
+          position: absolute;
+          left: 1008px;
+          top: 318px;
+          width: 760px;
+        }
+        #s5-side b {
+          display: block;
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          font-size: 60px;
+          line-height: 68px;
+          letter-spacing: -0.01em;
+        }
+        #s5-side .s5-r {
+          display: block;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 24px;
+          line-height: 36px;
+          color: #929caa;
+          white-space: pre;
+        }
+        #s5-side .s5-r em {
+          font-style: normal;
+          color: #e6ebf0;
+        }
+        .s5-ns {
+          position: absolute;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 19px;
+          line-height: 24px;
+          color: #929caa;
+          white-space: pre;
+        }
+        #s5-defs {
+          position: absolute;
+          width: 0;
+          height: 0;
+        }
+      </style>
+      <div id="root" data-composition-id="s5-stdlib" data-width="1920" data-height="1080" data-duration="1.875">
+        <svg id="s5-defs" aria-hidden="true">
+          <filter id="s5-mb" x="-20%" y="-5%" width="140%" height="110%" color-interpolation-filters="sRGB">
+            <feGaussianBlur id="s5-mb-node" in="SourceGraphic" stdDeviation="0 0" />
+          </filter>
+          <filter id="s5-roll" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
+            <feGaussianBlur id="s5-roll-node" in="SourceGraphic" stdDeviation="0 0" />
+          </filter>
+          <filter id="s5-roll2" x="-5%" y="-30%" width="110%" height="160%" color-interpolation-filters="sRGB">
+            <feGaussianBlur id="s5-roll2-node" in="SourceGraphic" stdDeviation="0 0" />
+          </filter>
+        </svg>
+        <canvas id="s5-cv" width="3840" height="1080" data-layout-allow-overflow></canvas>
+        <div id="s5-hud" data-layout-allow-overflow>
+          <div id="s5-count">
+            <div class="s5-col" id="s5-c2"><div class="s5-strip"></div></div>
+            <div class="s5-col" id="s5-c1" style="filter: url('#s5-roll2')"><div class="s5-strip"></div></div>
+            <div class="s5-col" id="s5-c0" style="filter: url('#s5-roll')"><div class="s5-strip"></div></div>
+            <div id="s5-plus" data-layout-allow-overlap>+</div>
+          </div>
+          <div id="s5-side">
+            <b>PRs merged</b>
+            <span class="s5-r"><em>stdlib-js</em>  ·  maintainer since 2024</span>
+            <span class="s5-r">BLAS · LAPACK · stats · WebAssembly</span>
+          </div>
+          <div id="s5-ns"></div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const CX = 960;
+          const CY = 540;
+          const MAIN = 540;
+          const easeCache = {};
+          const E = (n) => easeCache[n] || (easeCache[n] = gsap.parseEase(n));
+          const c01 = (v) => Math.max(0, Math.min(1, v));
+
+          // Count curve: the score's merge ticks follow the same exponential (audio/score.mjs).
+          const K = 66.7;
+          const T0 = 0.1;
+          const TL = 1.06;
+          const LAND = 1.172; // global 8.672, the bell
+          const count01 = (t) => (t <= T0 ? 0 : c01((1 - Math.pow(K, -(t - T0) / TL)) / 0.985));
+          const countRate = (t) => (t <= T0 || count01(t) >= 1 ? 0 : ((Math.log(K) / TL) * Math.pow(K, -(t - T0) / TL)) / 0.985);
+
+          // Camera: locked to the ground grid. Entry whip (7.2-7.8 global), slow truck, then the roll.
+          const p3io = E("power3.inOut");
+          const groundX = (g) => {
+            if (g <= 7.2) return -216;
+            if (g <= 7.8) return -216 - 1200 * p3io(c01((g - 7.2) / 0.6));
+            return -1416 - 144 * E("sine.out")(c01((g - 7.8) / 1.575));
+          };
+          const tx = (t) => groundX(t + 7.5) + 1416;
+          const whipV = (t) => {
+            const p = c01((t + 7.5 - 7.2) / 0.6);
+            if (p <= 0 || p >= 1) return 0;
+            return 2000 * (p < 0.5 ? 12 * p * p : 12 * (1 - p) * (1 - p));
+          };
+          const roll = (t) => 90 * E("expo.inOut")(c01((t + 7.5 - 9.18) / 0.39));
+
+          // Merges every grid column (x = 24 mod 48), 38 of them, with seeded branches.
+          const h = (n) => {
+            let x = Math.imul((n | 0) ^ 0x51ed270b, 0x2c1b3c6d);
+            x ^= x >>> 12;
+            x = Math.imul(x, 0x297a2d39);
+            return ((x ^ (x >>> 15)) >>> 0) / 4294967296;
+          };
+          const MERGES = 38;
+          const mx = (k) => 72 + 48 * k;
+          const laneFree = [-1e9, -1e9, -1e9, -1e9];
+          const BR = [];
+          for (let k = 0; k < MERGES; k++) {
+            const L = 96 + 48 * Math.floor(h(k) * 5);
+            const x1 = mx(k);
+            const x0 = x1 - L;
+            let lane = -1;
+            for (let j = 0; j < 4; j++) {
+              const pick = (j + Math.floor(h(k + 99) * 4)) % 4;
+              if (laneFree[pick] <= x0 - 24) {
+                lane = pick;
+                break;
+              }
+            }
+            if (lane < 0) {
+              BR.push({ k, x1, lane: -1 });
+              continue;
+            }
+            laneFree[lane] = x1;
+            BR.push({ k, x0, x1, lane, y: MAIN + 48 * (lane + 1) });
+          }
+          const NS = [
+            { k: 6, text: "blas/base/*" },
+            { k: 15, text: "lapack/base/*" },
+            { k: 24, text: "stats/base/*" },
+            { k: 33, text: "*-wasm" },
+          ];
+          const nsHost = document.getElementById("s5-ns");
+          NS.forEach((n, i) => {
+            const b = BR.find((r) => r.k >= n.k && r.lane >= 0);
+            n.b = b;
+            const el = document.createElement("div");
+            el.className = "s5-ns";
+            el.id = "s5-ns-" + i;
+            el.textContent = n.text;
+            el.style.left = b.x0 + 56 + "px";
+            el.style.top = b.y + 8 + "px";
+            nsHost.appendChild(el);
+          });
+
+          const headX = (t) => mx(0) + (mx(MERGES - 1) - mx(0)) * count01(t);
+          const mergeT = (k) => {
+            // inverse of count01 at k/(MERGES-1)
+            const u = k / (MERGES - 1);
+            return T0 - TL * (Math.log(1 - 0.985 * u) / Math.log(K));
+          };
+
+          const cv = document.getElementById("s5-cv");
+          const ctx = cv.getContext("2d");
+          function branchPath(b, xh) {
+            const xe = Math.min(xh, b.x1);
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(b.x0 - 2, 0, Math.max(0, xe - b.x0 + 2), 1080);
+            ctx.clip();
+            ctx.beginPath();
+            ctx.moveTo(b.x0, MAIN);
+            ctx.bezierCurveTo(b.x0 + 26, MAIN, b.x0 + 22, b.y, b.x0 + 48, b.y);
+            ctx.lineTo(b.x1 - 48, b.y);
+            ctx.bezierCurveTo(b.x1 - 22, b.y, b.x1 - 26, MAIN, b.x1, MAIN);
+            ctx.stroke();
+            ctx.fillStyle = "rgba(230,235,240,0.7)";
+            for (let x = b.x0 + 72; x <= b.x1 - 72; x += 48) {
+              if (x > xe) break;
+              ctx.beginPath();
+              ctx.arc(x, b.y, 4, 0, Math.PI * 2);
+              ctx.fill();
+            }
+            ctx.restore();
+          }
+          function drawScene(t, rDeg, alpha) {
+            const a = (rDeg * Math.PI) / 180;
+            const cs = Math.cos(a);
+            const sn = Math.sin(a);
+            const ox = tx(t);
+            // world -> canvas: rotate about the frame centre, translate with the camera, +960 canvas margin
+            ctx.setTransform(cs, sn, -sn, cs, 960 + CX + ox - cs * CX + sn * CY, CY - sn * CX - cs * CY);
+            ctx.globalAlpha = alpha;
+            const xh = headX(t);
+            ctx.lineWidth = 2.5;
+            ctx.strokeStyle = "rgba(71,152,245,0.75)";
+            for (const b of BR) if (b.lane >= 0 && xh > b.x0) branchPath(b, xh);
+            // main
+            ctx.strokeStyle = "#4798f5";
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(-2400, MAIN);
+            ctx.lineTo(4400, MAIN);
+            ctx.stroke();
+            // merge pops
+            for (let k = 0; k < MERGES; k++) {
+              const tk = mergeT(k);
+              if (t < tk) break;
+              const age = t - tk;
+              const s = age < 0.06 ? 1.5 * E("power2.out")(age / 0.06) : 1.5 - 0.5 * E("power2.inOut")(c01((age - 0.06) / 0.18));
+              ctx.fillStyle = "#e6ebf0";
+              ctx.beginPath();
+              ctx.arc(mx(k), MAIN, 6 * s, 0, Math.PI * 2);
+              ctx.fill();
+              if (age < 0.4) {
+                const q = E("expo.out")(age / 0.4);
+                ctx.strokeStyle = "rgba(71,152,245," + (0.9 * (1 - age / 0.4)).toFixed(3) + ")";
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(mx(k), MAIN, 6 + 26 * q, 0, Math.PI * 2);
+                ctx.stroke();
+              }
+            }
+            // draw head
+            if (t > T0 && count01(t) < 1) {
+              ctx.fillStyle = "#e6ebf0";
+              ctx.fillRect(xh - 2, MAIN - 16, 4, 32);
+            }
+            ctx.globalAlpha = 1;
+          }
+          function draw(t) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, 3840, 1080);
+            // Rotational motion blur across a 180-degree shutter at 60 fps.
+            const r0 = roll(t);
+            const r1 = roll(t - 1 / 120);
+            const n = Math.max(1, Math.min(14, Math.ceil(Math.abs(r0 - r1) * 1.6)));
+            for (let s = 0; s < n; s++) drawScene(t, n === 1 ? r0 : roll(t - (s / (n - 1)) / 120), 1 / n + (n > 1 ? 0.04 : 0));
+          }
+
+          // Odometer columns.
+          const DH = 330;
+          ["s5-c0", "s5-c1", "s5-c2"].forEach((id) => {
+            const strip = document.querySelector("#" + id + " .s5-strip");
+            for (let d = 0; d <= 10; d++) {
+              const s = document.createElement("span");
+              s.className = "s5-dg";
+              // Strip digits sit outside their clipped column by design.
+              s.setAttribute("data-layout-allow-overflow", "");
+              s.setAttribute("data-layout-allow-overlap", "");
+              s.textContent = String(d % 10);
+              strip.appendChild(s);
+            }
+          });
+          const strips = ["s5-c0", "s5-c1", "s5-c2"].map((id) => document.querySelector("#" + id + " .s5-strip"));
+          const rollNode = document.getElementById("s5-roll-node");
+          const roll2Node = document.getElementById("s5-roll2-node");
+          const hud = document.getElementById("s5-hud");
+          const mbNode = document.getElementById("s5-mb-node");
+          function odometer(t) {
+            const v = 145 * count01(t);
+            const ones = v % 10;
+            const tens = Math.floor(v / 10) + Math.max(0, (v % 10) - 9);
+            const hund = Math.floor(v / 100) + Math.max(0, (v % 100) - 99);
+            [ones, tens % 10, hund % 10].forEach((p, i) => (strips[i].style.transform = "translateY(" + (-p * DH).toFixed(2) + "px)"));
+            // No leading zeros: a column fades up as the count reaches it.
+            strips[1].style.opacity = Math.max(0, Math.min(1, v - 9)).toFixed(3);
+            strips[2].style.opacity = Math.max(0, Math.min(1, v - 99)).toFixed(3);
+            // Vertical smear on the spinning columns, capped so digits still flicker through.
+            const rate = 145 * countRate(t);
+            rollNode.setAttribute("stdDeviation", "0 " + Math.min(34, (rate * DH) / 60 / 3).toFixed(2));
+            const tensSpeed = (rate / 10) * DH / 60;
+            roll2Node.setAttribute("stdDeviation", "0 " + Math.min(22, tensSpeed / 3).toFixed(2));
+            // The whole counter swells as it climbs.
+            const sc = 0.86 + 0.14 * E("power2.out")(count01(t));
+            document.getElementById("s5-count").style.transform = "scale(" + sc.toFixed(4) + ")";
+          }
+
+          function frame(t) {
+            draw(t);
+            odometer(t);
+            hud.style.transform = "translateX(" + tx(t).toFixed(2) + "px) rotate(" + roll(t).toFixed(3) + "deg)";
+            mbNode.setAttribute("stdDeviation", Math.min(24, (whipV(t) / 6000) * 24).toFixed(2) + " 0");
+          }
+
+          const tl = gsap.timeline({ paused: true });
+          const clock = { t: 0 };
+          tl.to(clock, { t: 1.875, duration: 1.875, ease: "none", onUpdate: () => frame(clock.t) }, 0);
+          document.getElementById("s5-count").style.transformOrigin = "0% 85%";
+
+          // Arrive under the whip at a fifth of full strength, sharpen as the camera settles.
+          tl.fromTo("#s5-hud", { opacity: 0.25 }, { opacity: 1, duration: 0.12, ease: "power1.out" }, 0);
+          tl.fromTo("#s5-count", { opacity: 0 }, { opacity: 1, duration: 0.2, ease: "power1.out" }, 0.04);
+          tl.fromTo("#s5-side b", { opacity: 0, y: 24 }, { opacity: 1, y: 0, duration: 0.45, ease: "expo.out" }, 0.3);
+          tl.fromTo("#s5-side .s5-r", { opacity: 0, x: 20 }, { opacity: 1, x: 0, duration: 0.35, ease: "power3.out", stagger: 0.08 }, 0.45);
+          NS.forEach((n, i) => {
+            tl.fromTo("#s5-ns-" + i, { opacity: 0 }, { opacity: 1, duration: 0.18, ease: "power1.out" }, Math.max(0.12, mergeT(n.b.k) - 0.1));
+          });
+          // Land: the plus springs in on the bell, the digits punch.
+          tl.fromTo("#s5-plus", { scale: 0, opacity: 0, rotation: -90 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.34, ease: "back.out(2.4)" }, LAND);
+          tl.fromTo(".s5-col", { y: 0 }, { y: -14, duration: 0.07, ease: "power2.out" }, LAND);
+          tl.to(".s5-col", { y: 0, duration: 0.3, ease: "bounce.out" }, LAND + 0.07);
+          // Out: the HUD thins as the roll begins.
+          tl.to("#s5-hud", { opacity: 0.18, duration: 0.14, ease: "power1.in" }, 1.72);
+
+          frame(0);
+          window.__timelines["s5-stdlib"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

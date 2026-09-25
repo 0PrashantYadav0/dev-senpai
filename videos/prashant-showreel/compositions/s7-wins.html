@@ -1,0 +1,345 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      S7 WINS (global 11.25 - 13.125 s). Rules: kinetic-beat-slam (three phrases, three
+      entrance axes, one beat array), chromatic-glitch (brand-blue ghosts only),
+      svg-path-draw (the curl), techniques: canvas procedural art (the donut).
+      The rail winds around a drum into a ring, and his ASCII donut (the donut.c torus
+      from AsciiDonut.tsx, same maths) spins up inside it. Three wins slam in on the
+      beats. In the silence before the last bar the donut implodes to a single dot.
+      Hand-off: a dot at world (1300, 540) under the ground zoom.
+    -->
+    <template id="s7-template">
+      <style>
+        @font-face { font-family: "Young Serif"; font-weight: 400; font-display: block; src: url("assets/fonts/YoungSerif-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "JetBrains Mono"; font-weight: 700; font-display: block; src: url("assets/fonts/JetBrainsMono-700-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          color: #e6ebf0;
+        }
+        #s7-cv {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+        }
+        .s7-slam {
+          position: absolute;
+          left: 192px;
+          top: 300px;
+          width: 860px;
+          height: 480px;
+          opacity: 0;
+        }
+        .s7-ghost {
+          position: absolute;
+          left: -80px;
+          top: -150px;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 470px;
+          line-height: 500px;
+          color: transparent;
+          -webkit-text-stroke: 2px rgba(230, 235, 240, 0.16);
+          white-space: pre;
+          letter-spacing: -0.02em;
+        }
+        .s7-tw {
+          position: absolute;
+          left: 0;
+          top: 40px;
+          transform-origin: 0% 60%;
+        }
+        .s7-t {
+          position: relative;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 132px;
+          line-height: 138px;
+          letter-spacing: -0.02em;
+          white-space: pre;
+        }
+        .s7-t span {
+          display: block;
+        }
+        .s7-t.s7-g {
+          position: absolute;
+          left: 0;
+          top: 0;
+          opacity: 0;
+        }
+        .s7-t.s7-ga {
+          color: #4798f5;
+        }
+        .s7-t.s7-gb {
+          color: #0f5abd;
+        }
+        .s7-sub {
+          position: absolute;
+          left: 4px;
+          top: 336px;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 26px;
+          line-height: 34px;
+          letter-spacing: 0.14em;
+          color: #929caa;
+          white-space: pre;
+        }
+        .s7-sub b {
+          font-weight: 400;
+          color: #4798f5;
+        }
+      </style>
+      <div id="root" data-composition-id="s7-wins" data-width="1920" data-height="1080" data-duration="1.875">
+        <canvas id="s7-cv" width="1920" height="1080"></canvas>
+        <div class="s7-slam" id="s7-slam-0">
+          <div class="s7-ghost" data-layout-ignore>1st</div>
+          <div class="s7-tw">
+            <div class="s7-t s7-g s7-ga" data-layout-ignore><span>Overall</span><span>winner</span></div>
+            <div class="s7-t s7-g s7-gb" data-layout-ignore><span>Overall</span><span>winner</span></div>
+            <div class="s7-t"><span data-layout-allow-overlap>Overall</span><span data-layout-allow-overlap>winner</span></div>
+          </div>
+          <div class="s7-sub"><b>—</b> GENTECH THALES HACKATHON</div>
+        </div>
+        <div class="s7-slam" id="s7-slam-1">
+          <div class="s7-ghost" data-layout-ignore>11</div>
+          <div class="s7-tw">
+            <div class="s7-t s7-g s7-ga" data-layout-ignore><span>Global</span><span>top 11</span></div>
+            <div class="s7-t s7-g s7-gb" data-layout-ignore><span>Global</span><span>top 11</span></div>
+            <div class="s7-t"><span data-layout-allow-overlap>Global</span><span data-layout-allow-overlap>top 11</span></div>
+          </div>
+          <div class="s7-sub"><b>—</b> WALMART SPARKATHON</div>
+        </div>
+        <div class="s7-slam" id="s7-slam-2">
+          <div class="s7-ghost" data-layout-ignore>1813</div>
+          <div class="s7-tw">
+            <div class="s7-t s7-g s7-ga" data-layout-ignore><span>Codeforces</span><span>Specialist</span></div>
+            <div class="s7-t s7-g s7-gb" data-layout-ignore><span>Codeforces</span><span>Specialist</span></div>
+            <div class="s7-t"><span data-layout-allow-overlap>Codeforces</span><span data-layout-allow-overlap>Specialist</span></div>
+          </div>
+          <div class="s7-sub"><b>—</b> PEAK 1534  ·  CODECHEF 4-STAR, PEAK 1813</div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const CX = 960;
+          const CY = 540;
+          const RCX = 1300;
+          const RCY = 540;
+          const R = 290;
+          const BEAT = 60 / 128;
+          const SLAM = [0, BEAT, 2 * BEAT]; // global 11.25, 11.719, 12.188: the stabs
+          const easeCache = {};
+          const E = (n) => easeCache[n] || (easeCache[n] = gsap.parseEase(n));
+          const c01 = (v) => Math.max(0, Math.min(1, v));
+
+          // Ground zoom (global): 1 -> 1.3 over 11.05-11.6, then 1.3 -> 1.36 by 13.125.
+          const zoom = (t) => {
+            const g = t + 11.25;
+            if (g < 11.6) return 1 + 0.3 * E("expo.inOut")(c01((g - 11.05) / 0.55));
+            return 1.3 + 0.06 * E("sine.inOut")(c01((g - 11.6) / 1.525));
+          };
+
+          // The donut.c torus, same maths as src/components/home/AsciiDonut.tsx, plus luminance.
+          const DW = 56;
+          const DH = 26;
+          const CHARS = ".,-~:;=!*#$@";
+          const chars = new Array(DW * DH);
+          const lums = new Int8Array(DW * DH);
+          const zbuf = new Float32Array(DW * DH);
+          function donut(A, B) {
+            chars.fill(" ");
+            lums.fill(-1);
+            zbuf.fill(0);
+            const cA = Math.cos(A);
+            const sA = Math.sin(A);
+            const cB = Math.cos(B);
+            const sB = Math.sin(B);
+            for (let th = 0; th < 6.283; th += 0.07) {
+              const ct = Math.cos(th);
+              const st = Math.sin(th);
+              for (let p = 0; p < 6.283; p += 0.02) {
+                const sp = Math.sin(p);
+                const cp = Math.cos(p);
+                const h = ct + 2;
+                const D = 1 / (sp * h * sA + st * cA + 5);
+                const m = sp * h * cA - st * sA;
+                const x = Math.floor(DW / 2 + 23 * D * (cp * h * cB - m * sB));
+                const y = Math.floor(DH / 2 + 11.5 * D * (cp * h * sB + m * cB));
+                const o = x + DW * y;
+                const lum = Math.floor(8 * ((st * sA - sp * ct * cA) * cB - sp * ct * sA - st * cA - cp * ct * sB));
+                if (y >= 0 && y < DH && x >= 0 && x < DW && D > zbuf[o]) {
+                  zbuf[o] = D;
+                  const li = Math.max(lum, 0);
+                  chars[o] = CHARS[li];
+                  lums[o] = li;
+                }
+              }
+            }
+          }
+          const spinA = (t) => 5.6 + 1.7 * t + 3.4 * Math.pow(Math.max(0, t - 1.35), 2);
+          const spinB = (t) => 0.2 + 0.9 * t + 1.8 * Math.pow(Math.max(0, t - 1.35), 2);
+
+          // The curl: the rail's centre grabs the ring's left edge first, the ends wind round.
+          const NPTS = 220;
+          function curl(s, t) {
+            const lx = 960;
+            const ly = -540 + 2160 * s;
+            const th = Math.PI + 2 * Math.PI * (s - 0.5);
+            const cx = RCX + R * Math.cos(th);
+            const cy = RCY + R * Math.sin(th);
+            const d = Math.abs(s - 0.5) * 2 * 0.17;
+            const e = E("power3.inOut")(c01((t - 0.01 - d) / 0.26));
+            return [lx + (cx - lx) * e, ly + (cy - ly) * e];
+          }
+          // Implosion in the silence before the final bar (global 13.03 - 13.125).
+          const implode = (t) => 1 - E("power3.in")(c01((t - 1.765) / 0.085));
+
+          const cv = document.getElementById("s7-cv");
+          const ctx = cv.getContext("2d");
+          const CW = 16.8;
+          const CH = 33.6;
+          function draw(t) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, 1920, 1080);
+            const z = zoom(t);
+            const k = implode(t);
+            // world: zoom about the frame centre, then the implosion about the ring centre
+            const sx = z * k;
+            ctx.setTransform(sx, 0, 0, sx, CX + z * (RCX - CX) - sx * RCX, CY + z * (RCY - CY) - sx * RCY);
+            // ring / curl
+            ctx.strokeStyle = "#4798f5";
+            ctx.lineWidth = 3 / z;
+            ctx.lineJoin = "round";
+            ctx.beginPath();
+            for (let i = 0; i <= NPTS; i++) {
+              const p = curl(i / NPTS, t);
+              if (i === 0) ctx.moveTo(p[0], p[1]);
+              else ctx.lineTo(p[0], p[1]);
+            }
+            ctx.stroke();
+            // dial ticks around the finished ring
+            const tickIn = c01((t - 0.24) / 0.2);
+            if (tickIn > 0) {
+              const rot = spinB(t) * 0.6;
+              for (let i = 0; i < 60; i++) {
+                const a = rot + (i / 60) * Math.PI * 2;
+                const major = i % 5 === 0;
+                const r0 = R + 14;
+                const r1 = R + (major ? 34 : 24);
+                ctx.strokeStyle = major ? "rgba(230,235,240," + (0.55 * tickIn).toFixed(3) + ")" : "rgba(230,235,240," + (0.25 * tickIn).toFixed(3) + ")";
+                ctx.lineWidth = (major ? 3 : 2) / z;
+                ctx.beginPath();
+                ctx.moveTo(RCX + r0 * Math.cos(a), RCY + r0 * Math.sin(a));
+                ctx.lineTo(RCX + r1 * Math.cos(a), RCY + r1 * Math.sin(a));
+                ctx.stroke();
+              }
+            }
+            // the donut, revealed from the ring inwards
+            const rev = E("power2.out")(c01((t - 0.14) / 0.36));
+            if (rev > 0) {
+              donut(spinA(t), spinB(t));
+              ctx.font = "400 28px 'JetBrains Mono', monospace";
+              ctx.textAlign = "center";
+              ctx.textBaseline = "middle";
+              const build = c01((t - 1.35) / 0.4);
+              for (let row = 0; row < DH; row++) {
+                for (let col = 0; col < DW; col++) {
+                  const o = col + DW * row;
+                  const li = lums[o];
+                  if (li < 0) continue;
+                  const x = RCX + (col - DW / 2 + 0.5) * CW;
+                  const y = RCY + (row - DH / 2 + 0.5) * CH;
+                  const dist = Math.hypot(x - RCX, (y - RCY) * 1.0) / R;
+                  if (dist < 1 - rev * 1.05) continue;
+                  let fill;
+                  if (li >= 8) fill = "#e6ebf0";
+                  else if (li >= 4) fill = "#4798f5";
+                  else fill = "rgba(71,152,245," + (0.5 + 0.3 * build).toFixed(3) + ")";
+                  ctx.fillStyle = fill;
+                  ctx.fillText(chars[o], x, y);
+                }
+              }
+            }
+            // the dot left behind
+            if (k < 0.35) {
+              ctx.setTransform(1, 0, 0, 1, 0, 0);
+              const px = CX + z * (RCX - CX);
+              const py = CY + z * (RCY - CY);
+              const r = 9 * c01((0.35 - k) / 0.2);
+              ctx.fillStyle = "#e6ebf0";
+              ctx.beginPath();
+              ctx.arc(px, py, r, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+
+          // Brand-blue chromatic ghosts: quantized jitter after each slam, then a clean hold.
+          const gh = (n) => {
+            const x = Math.sin(n * 127.1 + 311.7) * 43758.5453;
+            return x - Math.floor(x);
+          };
+          const slams = [0, 1, 2].map((i) => ({
+            ga: document.querySelector("#s7-slam-" + i + " .s7-ga"),
+            gb: document.querySelector("#s7-slam-" + i + " .s7-gb"),
+          }));
+          function glitch(t) {
+            slams.forEach((s, i) => {
+              let amp = 0;
+              const t0 = SLAM[i];
+              if (t >= t0 && t < t0 + 0.16) amp = 1 - (t - t0) / 0.16;
+              if (i === 2 && t >= 1.6 && t < 1.76) amp = Math.max(amp, 0.8);
+              const step = Math.floor(t / (1 / 30));
+              if (amp <= 0) {
+                s.ga.style.opacity = "0";
+                s.gb.style.opacity = "0";
+                s.ga.style.transform = "translate(0px,0px)";
+                s.gb.style.transform = "translate(0px,0px)";
+                return;
+              }
+              const dx = (gh(step * 3 + i) - 0.5) * 34 * amp;
+              const dy = (gh(step * 5 + i + 9) - 0.5) * 10 * amp;
+              s.ga.style.opacity = (0.9 * amp).toFixed(3);
+              s.gb.style.opacity = (0.9 * amp).toFixed(3);
+              s.ga.style.transform = "translate(" + (-Math.abs(dx) - 6 * amp).toFixed(1) + "px," + dy.toFixed(1) + "px)";
+              s.gb.style.transform = "translate(" + (Math.abs(dx) + 6 * amp).toFixed(1) + "px," + (-dy).toFixed(1) + "px)";
+            });
+          }
+
+          const tl = gsap.timeline({ paused: true });
+          const clock = { t: 0 };
+          tl.to(clock, { t: 1.875, duration: 1.875, ease: "none", onUpdate: () => { draw(clock.t); glitch(clock.t); } }, 0);
+
+          // Slam windows: each one cuts the last off on its beat.
+          tl.fromTo("#s7-slam-0", { opacity: 0 }, { opacity: 1, duration: 0.02, ease: "none" }, SLAM[0]);
+          tl.set("#s7-slam-0", { opacity: 0 }, SLAM[1]);
+          tl.fromTo("#s7-slam-1", { opacity: 0 }, { opacity: 1, duration: 0.02, ease: "none", immediateRender: false }, SLAM[1]);
+          tl.set("#s7-slam-1", { opacity: 0 }, SLAM[2]);
+          tl.fromTo("#s7-slam-2", { opacity: 0 }, { opacity: 1, duration: 0.02, ease: "none", immediateRender: false }, SLAM[2]);
+          tl.to("#s7-slam-2", { opacity: 0, duration: 0.12, ease: "steps(3)" }, 1.64);
+
+          // Three entrances, three axes.
+          tl.fromTo("#s7-slam-0 .s7-tw", { scale: 1.5, filter: "blur(14px)" }, { scale: 1, filter: "blur(0px)", duration: 0.24, ease: "power4.out" }, SLAM[0]);
+          tl.fromTo("#s7-slam-1 .s7-tw", { x: -200, skewX: -16 }, { x: 0, skewX: 0, duration: 0.3, ease: "expo.out" }, SLAM[1]);
+          tl.fromTo("#s7-slam-2 .s7-tw", { y: 120, rotation: 6 }, { y: 0, rotation: 0, duration: 0.36, ease: "back.out(1.6)" }, SLAM[2]);
+          // Ghost numerals drift against the type for depth.
+          tl.fromTo("#s7-slam-0 .s7-ghost", { x: 60, opacity: 0 }, { x: 0, opacity: 1, duration: 0.45, ease: "expo.out" }, SLAM[0]);
+          tl.fromTo("#s7-slam-1 .s7-ghost", { x: 90, opacity: 0 }, { x: 20, opacity: 1, duration: 0.45, ease: "expo.out" }, SLAM[1]);
+          tl.fromTo("#s7-slam-2 .s7-ghost", { x: 60, opacity: 0 }, { x: -40, opacity: 1, duration: 0.7, ease: "expo.out" }, SLAM[2]);
+          // Sub lines land a sixteenth after each hit.
+          [0, 1, 2].forEach((i) => {
+            tl.fromTo("#s7-slam-" + i + " .s7-sub", { opacity: 0, x: -16 }, { opacity: 1, x: 0, duration: 0.2, ease: "power3.out" }, SLAM[i] + BEAT / 4);
+          });
+
+          draw(0);
+          window.__timelines["s7-wins"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

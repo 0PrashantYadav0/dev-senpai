@@ -1,0 +1,264 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      The workbench ground, ported from src/components/layout/WorkbenchGrid.tsx:
+      a 48px line grid with blue traces running along it. Deterministic here:
+      traces are seeded, the camera is a pure function of time, and fast camera
+      moves are motion-blurred by sampling the camera across a 180-degree shutter.
+    -->
+    <template id="ground-template">
+      <style>
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+        }
+        #ground-fill {
+          position: absolute;
+          inset: 0;
+          background: #060709;
+        }
+        #ground-canvas {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+        }
+        #ground-vignette {
+          position: absolute;
+          inset: 0;
+          background: radial-gradient(ellipse 78% 74% at 50% 50%, rgba(6, 7, 9, 0) 58%, rgba(6, 7, 9, 0.78) 100%);
+        }
+      </style>
+      <div id="root" data-composition-id="ground" data-width="1920" data-height="1080" data-duration="15">
+        <div id="ground-fill"></div>
+        <canvas id="ground-canvas" width="1920" height="1080"></canvas>
+        <div id="ground-vignette"></div>
+      </div>
+      <script>
+        (function () {
+          const W = 1920;
+          const H = 1080;
+          const CELL = 48;
+          const CX = 960;
+          const CY = 540;
+          const BEAT = 60 / 128;
+          const SHUTTER = 1 / 120; // 180 degrees at 60 fps
+          const canvas = document.getElementById("ground-canvas");
+          const ctx = canvas.getContext("2d");
+
+          const easeCache = {};
+          const ease = (name) => easeCache[name] || (easeCache[name] = gsap.parseEase(name || "none"));
+
+          // Camera keyframes in global seconds: [time, value, easeIntoThisKey].
+          const CAM = {
+            z: [
+              [0, 1], [1.6, 1.03, "sine.inOut"], [1.875, 1.065, "power2.in"], [2.35, 1, "expo.out"],
+              [5.625, 1], [5.72, 1.03, "power2.out"], [6.1, 1, "power2.inOut"],
+              [11.05, 1], [11.6, 1.3, "expo.inOut"], [13.125, 1.36, "sine.inOut"],
+              [13.75, 0.94, "expo.out"], [15, 0.97, "sine.inOut"],
+            ],
+            x: [
+              [0, 0], [1.875, 0], [3.75, -36, "sine.inOut"], [5.625, -168, "sine.inOut"],
+              [7.2, -216, "sine.in"], [7.8, -1416, "power3.inOut"], [9.375, -1560, "sine.out"],
+            ],
+            y: [[0, 0], [9.57, 0], [11.25, 96, "sine.inOut"], [13.125, 120, "sine.out"], [13.75, 0, "expo.out"]],
+            r: [[0, 0], [9.18, 0], [9.57, 90, "expo.inOut"]],
+          };
+          function chan(keys, t) {
+            if (t <= keys[0][0]) return keys[0][1];
+            for (let i = 1; i < keys.length; i++) {
+              const k1 = keys[i];
+              const k0 = keys[i - 1];
+              if (t <= k1[0]) {
+                const p = k1[0] === k0[0] ? 1 : (t - k0[0]) / (k1[0] - k0[0]);
+                return k0[1] + (k1[1] - k0[1]) * ease(k1[2])(p);
+              }
+            }
+            return keys[keys.length - 1][1];
+          }
+          const cam = (t) => ({ z: chan(CAM.z, t), x: chan(CAM.x, t), y: chan(CAM.y, t), r: chan(CAM.r, t) });
+          function applyCam(c) {
+            const a = (c.r * Math.PI) / 180;
+            const cs = Math.cos(a) * c.z;
+            const sn = Math.sin(a) * c.z;
+            // screen = C + z R (P - C + offset)
+            const ox = c.x - CX;
+            const oy = c.y - CY;
+            ctx.setTransform(cs, sn, -sn, cs, CX + cs * ox - sn * oy, CY + sn * ox + cs * oy);
+          }
+
+          // Kick pulses, same grid as the score: beats from the drop to bar 7 beat 3, then the final hit.
+          const KICKS = [];
+          for (let t = 1.875; t < 12.6; t += BEAT) KICKS.push([t, 1]);
+          KICKS.push([13.125, 2.2]);
+          function pulse(t) {
+            let e = 0;
+            for (const [k, g] of KICKS) if (t >= k && t - k < 0.8) e = Math.max(e, g * Math.exp(-(t - k) / 0.14));
+            return e;
+          }
+
+          // Seeded traces: grid-aligned legs with 90-degree turns, spawned where the camera is looking.
+          function mulberry32(a) {
+            return function () {
+              a |= 0;
+              a = (a + 0x6d2b79f5) | 0;
+              let t = Math.imul(a ^ (a >>> 15), 1 | a);
+              t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+              return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+            };
+          }
+          const rng = mulberry32(4898);
+          const DIRS = [[1, 0], [0, 1], [-1, 0], [0, -1]];
+          const TRACES = [];
+          for (let i = 0; i < 12; i++) {
+            const t0 = 0.55 + i * 1.12 + rng() * 0.5;
+            const life = 3.6 + rng() * 2.2;
+            const speed = 170 + rng() * 140;
+            const c = cam(t0);
+            let px = CX - c.x + (Math.floor(rng() * 36) - 18) * CELL;
+            let py = CY - c.y + (Math.floor(rng() * 18) - 9) * CELL;
+            let dir = Math.floor(rng() * 4);
+            const pts = [[px, py]];
+            const cum = [0];
+            let total = 0;
+            while (total < speed * life + 400) {
+              const leg = (2 + Math.floor(rng() * 5)) * CELL;
+              px += DIRS[dir][0] * leg;
+              py += DIRS[dir][1] * leg;
+              total += leg;
+              pts.push([px, py]);
+              cum.push(total);
+              dir = (dir + (rng() < 0.5 ? 1 : 3)) % 4;
+            }
+            TRACES.push({ t0, life, speed, pts, cum });
+          }
+          function pointAt(tr, d) {
+            d = Math.max(0, d);
+            let i = 1;
+            while (i < tr.cum.length - 1 && tr.cum[i] < d) i++;
+            const a = tr.pts[i - 1];
+            const b = tr.pts[i];
+            const seg = tr.cum[i] - tr.cum[i - 1];
+            const u = seg ? Math.min(1, (d - tr.cum[i - 1]) / seg) : 0;
+            return [a[0] + (b[0] - a[0]) * u, a[1] + (b[1] - a[1]) * u];
+          }
+
+          function drawGrid(t, c, alpha, reveal) {
+            applyCam(c);
+            // Visible world bounds (generous, covers rotation and zoom-out).
+            const span = 1500 / c.z;
+            const wx0 = CX - c.x - span;
+            const wx1 = CX - c.x + span;
+            const wy0 = CY - c.y - span;
+            const wy1 = CY - c.y + span;
+            const kx0 = Math.floor((wx0 - CX) / CELL);
+            const kx1 = Math.ceil((wx1 - CX) / CELL);
+            const ky0 = Math.floor((wy0 - CY) / CELL);
+            const ky1 = Math.ceil((wy1 - CY) / CELL);
+            ctx.lineWidth = 1 / c.z;
+            for (let k = kx0; k <= kx1; k++) {
+              const X = CX + k * CELL;
+              const a = alpha * Math.max(0, Math.min(1, (reveal - Math.abs(X - CX)) / 260));
+              if (a <= 0.001) continue;
+              ctx.strokeStyle = "rgba(230,235,240," + a.toFixed(4) + ")";
+              ctx.beginPath();
+              ctx.moveTo(X, wy0);
+              ctx.lineTo(X, wy1);
+              ctx.stroke();
+            }
+            for (let k = ky0; k <= ky1; k++) {
+              const Y = CY + k * CELL;
+              const a = alpha * Math.max(0, Math.min(1, (reveal - Math.abs(Y - CY) * 1.78) / 260));
+              if (a <= 0.001) continue;
+              ctx.strokeStyle = "rgba(230,235,240," + a.toFixed(4) + ")";
+              ctx.beginPath();
+              ctx.moveTo(wx0, Y);
+              ctx.lineTo(wx1, Y);
+              ctx.stroke();
+            }
+            // Cutting-mat crosses on every fourth intersection.
+            ctx.lineWidth = 1.5 / c.z;
+            for (let i = Math.ceil(kx0 / 4) * 4; i <= kx1; i += 4) {
+              for (let j = Math.ceil(ky0 / 4) * 4; j <= ky1; j += 4) {
+                const X = CX + i * CELL;
+                const Y = CY + j * CELL;
+                const r = Math.max(Math.abs(X - CX), Math.abs(Y - CY) * 1.78);
+                const a = alpha * 2.4 * Math.max(0, Math.min(1, (reveal - r) / 260));
+                if (a <= 0.002) continue;
+                ctx.strokeStyle = "rgba(230,235,240," + a.toFixed(4) + ")";
+                ctx.beginPath();
+                ctx.moveTo(X - 5, Y);
+                ctx.lineTo(X + 5, Y);
+                ctx.moveTo(X, Y - 5);
+                ctx.lineTo(X, Y + 5);
+                ctx.stroke();
+              }
+            }
+          }
+
+          function drawTraces(t, c, glow) {
+            applyCam(c);
+            ctx.lineWidth = 1.5 / c.z;
+            for (const tr of TRACES) {
+              const age = t - tr.t0;
+              if (age < 0 || age > tr.life) continue;
+              const life = Math.min(1, age / 0.5, (tr.life - age) / 1.0);
+              const a = 0.72 * life * (1 + 0.5 * glow);
+              const d = age * tr.speed;
+              const TRAIL = 240;
+              const SEGS = 14;
+              let prev = pointAt(tr, d - TRAIL);
+              for (let s = 1; s <= SEGS; s++) {
+                const p = pointAt(tr, d - TRAIL + (TRAIL * s) / SEGS);
+                const k = s / SEGS;
+                ctx.strokeStyle = "rgba(71,152,245," + (a * k * k).toFixed(4) + ")";
+                ctx.beginPath();
+                ctx.moveTo(prev[0], prev[1]);
+                ctx.lineTo(p[0], p[1]);
+                ctx.stroke();
+                prev = p;
+              }
+              const h = pointAt(tr, d);
+              ctx.fillStyle = "rgba(71,152,245," + Math.min(1, a * 1.2).toFixed(4) + ")";
+              ctx.fillRect(h[0] - 2.5, h[1] - 2.5, 5, 5);
+            }
+          }
+
+          function draw(t) {
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.clearRect(0, 0, W, H);
+            // The grid powers on from the centre outwards with the first cursor blink.
+            const on = ease("expo.out")(Math.max(0, Math.min(1, (t - 0.12) / 1.1)));
+            const reveal = on >= 1 ? 1e9 : on * 2400;
+            const glow = pulse(t);
+            const alpha = 0.085 * (1 + 0.6 * glow);
+            // Motion blur: sample the camera across the shutter when it moves fast.
+            const c0 = cam(t);
+            const c1 = cam(t - SHUTTER);
+            const disp =
+              Math.hypot(c0.x - c1.x, c0.y - c1.y) * c0.z +
+              (Math.abs(c0.r - c1.r) * Math.PI * 1100) / 180 +
+              Math.abs(c0.z - c1.z) * 1100;
+            const n = Math.max(1, Math.min(18, Math.ceil(disp / 4)));
+            for (let s = 0; s < n; s++) {
+              const cs = n === 1 ? c0 : cam(t - (SHUTTER * s) / (n - 1));
+              drawGrid(t, cs, alpha / n, reveal);
+            }
+            drawTraces(t, c0, glow);
+          }
+
+          const tl = gsap.timeline({ paused: true });
+          const clock = { t: 0 };
+          tl.to(clock, { t: 15, duration: 15, ease: "none", onUpdate: () => draw(clock.t) }, 0);
+          draw(0);
+          window.__timelines["ground"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>

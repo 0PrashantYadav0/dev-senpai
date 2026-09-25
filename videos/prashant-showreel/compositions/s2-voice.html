@@ -1,0 +1,325 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <!--
+      S2 VOICE AI (global 1.875 - 3.75 s). Rules: gsap-effects (audio visualizer, driven
+      from the beat grid rather than Web Audio), waterfall-entry, spring-pop-entrance,
+      svg-path-draw (the tap stems).
+      On the downbeat the flat line erupts into a speech-like waveform. A signal packet
+      rides the wave and lights the pipeline taps VAD -> STT -> NLU -> TTS on the bells
+      of the score. Hand-off: the wave decays back to a flat 3px line at y=540.
+    -->
+    <template id="s2-template">
+      <style>
+        @font-face { font-family: "Young Serif"; font-weight: 400; font-display: block; src: url("assets/fonts/YoungSerif-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "JetBrains Mono"; font-weight: 400; font-display: block; src: url("assets/fonts/JetBrainsMono-400-latin.woff2") format("woff2"); }
+        @font-face { font-family: "Instrument Sans"; font-weight: 400 700; font-stretch: 75% 100%; font-display: block; src: url("assets/fonts/InstrumentSans-400_700-latin.woff2") format("woff2"); }
+        #root {
+          position: absolute;
+          inset: 0;
+          overflow: hidden;
+          color: #e6ebf0;
+        }
+        #s2-world {
+          position: absolute;
+          inset: 0;
+          transform-origin: 960px 540px;
+        }
+        #s2-wave {
+          position: absolute;
+          inset: 0;
+          width: 1920px;
+          height: 1080px;
+        }
+        .s2-line {
+          position: absolute;
+          left: 192px;
+          height: 150px;
+          overflow: hidden;
+          font-family: "Young Serif", Georgia, serif;
+          font-size: 140px;
+          line-height: 150px;
+          letter-spacing: -0.02em;
+          white-space: pre;
+        }
+        #s2-l1 { top: 120px; }
+        #s2-l2 { top: 260px; }
+        .s2-ch {
+          display: inline-block;
+        }
+        #s2-l2 .s2-em {
+          color: #4798f5;
+        }
+        .s2-tap {
+          position: absolute;
+          top: 540px;
+          width: 240px;
+          margin-left: -120px;
+          height: 330px;
+        }
+        .s2-stem {
+          position: absolute;
+          left: 119px;
+          top: 36px;
+          width: 2px;
+          height: 150px;
+          background: repeating-linear-gradient(180deg, #4798f5 0 6px, rgba(71, 152, 245, 0) 6px 12px);
+          transform-origin: 50% 0%;
+        }
+        .s2-chip {
+          position: absolute;
+          left: 50%;
+          top: 186px;
+          width: 150px;
+          margin-left: -75px;
+          height: 66px;
+          box-sizing: border-box;
+          border: 2px solid #31363f;
+          border-radius: 8px;
+          background: #111318;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 32px;
+          line-height: 62px;
+          text-align: center;
+          letter-spacing: 0.06em;
+          color: #929caa;
+        }
+        .s2-chip-lit {
+          position: absolute;
+          inset: -2px;
+          border: 2px solid #4798f5;
+          border-radius: 8px;
+          background: rgba(71, 152, 245, 0.16);
+          color: #e6ebf0;
+        }
+        .s2-sub {
+          position: absolute;
+          left: 0;
+          top: 266px;
+          width: 240px;
+          text-align: center;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 20px;
+          line-height: 26px;
+          color: #929caa;
+        }
+        #s2-spec {
+          position: absolute;
+          right: 192px;
+          top: 132px;
+          width: 420px;
+          text-align: right;
+          font-family: "JetBrains Mono", monospace;
+          font-size: 24px;
+          line-height: 38px;
+          color: #e6ebf0;
+        }
+        #s2-spec .s2-k {
+          color: #929caa;
+          letter-spacing: 0.18em;
+          font-size: 20px;
+        }
+        .s2-row {
+          display: block;
+          white-space: pre;
+        }
+        #s2-cred {
+          position: absolute;
+          left: 192px;
+          top: 876px;
+          font-family: "Instrument Sans", sans-serif;
+          font-weight: 600;
+          font-size: 32px;
+          line-height: 44px;
+          color: #e6ebf0;
+        }
+        #s2-cred .s2-when {
+          font-family: "JetBrains Mono", monospace;
+          font-weight: 400;
+          font-size: 22px;
+          color: #929caa;
+          margin-left: 16px;
+        }
+        .s2-cred-row {
+          display: block;
+          white-space: pre;
+        }
+      </style>
+      <div id="root" data-composition-id="s2-voice" data-width="1920" data-height="1080" data-duration="1.875">
+        <div id="s2-world">
+          <div class="s2-line" id="s2-l1"></div>
+          <div class="s2-line" id="s2-l2"></div>
+          <div id="s2-spec">
+            <span class="s2-row s2-k" id="s2-spec-k">MODELS WIRED IN</span>
+            <span class="s2-row" id="s2-spec-0">gemini</span>
+            <span class="s2-row" id="s2-spec-1">deepgram</span>
+            <span class="s2-row" id="s2-spec-2">openai / groq</span>
+          </div>
+          <div class="s2-tap" id="s2-tap-0" style="left: 560px"><div class="s2-stem"></div><div class="s2-chip">VAD<div class="s2-chip-lit">VAD</div></div><div class="s2-sub">voice activity</div></div>
+          <div class="s2-tap" id="s2-tap-1" style="left: 880px"><div class="s2-stem"></div><div class="s2-chip">STT<div class="s2-chip-lit">STT</div></div><div class="s2-sub">speech to text</div></div>
+          <div class="s2-tap" id="s2-tap-2" style="left: 1200px"><div class="s2-stem"></div><div class="s2-chip">NLU<div class="s2-chip-lit">NLU</div></div><div class="s2-sub">intent</div></div>
+          <div class="s2-tap" id="s2-tap-3" style="left: 1520px"><div class="s2-stem"></div><div class="s2-chip">TTS<div class="s2-chip-lit">TTS</div></div><div class="s2-sub">text to speech</div></div>
+          <canvas id="s2-wave" width="1920" height="1080" data-layout-allow-overflow data-layout-allow-occlusion></canvas>
+          <div id="s2-cred">
+            <span class="s2-cred-row" id="s2-cred-0">Eternal (Zomato)<span class="s2-when">2025</span></span>
+            <span class="s2-cred-row" id="s2-cred-1">Nugget by Zomato<span class="s2-when">2025–26</span></span>
+          </div>
+        </div>
+      </div>
+      <script>
+        (function () {
+          const W = 1920;
+          const Y0 = 540;
+          const AMP = 112;
+          const BEAT = 60 / 128;
+          const TAPS = [560, 880, 1200, 1520];
+          // Taps light on the score's bells: global 2.344, 2.578, 2.813, 3.047.
+          const LIT = [0.469, 0.703, 0.938, 1.172];
+          const SPEED = (TAPS[1] - TAPS[0]) / (LIT[1] - LIT[0]);
+          const packetX = (t) => TAPS[0] + (t - LIT[0]) * SPEED;
+
+          // Headline, one span per glyph so it can rise out of its line mask.
+          function fill(id, text, emFrom) {
+            const el = document.getElementById(id);
+            return [...text].map((c, i) => {
+              const s = document.createElement("span");
+              s.className = "s2-ch" + (emFrom != null && i >= emFrom ? " s2-em" : "");
+              s.textContent = c;
+              el.appendChild(s);
+              return s;
+            });
+          }
+          const L1 = fill("s2-l1", "Voice bots,");
+          const L2 = fill("s2-l2", "in production.", 3);
+
+          // Speech-like signal: three carriers under syllable bursts that travel with the packet.
+          const BUMPS = [
+            { x0: -140, w: 120, a: 0.95 },
+            { x0: -420, w: 90, a: 0.7 },
+            { x0: -640, w: 150, a: 1.0 },
+            { x0: -980, w: 110, a: 0.8 },
+            { x0: -1260, w: 140, a: 0.9 },
+            { x0: 260, w: 170, a: 0.55 },
+            { x0: 700, w: 130, a: 0.5 },
+          ];
+          function amp(t) {
+            if (t <= 0) return 0;
+            let a = (0.55 + 1.15 * Math.exp(-t / 0.16)) * Math.min(1, t / 0.025);
+            for (let k = 1; k < 4; k++) {
+              const kt = k * BEAT;
+              if (t >= kt) a += 0.32 * Math.exp(-(t - kt) / 0.12);
+            }
+            if (t > 1.45) a *= Math.pow(Math.max(0, (1.875 - t) / 0.425), 2);
+            return a;
+          }
+          function sig(x, t) {
+            const u = x / W;
+            const taper = Math.pow(Math.sin(Math.PI * u), 0.55);
+            let env = 0.3;
+            for (const b of BUMPS) {
+              const d = (x - (b.x0 + SPEED * t)) / b.w;
+              env += b.a * Math.exp(-d * d);
+            }
+            env = Math.min(1.12, env);
+            const c =
+              Math.sin(2 * Math.PI * u * 26 - t * 23) * 0.6 +
+              Math.sin(2 * Math.PI * u * 61 + t * 31 + 1.3) * 0.27 +
+              Math.sin(2 * Math.PI * u * 113 - t * 47 + 0.4) * 0.13;
+            return taper * env * c;
+          }
+          const yAt = (x, t) => Y0 - AMP * amp(t) * sig(x, t);
+
+          const cv = document.getElementById("s2-wave");
+          const ctx = cv.getContext("2d");
+          function stroke(t, style, width) {
+            ctx.strokeStyle = style;
+            ctx.lineWidth = width;
+            ctx.beginPath();
+            for (let x = 0; x <= W; x += 3) {
+              const y = yAt(x, t);
+              if (x === 0) ctx.moveTo(x, y);
+              else ctx.lineTo(x, y);
+            }
+            ctx.stroke();
+          }
+          function draw(t) {
+            ctx.clearRect(0, 0, W, 1080);
+            ctx.lineJoin = "round";
+            ctx.lineCap = "round";
+            // Phosphor persistence: two fading echoes behind the live trace.
+            if (t > 0.05) stroke(t - 0.06, "rgba(71,152,245,0.16)", 3);
+            if (t > 0.025) stroke(t - 0.03, "rgba(71,152,245,0.36)", 3);
+            stroke(t, "#4798f5", 3);
+            // The packet: a white head with a short lit stretch of wave behind it.
+            const px = packetX(t);
+            if (t > 0.05 && px > -40 && px < W + 40) {
+              const TRAIL = 150;
+              for (let s = 0; s < 12; s++) {
+                const xa = px - TRAIL + (TRAIL * s) / 12;
+                const xb = px - TRAIL + (TRAIL * (s + 1)) / 12;
+                ctx.strokeStyle = "rgba(230,235,240," + ((s + 1) / 12) * 0.9 + ")";
+                ctx.lineWidth = 3.5;
+                ctx.beginPath();
+                ctx.moveTo(xa, yAt(xa, t));
+                ctx.lineTo(xb, yAt(xb, t));
+                ctx.stroke();
+              }
+              ctx.fillStyle = "#e6ebf0";
+              ctx.beginPath();
+              ctx.arc(px, yAt(px, t), 7, 0, Math.PI * 2);
+              ctx.fill();
+            }
+          }
+
+          const tl = gsap.timeline({ paused: true });
+          // Camera: the drop punches in from the S1 push (1.065) back to 1.
+          tl.fromTo("#s2-world", { scale: 1.065 }, { scale: 1, duration: 0.475, ease: "expo.out" }, 0);
+
+          const clock = { t: 0 };
+          tl.to(clock, { t: 1.875, duration: 1.875, ease: "none", onUpdate: () => draw(clock.t) }, 0);
+
+          // Headline rises out of its masks, glyph by glyph; line two follows.
+          L1.forEach((el, i) => tl.fromTo(el, { yPercent: 105 }, { yPercent: 0, duration: 0.55, ease: "expo.out" }, 0.02 + i * 0.018));
+          L2.forEach((el, i) => tl.fromTo(el, { yPercent: 105 }, { yPercent: 0, duration: 0.55, ease: "expo.out" }, 0.13 + i * 0.016));
+          // ...and drops back through them on the way out.
+          [...L1, ...L2].forEach((el, i) => tl.to(el, { yPercent: 108, duration: 0.2, ease: "power3.in" }, 1.46 + i * 0.006));
+
+          // Taps: chips arrive dim just ahead of the packet, then light as it passes.
+          TAPS.forEach((x, i) => {
+            const tap = "#s2-tap-" + i;
+            const arrive = LIT[i] - 0.28;
+            tl.fromTo(tap + " .s2-chip", { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.26, ease: "back.out(1.8)" }, arrive);
+            tl.fromTo(tap + " .s2-sub", { opacity: 0, y: -8 }, { opacity: 1, y: 0, duration: 0.25, ease: "power2.out" }, arrive + 0.08);
+            tl.fromTo(tap + " .s2-stem", { scaleY: 0 }, { scaleY: 1, duration: 0.14, ease: "power2.out" }, LIT[i] - 0.02);
+            tl.fromTo(tap + " .s2-chip-lit", { opacity: 0 }, { opacity: 1, duration: 0.05, ease: "none" }, LIT[i]);
+            // A small kick on the chip as the packet passes.
+            tl.to(tap + " .s2-chip", { scale: 1.12, duration: 0.06, ease: "power2.out" }, LIT[i]);
+            tl.to(tap + " .s2-chip", { scale: 1, duration: 0.22, ease: "power2.inOut" }, LIT[i] + 0.06);
+            // Out: stems retract into the line, chips sink away.
+            tl.to(tap + " .s2-stem", { scaleY: 0, duration: 0.16, ease: "power2.in" }, 1.52 + i * 0.03);
+            tl.to([tap + " .s2-chip", tap + " .s2-sub"], { opacity: 0, y: 26, duration: 0.2, ease: "power2.in" }, 1.55 + i * 0.03);
+          });
+
+          // Spec sheet types in, one row per sixteenth.
+          const specRows = ["#s2-spec-k", "#s2-spec-0", "#s2-spec-1", "#s2-spec-2"];
+          specRows.forEach((r, i) => {
+            tl.fromTo(r, { opacity: 0, x: 18 }, { opacity: 1, x: 0, duration: 0.22, ease: "power3.out" }, 0.5 + i * 0.07);
+            tl.to(r, { opacity: 0, x: 18, duration: 0.16, ease: "power2.in" }, 1.5 + i * 0.03);
+          });
+
+          // Credits slide in on beat three.
+          ["#s2-cred-0", "#s2-cred-1"].forEach((r, i) => {
+            tl.fromTo(r, { opacity: 0, x: -36 }, { opacity: 1, x: 0, duration: 0.4, ease: "expo.out" }, 0.938 + i * 0.07);
+            tl.to(r, { opacity: 0, x: -24, duration: 0.18, ease: "power2.in" }, 1.55 + i * 0.03);
+          });
+
+          draw(0);
+          window.__timelines["s2-voice"] = tl;
+        })();
+      </script>
+    </template>
+  </body>
+</html>
