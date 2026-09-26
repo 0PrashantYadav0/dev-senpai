@@ -75,7 +75,7 @@ export default function PullRequestTabs({ data, ages, user }: Props) {
                 <p className="mt-0.5 truncate text-xs text-muted-foreground">
                   {pr.repo}
                   <span className="mx-1.5 opacity-50">#{pr.number}</span>
-                  {ages[pr.url]}
+                  <span className="label">{ages[pr.url]}</span>
                 </p>
               </div>
             </li>

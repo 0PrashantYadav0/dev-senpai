@@ -9,6 +9,7 @@ export default function ContactStrip() {
 
   return (
     <section className="rounded-lg border bg-card p-6 sm:p-8">
+      <p className="label mb-3">08 / CONTACT</p>
       <h2 className="display-md text-2xl sm:text-3xl">Want to know more about me?</h2>
       <p className="measure mt-3 text-muted-foreground">
         Ask Dev Senpai anything about my work, or send a note and I will reply

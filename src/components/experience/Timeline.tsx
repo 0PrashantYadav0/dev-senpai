@@ -24,7 +24,7 @@ export default function Timeline({ items }: { items: TimelineEntry[] }) {
           key={`${item.name}-${i}`}
           className="grid gap-x-6 gap-y-2 py-6 first:pt-0 sm:grid-cols-[10rem_1fr]"
         >
-          <div className="text-sm text-muted-foreground">
+          <div className="label">
             <time className="block">{item.start}</time>
             <span className="block">to {item.end ?? "present"}</span>
             {item.meta && <span className="mt-1 block">{item.meta}</span>}
@@ -68,7 +68,7 @@ export default function Timeline({ items }: { items: TimelineEntry[] }) {
             )}
 
             {item.tech && item.tech.length > 0 && (
-              <p className="mt-3 text-xs text-muted-foreground">{item.tech.join(", ")}</p>
+              <p className="label mt-3">{item.tech.join(" · ")}</p>
             )}
           </div>
         </li>
