@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { GRID_KEY, markPlayed, motionMode, playedThisSession, unmarkPlayed } from "@/components/motion/runtime";
+import { clamp01, expoOut } from "@/lib/motion";
 
 /**
  * The page ground: a fine line grid with a few blue traces travelling
@@ -40,6 +42,23 @@ export default function WorkbenchGrid() {
     let running = false;
     const traces: Trace[] = [];
 
+    // First load of a tab session: the grid powers on from the centre, the
+    // reveal front easing out over 1.1s, as the reel's ground does.
+    let powerFrom = -1;
+    if (motionMode() === "animate" && !playedThisSession(GRID_KEY)) {
+      markPlayed(GRID_KEY);
+      powerFrom = performance.now();
+    }
+    const powerReveal = () => {
+      if (powerFrom < 0) return Infinity;
+      const on = expoOut(((performance.now() - powerFrom) / 1000 - 0.12) / 1.1);
+      if (on >= 1) {
+        powerFrom = -1;
+        return Infinity;
+      }
+      return on * (Math.hypot(w / 2, h / 2) + 260);
+    };
+
     const css = () => getComputedStyle(document.documentElement);
     let ink = "0 0% 50%";
     let signal = "212 90% 62%";
@@ -67,18 +86,42 @@ export default function WorkbenchGrid() {
 
     const drawGrid = () => {
       ctx.clearRect(0, 0, w, h);
-      ctx.strokeStyle = `hsl(${ink} / 0.045)`;
       ctx.lineWidth = 1;
-      ctx.beginPath();
+      const reveal = powerReveal();
+      if (reveal === Infinity) {
+        ctx.strokeStyle = `hsl(${ink} / 0.045)`;
+        ctx.beginPath();
+        for (let x = originX(); x < w; x += CELL) {
+          ctx.moveTo(Math.round(x) + 0.5, 0);
+          ctx.lineTo(Math.round(x) + 0.5, h);
+        }
+        for (let y = originY(); y < h; y += CELL) {
+          ctx.moveTo(0, Math.round(y) + 0.5);
+          ctx.lineTo(w, Math.round(y) + 0.5);
+        }
+        ctx.stroke();
+        return;
+      }
+      // Powering on: each line fades in as the front passes it.
+      const cx = w / 2;
+      const cy = h / 2;
+      const aspect = h > 0 ? w / h : 1;
+      const stroke = (a: number, x0: number, y0: number, x1: number, y1: number) => {
+        if (a <= 0) return;
+        ctx.strokeStyle = `hsl(${ink} / ${(0.045 * a).toFixed(4)})`;
+        ctx.beginPath();
+        ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+        ctx.stroke();
+      };
       for (let x = originX(); x < w; x += CELL) {
-        ctx.moveTo(Math.round(x) + 0.5, 0);
-        ctx.lineTo(Math.round(x) + 0.5, h);
+        const X = Math.round(x) + 0.5;
+        stroke(clamp01((reveal - Math.abs(X - cx)) / 260), X, 0, X, h);
       }
       for (let y = originY(); y < h; y += CELL) {
-        ctx.moveTo(0, Math.round(y) + 0.5);
-        ctx.lineTo(w, Math.round(y) + 0.5);
+        const Y = Math.round(y) + 0.5;
+        stroke(clamp01((reveal - Math.abs(Y - cy) * aspect) / 260), 0, Y, w, Y);
       }
-      ctx.stroke();
     };
 
     const spawn = (): Trace => {
@@ -190,6 +233,7 @@ export default function WorkbenchGrid() {
     motion.addEventListener("change", apply);
     document.addEventListener("visibilitychange", apply);
     return () => {
+      if (powerFrom >= 0) unmarkPlayed(GRID_KEY);
       stop();
       themeObserver.disconnect();
       window.removeEventListener("resize", resize);
