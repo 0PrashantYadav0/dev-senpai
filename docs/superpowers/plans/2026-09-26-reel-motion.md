@@ -3366,7 +3366,10 @@ with
   `prefers-reduced-motion: no-preference`, and a 3s timer flips it to
   `static` if scripts are late. New moves use `useReveal`, play once,
   follow reduced motion live, and animate only transform, opacity, filter
-  or canvas.
+  or canvas (the decode and typing effects change text and per-character
+  visibility, never layout). A finished move rests on plain CSS, not on a
+  held animation fill: Chrome can paint a finished `::after` animation at
+  its start value.
 ```
 
 In the `- Ground:` bullet, change
