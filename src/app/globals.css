@@ -568,3 +568,55 @@
     transform: scaleX(1);
   }
 }
+
+/* Typing: a blue block caret. Hero intro: dot, ring and line; the greeting is
+   held back while html[data-hello] is set. */
+@layer base {
+  .caret-block {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0.55ch;
+    height: 1em;
+    background: hsl(var(--signal));
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hello-dot,
+  .hello-ring {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 10px;
+    height: 10px;
+    border-radius: 9999px;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hello-dot {
+    background: hsl(var(--signal));
+  }
+  .hello-ring {
+    border: 1.5px solid hsl(var(--signal));
+  }
+  /* Behind the text and the donut: z-index -1 inside the hero's stacking context. */
+  .hello-line {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 2px;
+    z-index: -1;
+    background: hsl(var(--signal));
+    opacity: 0;
+    pointer-events: none;
+  }
+  .hello-wave {
+    transform-origin: 50% 60%;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-hello] .hello [data-ch],
+    html[data-hello] .hello-wave {
+      visibility: hidden;
+    }
+  }
+}
