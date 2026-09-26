@@ -687,3 +687,24 @@
     transform: scale(3.2);
   }
 }
+
+/* Wins: rows pivot low-left like the reel's slams; marks sit behind as outlines. */
+@layer base {
+  .win {
+    transform-origin: 0% 60%;
+  }
+  .ghost-mark {
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    font-family: var(--font-display), Georgia, serif;
+    font-size: 2.75rem;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px hsl(var(--foreground) / 0.16);
+    pointer-events: none;
+    user-select: none;
+  }
+}
