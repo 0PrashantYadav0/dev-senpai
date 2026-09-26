@@ -47,7 +47,7 @@ export default function Scramble({ text, className, on = "view", duration = 0.45
 
   return (
     <span ref={ref} data-reveal="hide" className={cn("label", className)}>
-      <span className="sr-only">{text}</span>
+      <span className="sr-only select-none">{text}</span>
       <span aria-hidden data-glyphs>
         {text}
       </span>

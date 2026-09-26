@@ -57,7 +57,7 @@ export default function TypeOn({ text, times, className }: Props) {
 
   return (
     <span ref={ref} data-reveal="hide" className={cn("relative inline-block", className)}>
-      <span className="sr-only">{text}</span>
+      <span className="sr-only select-none">{text}</span>
       <span aria-hidden>
         {[...text].map((ch, i) => (
           <span key={i} data-ch>
