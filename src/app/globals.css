@@ -280,7 +280,7 @@
       top: -2px;
       width: 5px;
       height: 5px;
-      background: hsl(var(--foreground) / 0.55);
+      background: hsl(var(--signal));
     }
     .rule i:first-child {
       left: calc(-1 * var(--gutter) - 3px);
@@ -387,5 +387,86 @@
     html[data-motion]:not([data-motion="static"]) [data-reveal="hide"]:not([data-revealed]) {
       opacity: 0;
     }
+  }
+}
+
+/* Rule: a dot, a signal line unzipping to both edges, one beat's hold, a fade. */
+@layer base {
+  .rule-line,
+  .rule-dot {
+    position: absolute;
+    left: 50%;
+    opacity: 0;
+    background: hsl(var(--signal));
+    pointer-events: none;
+  }
+  .rule-line {
+    top: -0.5px;
+    width: 100vw;
+    height: 2px;
+    transform: translateX(-50%) scaleX(0);
+  }
+  .rule-dot {
+    top: -2.5px;
+    width: 6px;
+    height: 6px;
+    margin-left: -3px;
+    border-radius: 9999px;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-motion]:not([data-motion="static"]) .rule:not([data-revealed]) i {
+      background: hsl(var(--foreground) / 0.55);
+    }
+    .rule[data-play] i {
+      animation: rule-tick 0.2s linear var(--tick-at, 0.2s) both;
+    }
+    .rule[data-play] .rule-dot {
+      animation: rule-dot 1.45s linear both;
+    }
+    .rule[data-play] .rule-line {
+      animation: rule-line 1.45s linear both;
+    }
+  }
+}
+
+@keyframes rule-tick {
+  from {
+    background: hsl(var(--foreground) / 0.55);
+  }
+  to {
+    background: hsl(var(--signal));
+  }
+}
+/* 0.08s dot, 0.5s unzip (power3.out), a beat's hold (0.47s), 0.4s fade = 1.45s. */
+@keyframes rule-dot {
+  0% {
+    opacity: 1;
+    transform: scale(0);
+  }
+  5.5%,
+  72.4% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1);
+  }
+}
+@keyframes rule-line {
+  0%,
+  5.5% {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(0);
+    animation-timing-function: var(--ease-power3-out);
+  }
+  40%,
+  72.4% {
+    opacity: 1;
+    transform: translateX(-50%) scaleX(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scaleX(1);
   }
 }
