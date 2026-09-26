@@ -141,7 +141,7 @@ export default function HeroGreeting({ text }: { text: string }) {
   const lastLetter = letters.pop();
   return (
     <h1 ref={ref} className="hello relative font-mono text-[2rem] leading-[1.05] sm:text-[2.5rem]">
-      <span className="sr-only">{text}</span>
+      <span className="sr-only select-none">{text}</span>
       <span aria-hidden>
         {letters.map((ch, i) => (
           <span key={i} data-ch>

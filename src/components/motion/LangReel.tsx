@@ -50,7 +50,7 @@ export default function LangReel({ words, className }: { words: string[]; classN
       className={cn("display-md text-[1.35rem] tracking-[-0.015em] sm:text-[1.6rem]", className)}
     >
       <span className="sr-only">fluent in {words[last]}</span>
-      <span aria-hidden>
+      <span aria-hidden className="select-none">
         <span className="text-muted-foreground">fluent in</span>{" "}
         <span className="reel-window">
           <span className="reel-sizer">

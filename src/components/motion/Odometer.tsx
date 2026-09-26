@@ -123,7 +123,7 @@ export default function Odometer({ value, suffix, suffixClassName, delay = 0, cl
             ))}
         </defs>
       </svg>
-      <span aria-hidden>
+      <span aria-hidden className="select-none">
         {cells.map((c, i) =>
           c.place < 0 ? (
             <span key={i} className="odo-sep" data-after={c.after}>
@@ -145,7 +145,7 @@ export default function Odometer({ value, suffix, suffixClassName, delay = 0, cl
         )}
       </span>
       {suffix && (
-        <span aria-hidden className={cn("odo-suffix", suffixClassName)}>
+        <span aria-hidden className={cn("odo-suffix select-none", suffixClassName)}>
           {suffix}
         </span>
       )}
