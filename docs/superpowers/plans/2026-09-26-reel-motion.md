@@ -329,7 +329,10 @@ export const expoOut = (t: number): number => {
 export const backOut =
   (s = 1.70158) =>
   (t: number): number => {
-    const p = clamp01(t) - 1;
+    // Ends pinned: the polynomial leaves ~2e-16 at 0 for some overshoots.
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    const p = t - 1;
     return 1 + (s + 1) * p * p * p + s * p * p;
   };
 
@@ -562,7 +565,7 @@ export function poseCss(p: Pose): { transform: string; filter: string } {
 - [ ] **Step 5: Run the tests to verify they pass**
 
 Run: `npm test`
-Expected: PASS. 27 tests, 0 failures.
+Expected: PASS. 25 tests, 0 failures.
 
 - [ ] **Step 6: Lint and build**
 
@@ -844,7 +847,7 @@ In `src/components/home/ContactStrip.tsx`, insert a label directly above the hea
 - [ ] **Step 8: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 9: Screenshots**
 
@@ -1187,7 +1190,7 @@ with
 - [ ] **Step 7: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 8: Headless checks**
 
@@ -1372,7 +1375,7 @@ Append to the end of the file:
 - [ ] **Step 3: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 4: Headless checks**
 
@@ -1661,7 +1664,7 @@ git rm src/components/vui/StatsCounter.tsx
 - [ ] **Step 6: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 7: Headless checks and number shapes**
 
@@ -1846,7 +1849,7 @@ with
 - [ ] **Step 4: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 5: Headless checks**
 
@@ -2316,7 +2319,7 @@ Finally, in the effect's cleanup, add this as the first line of `return () => {`
 - [ ] **Step 7: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 8: Headless checks**
 
@@ -2481,7 +2484,7 @@ with
 - [ ] **Step 3: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 4: Headless checks**
 
@@ -2748,7 +2751,7 @@ export default function ExperienceLedger() {
 - [ ] **Step 4: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 5: Headless checks**
 
@@ -2949,7 +2952,7 @@ Append to `src/app/globals.css`:
 - [ ] **Step 5: Lint, test, build, and confirm the chatbot index is unchanged**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 Run: `npm run gen && git status --short src/data/embeddings.json`
 Expected: `npm run gen` finishes, and `git status` prints nothing for `embeddings.json`. The generator reads only `title` and `detail`, so the index text doesn't change.
@@ -3127,7 +3130,7 @@ In `src/app/page.tsx`:
 - [ ] **Step 4: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 5: Headless checks**
 
@@ -3289,7 +3292,7 @@ const INDEX = [
 - [ ] **Step 4: Lint, test, build**
 
 Run: `npm run lint && npm test && npm run build`
-Expected: lint is clean, 27 tests pass and the build succeeds.
+Expected: lint is clean, 25 tests pass and the build succeeds.
 
 - [ ] **Step 5: Headless checks**
 
@@ -3389,7 +3392,7 @@ $V/check.sh --shots $V/shots/final
 $V/check.sh --hello --live --slow --skip-pages
 ```
 
-Expected: lint is clean, 27 tests pass, the build succeeds, and both checks report `all clear`. The full run covers:
+Expected: lint is clean, 25 tests pass, the build succeeds, and both checks report `all clear`. The full run covers:
 - all six pages;
 - desktop, mobile and the tall window;
 - reduced motion and JavaScript off;
