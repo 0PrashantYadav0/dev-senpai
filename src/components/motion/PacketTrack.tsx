@@ -67,7 +67,7 @@ export default function PacketTrack({ children }: { children: ReactNode }) {
   });
 
   return (
-    <div ref={ref} data-reveal="packet" className="packet-track relative pl-5">
+    <div ref={ref} data-reveal="packet" className="packet-track relative">
       <span aria-hidden className="packet-rail" />
       <span aria-hidden className="packet-head" />
       {children}
