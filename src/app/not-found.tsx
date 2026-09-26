@@ -1,10 +1,10 @@
+import PageTitle from "@/components/motion/PageTitle";
 import Link from "next/link";
 
 export default function NotFound() {
   return (
     <div className="flex flex-col gap-6 pb-8 pt-16 sm:pt-24">
-      <p className="text-sm text-muted-foreground">404</p>
-      <h1 className="display text-4xl sm:text-5xl">That page is not here.</h1>
+      <PageTitle label="404" title="That page is not here." />
       <p className="measure text-muted-foreground">
         It may have moved when the site was redesigned. The work, projects, and
         contact pages are still where the header says they are.
