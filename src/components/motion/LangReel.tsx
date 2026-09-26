@@ -54,13 +54,13 @@ export default function LangReel({ words, className }: { words: string[]; classN
         <span className="text-muted-foreground">fluent in</span>{" "}
         <span className="reel-window">
           <span className="reel-sizer">
-            {words.map((w) => (
-              <span key={w}>{w}</span>
+            {words.map((w, i) => (
+              <span key={i}>{w}</span>
             ))}
           </span>
           <span className="reel-strip" style={{ transform: `translateY(${(-last * LINE).toFixed(4)}em)` }}>
-            {words.map((w) => (
-              <span key={w}>{w}</span>
+            {words.map((w, i) => (
+              <span key={i}>{w}</span>
             ))}
           </span>
         </span>
