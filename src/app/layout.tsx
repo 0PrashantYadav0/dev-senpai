@@ -3,6 +3,7 @@ import Header from "@/components/Header";
 import Quote from "@/components/layout/Quote";
 import Rule from "@/components/layout/Rule";
 import WorkbenchGrid from "@/components/layout/WorkbenchGrid";
+import { MOTION_BOOT } from "@/components/motion/runtime";
 import Providers from "@/components/Providers";
 import profile from "@/data/profile.json";
 import { cn } from "@/lib/utils";
@@ -69,6 +70,8 @@ export default function RootLayout({
           silkscreen.variable,
         )}
       >
+        {/* Marks <html data-motion> before the first paint; see runtime.ts. */}
+        <script dangerouslySetInnerHTML={{ __html: MOTION_BOOT }} />
         <Providers>
           <WorkbenchGrid />
           <div className="column relative z-10 mx-auto flex w-full max-w-site grow flex-col">

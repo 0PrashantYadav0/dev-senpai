@@ -33,6 +33,11 @@
     --signal-soft: 214 85% 40% / 0.12;
     --radius: 0.375rem;
     --gutter: 1.25rem;
+
+    /* GSAP's power3.out (a quartic), expo.out and back.out as CSS curves. */
+    --ease-power3-out: cubic-bezier(0.25, 1, 0.5, 1);
+    --ease-expo-out: cubic-bezier(0.16, 1, 0.3, 1);
+    --ease-back-out: cubic-bezier(0.34, 1.56, 0.64, 1);
   }
   @media (min-width: 640px) {
     :root {
@@ -366,5 +371,21 @@
     width: 0.6rem;
     height: 1px;
     background: hsl(var(--signal));
+  }
+}
+
+/*
+  Motion kit (docs/superpowers/specs/2026-09-26-reel-motion-design.md).
+  The boot script marks <html data-motion="on"> when motion is allowed; the
+  kit sets "ready" when it starts, and a 3s failsafe sets "static" if it
+  never does. Pieces carry data-reveal and get data-revealed when they play.
+  Before states apply only while the marker is on or ready, and only when the
+  visitor has not asked for reduced motion.
+*/
+@layer base {
+  @media (prefers-reduced-motion: no-preference) {
+    html[data-motion]:not([data-motion="static"]) [data-reveal="hide"]:not([data-revealed]) {
+      visibility: hidden;
+    }
   }
 }

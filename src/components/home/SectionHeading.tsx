@@ -1,3 +1,4 @@
+import Scramble from "@/components/motion/Scramble";
 import Link from "next/link";
 
 interface Props {
@@ -12,7 +13,7 @@ interface Props {
 export default function SectionHeading({ title, label, href, linkText, external }: Props) {
   return (
     <div className="mb-5">
-      {label && <p className="label mb-2">{label}</p>}
+      {label && <Scramble text={label} className="mb-2 block" />}
       <div className="flex items-baseline justify-between gap-4">
         <h2 className="display-md text-[1.75rem] sm:text-[2.1rem]">{title}</h2>
         {href && linkText && (

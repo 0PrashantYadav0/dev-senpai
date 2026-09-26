@@ -1,5 +1,6 @@
 "use client";
 
+import Scramble from "@/components/motion/Scramble";
 import { useChatbot } from "@/contexts/ChatContext";
 import profile from "@/data/profile.json";
 import Link from "next/link";
@@ -9,7 +10,7 @@ export default function ContactStrip() {
 
   return (
     <section className="rounded-lg border bg-card p-6 sm:p-8">
-      <p className="label mb-3">08 / CONTACT</p>
+      <Scramble text="08 / CONTACT" className="mb-3 block" />
       <h2 className="display-md text-2xl sm:text-3xl">Want to know more about me?</h2>
       <p className="measure mt-3 text-muted-foreground">
         Ask Dev Senpai anything about my work, or send a note and I will reply
