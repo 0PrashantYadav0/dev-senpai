@@ -735,3 +735,21 @@
     white-space: nowrap;
   }
 }
+
+/* Index rail playhead: springs to the active row. */
+@layer base {
+  .index-playhead {
+    position: absolute;
+    left: -0.5px;
+    top: 0;
+    width: 2px;
+    height: 14px;
+    background: hsl(var(--signal));
+    transition: transform 0.34s var(--ease-back-out);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .index-playhead {
+      transition: none;
+    }
+  }
+}
