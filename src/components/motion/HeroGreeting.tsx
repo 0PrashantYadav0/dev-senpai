@@ -38,7 +38,8 @@ export default function HeroGreeting({ text }: { text: string }) {
     const ring = h1?.querySelector<HTMLElement>(".hello-ring");
     const line = h1?.querySelector<HTMLElement>(".hello-line");
     const wave = h1?.querySelector<HTMLElement>(".hello-wave");
-    if (!h1 || !caret || !dot || !ring || !line || !wave) return release();
+    const baseline = h1?.querySelector<HTMLElement>("[data-baseline]");
+    if (!h1 || !caret || !dot || !ring || !line || !wave || !baseline) return release();
     if (motionMode() === "static" || playedThisSession(HELLO_KEY)) return release();
 
     // Hold the greeting back from the first paint. The intro itself starts on
@@ -108,8 +109,11 @@ export default function HeroGreeting({ text }: { text: string }) {
       marked = true;
       const column = (h1.closest(".column") ?? document.body).getBoundingClientRect();
       const last = caretSpot(h1, chars, chars.length - 1);
+      const size = parseFloat(getComputedStyle(h1).fontSize) || 16;
       dotX = last.x + caret.offsetWidth / 2;
-      dotY = last.y + last.h / 2;
+      // Just under the baseline, like an underline: the dot lands on the line
+      // right after the last letter, a full stop dropped onto it.
+      dotY = baseline.getBoundingClientRect().bottom - box.top + 0.12 * size;
       const left = column.left - box.left;
       line.style.left = `${left}px`;
       line.style.width = `${column.width}px`;
@@ -133,18 +137,29 @@ export default function HeroGreeting({ text }: { text: string }) {
     };
   }, [text]);
 
+  const letters = [...text];
+  const lastLetter = letters.pop();
   return (
     <h1 ref={ref} className="hello relative font-mono text-[2rem] leading-[1.05] sm:text-[2.5rem]">
       <span className="sr-only">{text}</span>
       <span aria-hidden>
-        {[...text].map((ch, i) => (
+        {letters.map((ch, i) => (
           <span key={i} data-ch>
             {ch}
           </span>
         ))}
-      </span>{" "}
-      <span aria-hidden className="hello-wave inline-block">
-        👋
+        {/* The last letter, a no-break space and the wave share one line. The
+            space alone cannot hold them: an inline-block always allows a
+            break beside it. */}
+        <span className="whitespace-nowrap">
+          <span data-ch>
+            {lastLetter}
+            {/* An empty inline-block: its bottom edge sits on the baseline. */}
+            <span data-baseline className="inline-block h-0 w-0" />
+          </span>
+          {"\u00a0"}
+          <span className="hello-wave inline-block">👋</span>
+        </span>
       </span>
       <span aria-hidden data-caret className="caret-block" />
       <span aria-hidden className="hello-dot" />
