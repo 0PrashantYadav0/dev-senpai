@@ -28,6 +28,12 @@ export function useReveal(
 ): void {
   const playRef = useRef(play);
 
+  // Keep play current without resyncing the effect below: the reveal can
+  // fire long after mount, once the caller has re-rendered with newer props.
+  useEffect(() => {
+    playRef.current = play;
+  });
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
