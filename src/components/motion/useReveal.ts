@@ -5,7 +5,7 @@ import { motionMode } from "./runtime";
 export type Play = (el: HTMLElement) => () => void;
 
 export interface RevealOptions {
-  /** "view" (default): when about a third of the element is on screen. "mount": at once. */
+  /** "view" (default): when about a third of the element is on screen. "mount": on the first frame. */
   on?: "view" | "mount";
 }
 
@@ -45,10 +45,12 @@ export function useReveal(
 
     let stop: (() => void) | null = null;
     let visible = false;
+    let frame = 0;
     const observers: IntersectionObserver[] = [];
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
 
     function detach() {
+      cancelAnimationFrame(frame);
       observers.forEach((o) => o.disconnect());
       window.removeEventListener("scroll", atBottom);
     }
@@ -71,7 +73,9 @@ export function useReveal(
     reduce.addEventListener("change", onReduce);
 
     if (on === "mount") {
-      start();
+      // On the first frame, not at mount: a tab opened in the background gets
+      // no frames until it is shown, so the move waits for someone to see it.
+      frame = requestAnimationFrame(() => start());
     } else {
       observers.push(
         // About a third of it on screen, above the bottom sliver of the viewport.
