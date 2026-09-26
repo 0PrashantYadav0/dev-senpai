@@ -2564,6 +2564,10 @@ export default function PacketTrack({ children }: { children: ReactNode }) {
       cancelAnimationFrame(raf);
       nodes.forEach((n) => n.setAttribute("data-lit", ""));
       if (head) head.style.opacity = "0";
+      // Rest on the plain CSS (lit nodes, no pings) rather than on held
+      // animation fills: Chrome can paint a finished ::after animation at its
+      // start value.
+      el.removeAttribute("data-play");
     };
     const start = performance.now();
     const frame = (now: number) => {
