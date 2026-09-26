@@ -1,3 +1,4 @@
+import PageTitle from "@/components/motion/PageTitle";
 import Timeline from "@/components/experience/Timeline";
 import SectionHeading from "@/components/home/SectionHeading";
 import careerData from "@/data/career.json";
@@ -19,7 +20,7 @@ export default function ExperiencePage() {
   return (
     <div className="flex flex-col gap-16 pb-8 pt-10 sm:pt-16">
       <header>
-        <h1 className="display text-4xl sm:text-5xl">Work</h1>
+        <PageTitle label="WORK" title="Work" />
         <p className="measure mt-4 text-muted-foreground sm:text-lg">
           Four internships, steady open-source contributions, and a degree in
           progress. Newest first.
