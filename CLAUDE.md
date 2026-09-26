@@ -22,7 +22,7 @@ npm run dev     # dev server on :3000
 npm run build   # production build (a running dev server on :3000 rewrites .next, stop it first)
 npm run gen     # regenerate the chatbot's retrieval index after editing src/data
 npm run lint
-npm test        # unit tests for the motion maths (src/lib/motion.ts, node --test)
+npm test        # unit tests for the motion maths (src/lib/motion.ts, node --test; needs Node 22.18+ for type stripping)
 ```
 
 `npm run start` needs a prior build. When testing a production build while a
