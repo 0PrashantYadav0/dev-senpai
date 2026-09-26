@@ -23,7 +23,14 @@ export default function Rule({ className }: { className?: string }) {
     const fraction = half > 0 ? Math.min(1, Math.abs(x - half) / half) : 1;
     el.style.setProperty("--tick-at", `${(0.08 + unzipTime(fraction, 0.5)).toFixed(3)}s`);
     el.setAttribute("data-play", "");
-    return () => el.removeAttribute("data-play");
+    // Once the 1.45s move is over, rest on the plain CSS rather than on held
+    // animation fills: Chrome can paint a finished ::after animation at its
+    // start value.
+    const rest = window.setTimeout(() => el.removeAttribute("data-play"), 1450);
+    return () => {
+      window.clearTimeout(rest);
+      el.removeAttribute("data-play");
+    };
   });
 
   return (

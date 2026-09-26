@@ -288,10 +288,10 @@
       inset: 0;
       background: hsl(var(--signal));
     }
-    .rule i:first-child {
+    .rule i:first-of-type {
       left: calc(-1 * var(--gutter) - 3px);
     }
-    .rule i:last-child {
+    .rule i:last-of-type {
       right: calc(-1 * var(--gutter) - 3px);
     }
   }
