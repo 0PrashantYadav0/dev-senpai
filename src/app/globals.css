@@ -385,7 +385,7 @@
 @layer base {
   @media (prefers-reduced-motion: no-preference) {
     html[data-motion]:not([data-motion="static"]) [data-reveal="hide"]:not([data-revealed]) {
-      visibility: hidden;
+      opacity: 0;
     }
   }
 }
