@@ -1,3 +1,4 @@
+import Odometer from "@/components/motion/Odometer";
 import profile from "@/data/profile.json";
 import { getMergedStdlibPrCount } from "@/lib/github";
 
@@ -8,8 +9,7 @@ export default async function OpenSource() {
   return (
     <div className="flex flex-col gap-3">
       <p className="display-md text-4xl sm:text-5xl">
-        {count}
-        <span className="text-signal">+</span>{" "}
+        <Odometer value={count} suffix="+" suffixClassName="text-signal" />{" "}
         <span className="text-2xl text-muted-foreground sm:text-3xl">merged pull requests</span>
       </p>
       <p className="text-muted-foreground">

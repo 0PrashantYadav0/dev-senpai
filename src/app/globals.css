@@ -476,3 +476,30 @@
     transform: translateX(-50%) scaleX(1);
   }
 }
+
+/* Odometer: one column per digit, as wide as its landed digit, clipped to one
+   line top and bottom; the strip inside holds 0-9 and a closing 0. */
+@layer base {
+  .odo-col {
+    position: relative;
+    display: inline-block;
+    line-height: 1.15em;
+    clip-path: inset(0 -0.3em);
+  }
+  .odo-sizer {
+    visibility: hidden;
+  }
+  .odo-strip {
+    position: absolute;
+    inset: 0 0 auto 0;
+    text-align: center;
+  }
+  .odo-strip > span {
+    display: block;
+    height: 1.15em;
+  }
+  .odo-suffix {
+    display: inline-block;
+    transform-origin: 50% 60%;
+  }
+}
