@@ -48,10 +48,16 @@ export default function IndexRail({ entries }: { entries: IndexEntry[] }) {
     };
   }, [entries]);
 
-  // Park the playhead beside the first active row.
+  // Park the playhead beside the first active row, and again on resize: the
+  // rail has no layout below xl, so a page widened past it needs a fresh offset.
   useEffect(() => {
-    const row = list.current?.querySelector<HTMLElement>(`[data-id="${active[0]}"]`);
-    if (row) setHead(row.offsetTop + (row.offsetHeight - 14) / 2);
+    const park = () => {
+      const row = list.current?.querySelector<HTMLElement>(`[data-id="${active[0]}"]`);
+      if (row) setHead(row.offsetTop + (row.offsetHeight - 14) / 2);
+    };
+    park();
+    window.addEventListener("resize", park);
+    return () => window.removeEventListener("resize", park);
   }, [active]);
 
   return (

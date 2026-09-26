@@ -624,6 +624,10 @@
 
 /* Experience packet: rail, nodes lit blue, a packet with a short trail, a ping. */
 @layer base {
+  .packet-track {
+    --packet-pad: 1.25rem;
+    padding-left: var(--packet-pad);
+  }
   .packet-rail {
     position: absolute;
     left: 3px;
@@ -654,7 +658,7 @@
   /* Sits in the date column, on the rail, level with the first date line. */
   .packet-node {
     position: absolute;
-    left: calc(-1.25rem + 1px);
+    left: calc(-1 * var(--packet-pad) + 1px);
     top: calc(0.75em - 2.5px);
     width: 5px;
     height: 5px;

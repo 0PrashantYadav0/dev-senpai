@@ -24,7 +24,12 @@ export default function PageTitle({ label, title, className }: Props) {
     ref,
     (el) => {
       el.setAttribute("data-play", "");
-      return () => el.removeAttribute("data-play");
+      // Once the 1s move is over, rest on the plain CSS rather than on held animation fills.
+      const rest = window.setTimeout(() => el.removeAttribute("data-play"), 1000);
+      return () => {
+        window.clearTimeout(rest);
+        el.removeAttribute("data-play");
+      };
     },
     { on: "mount" },
   );

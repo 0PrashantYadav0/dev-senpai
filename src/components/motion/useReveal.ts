@@ -57,8 +57,12 @@ export function useReveal(
     function start() {
       if (stop) return;
       detach();
-      stop = playRef.current(el!);
-      reveal();
+      // Revealed even if play throws, so a broken move never hides its piece.
+      try {
+        stop = playRef.current(el!);
+      } finally {
+        reveal();
+      }
     }
     function atBottom() {
       const doc = document.documentElement;

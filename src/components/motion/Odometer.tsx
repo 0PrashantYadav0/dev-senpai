@@ -16,6 +16,7 @@ const CELL = 1.15; // em: one digit cell, matching .odo-col's line-height
 const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0"];
 const SPRING = backOut(2.4);
 const SPRING_SECONDS = 0.34;
+const FRAME_MS = 1000 / 60; // blur is set by the travel over one 60fps frame
 
 interface Props {
   value: number;
@@ -53,7 +54,7 @@ export default function Odometer({ value, suffix, suffixClassName, delay = 0, cl
     const shown = (k: number, v: number) => (k <= 0 ? 1 : clamp01(v - (10 ** k - 1)));
     let prev = digitPositions(0, places);
 
-    const paint = (v: number, moving: boolean) => {
+    const paint = (v: number, moving: boolean, dtMs = FRAME_MS) => {
       const pos = digitPositions(v, places);
       cols.forEach((col, i) => {
         const k = Number(col.dataset.place);
@@ -61,10 +62,12 @@ export default function Odometer({ value, suffix, suffixClassName, delay = 0, cl
         if (!strip) return;
         strip.style.transform = `translateY(${(-pos[k] * CELL).toFixed(4)}em)`;
         col.style.opacity = String(shown(k, v));
-        // Vertical blur from this frame's travel, capped at 6px.
+        // Vertical blur from this frame's travel, scaled to a 60fps frame so
+        // it tracks speed at any refresh rate, capped at 6px.
         let d = Math.abs(pos[k] - prev[k]);
         if (d > 5) d = 10 - d;
-        const blur = moving ? Math.min(6, d * CELL * em * 0.5) : 0;
+        const travel = (d * FRAME_MS) / dtMs;
+        const blur = moving ? Math.min(6, travel * CELL * em * 0.5) : 0;
         blurs[i]?.setAttribute("stdDeviation", `0 ${blur.toFixed(2)}`);
         strip.style.filter = blur > 0.1 ? `url(#${id}-${k})` : "";
       });
@@ -91,11 +94,14 @@ export default function Odometer({ value, suffix, suffixClassName, delay = 0, cl
         tail.style.transform = "";
       }
     };
+    let last = 0; // the previous frame's timestamp
     const frame = (now: number) => {
       const t = (now - t0) / 1000;
       if (t >= end) return finish();
+      const dt = last ? Math.max(1, now - last) : FRAME_MS;
+      last = now;
       if (t >= 0) {
-        paint(countCurve(t / COUNT_SECONDS) * target, t < COUNT_SECONDS);
+        paint(countCurve(t / COUNT_SECONDS) * target, t < COUNT_SECONDS, dt);
         spring((t - COUNT_SECONDS) / SPRING_SECONDS);
       }
       raf = requestAnimationFrame(frame);
