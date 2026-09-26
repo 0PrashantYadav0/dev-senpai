@@ -211,6 +211,8 @@ export default function WorkbenchGrid() {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const apply = () => {
       if (motion.matches || document.hidden) {
+        // Reduced motion jumps a running power-on to the finished grid.
+        if (motion.matches) powerFrom = -1;
         stop();
         traces.length = 0;
         drawGrid();
