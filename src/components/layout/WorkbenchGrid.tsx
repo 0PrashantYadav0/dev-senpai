@@ -43,13 +43,13 @@ export default function WorkbenchGrid() {
     const traces: Trace[] = [];
 
     // First load of a tab session: the grid powers on from the centre, the
-    // reveal front easing out over 1.1s, as the reel's ground does.
+    // reveal front easing out over 1.1s, as the reel's ground does. Armed at
+    // mount, it starts on the first running tick, so a tab opened in the
+    // background keeps it until it is shown.
+    let armed = motionMode() === "animate" && !playedThisSession(GRID_KEY);
     let powerFrom = -1;
-    if (motionMode() === "animate" && !playedThisSession(GRID_KEY)) {
-      markPlayed(GRID_KEY);
-      powerFrom = performance.now();
-    }
     const powerReveal = () => {
+      if (armed) return 0; // not started yet: no grid drawn
       if (powerFrom < 0) return Infinity;
       const on = expoOut(((performance.now() - powerFrom) / 1000 - 0.12) / 1.1);
       if (on >= 1) {
@@ -182,6 +182,11 @@ export default function WorkbenchGrid() {
 
     const tick = (now: number) => {
       raf = requestAnimationFrame(tick);
+      if (armed) {
+        armed = false;
+        powerFrom = now;
+        markPlayed(GRID_KEY);
+      }
       if (now - last < 33) return;
       const dt = Math.min(0.1, (now - last) / 1000 || 0.033);
       last = now;
@@ -211,8 +216,11 @@ export default function WorkbenchGrid() {
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
     const apply = () => {
       if (motion.matches || document.hidden) {
-        // Reduced motion jumps a running power-on to the finished grid.
-        if (motion.matches) powerFrom = -1;
+        // Reduced motion jumps a waiting or running power-on to the finished grid.
+        if (motion.matches) {
+          armed = false;
+          powerFrom = -1;
+        }
         stop();
         traces.length = 0;
         drawGrid();
@@ -235,6 +243,7 @@ export default function WorkbenchGrid() {
     motion.addEventListener("change", apply);
     document.addEventListener("visibilitychange", apply);
     return () => {
+      // Started but cut short: let a later load play it.
       if (powerFrom >= 0) unmarkPlayed(GRID_KEY);
       stop();
       themeObserver.disconnect();

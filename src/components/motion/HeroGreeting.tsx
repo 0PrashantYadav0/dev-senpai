@@ -8,7 +8,7 @@ import { caretSpot, showChars } from "./typing";
 // Layout effects only mean something in the browser; this avoids React's server warning.
 const useBrowserLayoutEffect = typeof window === "undefined" ? useEffect : useLayoutEffect;
 
-/* The reel's first bar, in seconds from mount. */
+/* The reel's first bar, in seconds from the first frame. */
 const DOT_AT = 1.15; // the cursor snaps into a dot
 const LINE_FROM = 1.25; // the dot unzips the line...
 const LINE_TO = 1.65; // ...out to the rails
@@ -41,24 +41,15 @@ export default function HeroGreeting({ text }: { text: string }) {
     if (!h1 || !caret || !dot || !ring || !line || !wave) return release();
     if (motionMode() === "static" || playedThisSession(HELLO_KEY)) return release();
 
-    markPlayed(HELLO_KEY);
+    // Hold the greeting back from the first paint. The intro itself starts on
+    // the first frame, which a tab opened in the background does not get
+    // until it is shown.
     html.setAttribute("data-hello", "play");
     const chars = [...h1.querySelectorAll<HTMLElement>("[data-ch]")];
     const times = typeTimes(text, { start: 0.3, step: 0.04, pause: 0.04 });
 
-    // The layout is final from the first paint, so the landing spots are known now.
-    const box = h1.getBoundingClientRect();
-    const column = (h1.closest(".column") ?? document.body).getBoundingClientRect();
-    const last = caretSpot(h1, chars, chars.length - 1);
-    const dotX = last.x + caret.offsetWidth / 2;
-    const dotY = last.y + last.h / 2;
-    const left = column.left - box.left;
-    line.style.left = `${left}px`;
-    line.style.width = `${column.width}px`;
-    line.style.top = `${dotY - 1}px`;
-    line.style.transformOrigin = `${dotX - left}px 50%`;
-
     let raf = 0;
+    let marked = false;
     let finished = false;
     const finish = () => {
       finished = true;
@@ -70,7 +61,9 @@ export default function HeroGreeting({ text }: { text: string }) {
       release();
     };
 
-    const t0 = performance.now();
+    let t0 = 0;
+    let dotX = 0;
+    let dotY = 0;
     const frame = (now: number) => {
       const t = (now - t0) / 1000;
       if (t >= END) return finish();
@@ -101,7 +94,31 @@ export default function HeroGreeting({ text }: { text: string }) {
       wave.style.transform = `scale(${(t < DROP ? 0 : spring((t - DROP) / SPRING)).toFixed(4)})`;
       raf = requestAnimationFrame(frame);
     };
-    raf = requestAnimationFrame(frame);
+    // The first frame: someone is looking, so the session's intro is used up
+    // here and the clock starts from this frame.
+    const begin = (now: number) => {
+      const box = h1.getBoundingClientRect();
+      // Off screen, or on its way off: a deep link such as /#contact scrolls
+      // smoothly, so the hero can still be in view on this frame. Show it
+      // finished and keep the intro for a later visit.
+      const target = location.hash.length > 1 ? document.getElementById(location.hash.slice(1)) : null;
+      const away = target !== null && !target.contains(h1);
+      if (away || box.bottom <= 0 || box.top >= window.innerHeight) return finish();
+      markPlayed(HELLO_KEY);
+      marked = true;
+      const column = (h1.closest(".column") ?? document.body).getBoundingClientRect();
+      const last = caretSpot(h1, chars, chars.length - 1);
+      dotX = last.x + caret.offsetWidth / 2;
+      dotY = last.y + last.h / 2;
+      const left = column.left - box.left;
+      line.style.left = `${left}px`;
+      line.style.width = `${column.width}px`;
+      line.style.top = `${dotY - 1}px`;
+      line.style.transformOrigin = `${dotX - left}px 50%`;
+      t0 = now;
+      frame(now);
+    };
+    raf = requestAnimationFrame(begin);
 
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     const onReduce = () => {
@@ -111,7 +128,7 @@ export default function HeroGreeting({ text }: { text: string }) {
     return () => {
       reduce.removeEventListener("change", onReduce);
       // Cut short (navigated away, or React re-running effects): let a later visit play it.
-      if (!finished) unmarkPlayed(HELLO_KEY);
+      if (marked && !finished) unmarkPlayed(HELLO_KEY);
       finish();
     };
   }, [text]);
