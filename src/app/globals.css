@@ -708,3 +708,30 @@
     user-select: none;
   }
 }
+
+/* Language reel: a one-line window as wide as the widest word, clipped top and bottom. */
+@layer base {
+  .reel-window {
+    position: relative;
+    display: inline-block;
+    line-height: 1.15em;
+    clip-path: inset(0 -0.2em);
+  }
+  .reel-sizer {
+    display: inline-grid;
+    visibility: hidden;
+  }
+  .reel-sizer > span {
+    grid-area: 1 / 1;
+    white-space: nowrap;
+  }
+  .reel-strip {
+    position: absolute;
+    inset: 0 0 auto 0;
+  }
+  .reel-strip > span {
+    display: block;
+    height: 1.15em;
+    white-space: nowrap;
+  }
+}

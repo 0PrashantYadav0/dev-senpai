@@ -9,6 +9,8 @@ import IndexRail from "@/components/home/IndexRail";
 import OpenSource from "@/components/home/OpenSource";
 import SectionHeading from "@/components/home/SectionHeading";
 import SkillChips from "@/components/home/SkillChips";
+import LangReel from "@/components/motion/LangReel";
+import { reelWords } from "@/lib/motion";
 import Icon from "@/components/Icon";
 import Rule from "@/components/layout/Rule";
 import HeroGreeting from "@/components/motion/HeroGreeting";
@@ -36,6 +38,7 @@ export default async function Home() {
   const [stdlib, prs] = await Promise.all([getMergedStdlibPrCount(), getPullRequests()]);
   const mergedEverywhere = prs?.merged.total ?? stdlib.count;
   const age = new Date().getFullYear() - profile.birthYear - 1;
+  const languages = profile.skills.find((s) => s.group === "Languages")?.items ?? [];
 
   return (
     <div className="pb-4">
@@ -173,6 +176,7 @@ export default async function Home() {
 
       <section id="skills" className="scroll-mt-20">
         <SectionHeading label="07 / SKILLS" title="Skills and technologies" />
+        <LangReel words={reelWords(languages)} className="mb-6" />
         <SkillChips />
       </section>
 
