@@ -1,4 +1,5 @@
-import StatsCounter from "@/components/vui/StatsCounter";
+import Odometer from "@/components/motion/Odometer";
+import { BEAT } from "@/lib/motion";
 import { GITHUB_USER, getContributions, getPullRequests, timeAgo } from "@/lib/github";
 import ContributionGraph from "./ContributionGraph";
 import PullRequestTabs from "./PullRequestTabs";
@@ -44,10 +45,10 @@ export default async function GitHubActivity() {
 
       {stats.length > 0 && (
         <dl className="grid grid-cols-2 gap-px overflow-hidden rounded-md border bg-border sm:grid-cols-4">
-          {stats.map((s) => (
+          {stats.map((s, i) => (
             <div key={s.label} className="bg-card px-4 py-3">
               <dd className="display-md text-2xl sm:text-[1.7rem]">
-                <StatsCounter value={s.value} />
+                <Odometer value={s.value} delay={(i * BEAT) / 4} />
               </dd>
               <dt className="label mt-1">{s.label}</dt>
             </div>
