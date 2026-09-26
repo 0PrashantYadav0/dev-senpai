@@ -385,11 +385,12 @@
   The boot script marks <html data-motion="on"> when motion is allowed; the
   kit sets "ready" when it starts, and a 3s failsafe sets "static" if it
   never does. Pieces carry data-reveal and get data-revealed when they play.
-  Before states apply only while the marker is on or ready, and only when the
-  visitor has not asked for reduced motion.
+  Before states apply only on screen (print gets the finished page), only
+  while the marker is on or ready, and only when the visitor has not asked
+  for reduced motion.
 */
 @layer base {
-  @media (prefers-reduced-motion: no-preference) {
+  @media screen and (prefers-reduced-motion: no-preference) {
     html[data-motion]:not([data-motion="static"]) [data-reveal="hide"]:not([data-revealed]) {
       opacity: 0;
     }
@@ -419,7 +420,7 @@
     margin-left: -3px;
     border-radius: 9999px;
   }
-  @media (prefers-reduced-motion: no-preference) {
+  @media screen and (prefers-reduced-motion: no-preference) {
     html[data-motion]:not([data-motion="static"]) .rule:not([data-revealed]) i::after {
       opacity: 0;
     }
@@ -530,7 +531,7 @@
     transform: scaleX(0);
     pointer-events: none;
   }
-  @media (prefers-reduced-motion: no-preference) {
+  @media screen and (prefers-reduced-motion: no-preference) {
     html[data-motion]:not([data-motion="static"]) .page-title:not([data-revealed]) .page-title-text {
       transform: translateY(115%);
     }
@@ -613,7 +614,7 @@
   .hello-wave {
     transform-origin: 50% 60%;
   }
-  @media (prefers-reduced-motion: no-preference) {
+  @media screen and (prefers-reduced-motion: no-preference) {
     html[data-hello] .hello [data-ch],
     html[data-hello] .hello-wave {
       visibility: hidden;
@@ -666,7 +667,7 @@
     border: 1px solid hsl(var(--signal));
     opacity: 0;
   }
-  @media (prefers-reduced-motion: no-preference) {
+  @media screen and (prefers-reduced-motion: no-preference) {
     html[data-motion]:not([data-motion="static"]) .packet-track:not([data-revealed]) .packet-node,
     .packet-track[data-play] .packet-node:not([data-lit]) {
       background: hsl(var(--foreground) / 0.25);
