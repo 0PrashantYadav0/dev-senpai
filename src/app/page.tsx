@@ -28,6 +28,7 @@ const INDEX = [
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "open-source", label: "Open source" },
+  { id: "achievements", label: "Achievements" },
   { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
