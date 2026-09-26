@@ -199,11 +199,13 @@
   "achievements": [
     {
       "title": "Overall winner, GenTech Thales Hackathon",
-      "detail": "First place across all tracks."
+      "detail": "First place across all tracks.",
+      "mark": "1st"
     },
     {
       "title": "Global top 11, Walmart Sparkathon",
-      "detail": "Selected from a worldwide pool of teams."
+      "detail": "Selected from a worldwide pool of teams.",
+      "mark": "11"
     },
     {
       "title": "2nd in the ML Hackathon and 3rd in the Finance Hackathon, Techkriti IIT Kanpur",
@@ -219,7 +221,8 @@
     },
     {
       "title": "CodeChef 4-star, peak rating 1813",
-      "detail": ""
+      "detail": "",
+      "mark": "1813"
     }
   ],
   "roles": [
