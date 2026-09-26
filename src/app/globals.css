@@ -102,6 +102,23 @@
     text-wrap: balance;
   }
 
+  /* Labels: the reel's on-screen type. Small spaced-out JetBrains Mono caps
+     for section and page labels, dates, places, tech lists and captions. */
+  .label {
+    font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 11px;
+    line-height: 1.5;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-variant-numeric: tabular-nums;
+    color: hsl(var(--muted-foreground));
+  }
+  @media (min-width: 640px) {
+    .label {
+      font-size: 12px;
+    }
+  }
+
   .measure {
     max-width: 62ch;
   }

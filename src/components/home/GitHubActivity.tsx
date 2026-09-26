@@ -49,7 +49,7 @@ export default async function GitHubActivity() {
               <dd className="display-md text-2xl sm:text-[1.7rem]">
                 <StatsCounter value={s.value} />
               </dd>
-              <dt className="mt-0.5 text-xs text-muted-foreground">{s.label}</dt>
+              <dt className="label mt-1">{s.label}</dt>
             </div>
           ))}
         </dl>

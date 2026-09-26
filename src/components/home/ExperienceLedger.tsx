@@ -16,7 +16,7 @@ export default function ExperienceLedger() {
           key={job.name}
           className="grid gap-x-6 gap-y-3 py-6 first:pt-0 last:pb-0 sm:grid-cols-[10rem_1fr]"
         >
-          <div className="text-sm text-muted-foreground">
+          <div className="label">
             <time className="block">{job.start}</time>
             <span className="block">to {job.end ?? "present"}</span>
             {job.location && <span className="mt-1 block">{job.location}</span>}
@@ -62,11 +62,7 @@ export default function ExperienceLedger() {
               </ul>
             )}
 
-            {job.tech && (
-              <p className="mt-3 text-xs text-muted-foreground">
-                {job.tech.join(", ")}
-              </p>
-            )}
+            {job.tech && <p className="label mt-3">{job.tech.join(" · ")}</p>}
           </div>
         </li>
       ))}
