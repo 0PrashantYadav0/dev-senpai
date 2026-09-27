@@ -167,9 +167,11 @@ with times from page load on the reel's clock:
 |---|---|
 | 0.12–1.2s | The grid powers on from the centre. |
 | 0.3–1.0s | "hi, prashant here" types in mono behind the blue block cursor. |
-| 1.15s | The cursor snaps into a 10px signal dot, and a ring expands from it and fades. |
-| 1.25–1.65s | The dot unzips a 2px signal line both ways along the greeting's baseline, out to the rails. |
-| 1.875s | Four beats in, the line fades over 0.3s and the dot springs into the 👋 (back.out(2.4), 0.34s). |
+| 1.15s | The cursor snaps into a 10px signal dot on the baseline, like a full stop, and a ring expands from it and fades. |
+| 1.875s | Four beats in, the dot springs into the 👋 (back.out(2.4), 0.34s). |
+
+The first build also had the dot unzip a signal line under the greeting out to
+the rails. The owner asked for it to be removed on 27 Sep 2026.
 
 Only the greeting waits. The bio, bullets, buttons, socials, donut and banner
 are there from the first paint. On later visits in the same tab session the
