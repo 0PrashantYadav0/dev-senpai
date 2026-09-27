@@ -1,6 +1,6 @@
 "use client";
 
-import { backOut, clamp01, power3Out, typeTimes } from "@/lib/motion";
+import { backOut, clamp01, typeTimes } from "@/lib/motion";
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { HELLO_KEY, markPlayed, motionMode, playedThisSession, unmarkPlayed } from "./runtime";
 import { caretSpot, showChars } from "./typing";
@@ -10,21 +10,18 @@ const useBrowserLayoutEffect = typeof window === "undefined" ? useEffect : useLa
 
 /* The reel's first bar, in seconds from the first frame. */
 const DOT_AT = 1.15; // the cursor snaps into a dot
-const LINE_FROM = 1.25; // the dot unzips the line...
-const LINE_TO = 1.65; // ...out to the rails
-const DROP = 1.875; // four beats: the line fades, the dot springs into the wave
-const FADE = 0.3;
+const DROP = 1.875; // four beats: the dot springs into the wave
 const SPRING = 0.34;
-const END = DROP + Math.max(FADE, SPRING);
+const END = DROP + SPRING;
 const spring = backOut(2.4);
 
 /**
  * The hero greeting as the reel's opening bar: it types in mono behind the
- * blue block cursor, the cursor snaps into a dot with a ring, the dot unzips
- * a signal line along the baseline out to the rails, and on the drop the line
- * fades as the dot springs into the wave. Plays on the first visit to home in
- * a tab session; the boot script holds the greeting back with
- * html[data-hello] until then, and later visits find it already there.
+ * blue block cursor, the cursor snaps into a dot with a ring, sitting on the
+ * baseline like a full stop, and on the drop the dot springs into the wave.
+ * Plays on the first visit to home in a tab session; the boot script holds
+ * the greeting back with html[data-hello] until then, and later visits find
+ * it already there.
  */
 export default function HeroGreeting({ text }: { text: string }) {
   const ref = useRef<HTMLHeadingElement>(null);
@@ -36,10 +33,9 @@ export default function HeroGreeting({ text }: { text: string }) {
     const caret = h1?.querySelector<HTMLElement>("[data-caret]");
     const dot = h1?.querySelector<HTMLElement>(".hello-dot");
     const ring = h1?.querySelector<HTMLElement>(".hello-ring");
-    const line = h1?.querySelector<HTMLElement>(".hello-line");
     const wave = h1?.querySelector<HTMLElement>(".hello-wave");
     const baseline = h1?.querySelector<HTMLElement>("[data-baseline]");
-    if (!h1 || !caret || !dot || !ring || !line || !wave || !baseline) return release();
+    if (!h1 || !caret || !dot || !ring || !wave || !baseline) return release();
     if (motionMode() === "static" || playedThisSession(HELLO_KEY)) return release();
 
     // Hold the greeting back from the first paint. The intro itself starts on
@@ -56,7 +52,7 @@ export default function HeroGreeting({ text }: { text: string }) {
       finished = true;
       cancelAnimationFrame(raf);
       chars.forEach((c) => (c.style.visibility = ""));
-      for (const el of [caret, dot, ring, line]) el.style.opacity = "0";
+      for (const el of [caret, dot, ring]) el.style.opacity = "0";
       wave.style.visibility = "";
       wave.style.transform = "";
       release();
@@ -86,10 +82,6 @@ export default function HeroGreeting({ text }: { text: string }) {
       const r = clamp01((t - DOT_AT) / 0.45);
       ring.style.opacity = t >= DOT_AT && r < 1 ? ((1 - r) * 0.9).toFixed(3) : "0";
       ring.style.transform = `translate(${dotX - 5}px, ${dotY - 5}px) scale(${(1 + r * 2.6).toFixed(3)})`;
-      // Line: unzips both ways from the dot, holds, fades on the drop.
-      const zip = power3Out((t - LINE_FROM) / (LINE_TO - LINE_FROM));
-      line.style.opacity = t >= LINE_FROM ? (1 - clamp01((t - DROP) / FADE)).toFixed(3) : "0";
-      line.style.transform = `scaleX(${zip.toFixed(4)})`;
       // Wave: springs in on the drop.
       wave.style.visibility = t < DROP ? "hidden" : "visible";
       wave.style.transform = `scale(${(t < DROP ? 0 : spring((t - DROP) / SPRING)).toFixed(4)})`;
@@ -107,18 +99,11 @@ export default function HeroGreeting({ text }: { text: string }) {
       if (away || box.bottom <= 0 || box.top >= window.innerHeight) return finish();
       markPlayed(HELLO_KEY);
       marked = true;
-      const column = (h1.closest(".column") ?? document.body).getBoundingClientRect();
       const last = caretSpot(h1, chars, chars.length - 1);
-      const size = parseFloat(getComputedStyle(h1).fontSize) || 16;
       dotX = last.x + caret.offsetWidth / 2;
-      // Just under the baseline, like an underline: the dot lands on the line
-      // right after the last letter, a full stop dropped onto it.
-      dotY = baseline.getBoundingClientRect().bottom - box.top + 0.12 * size;
-      const left = column.left - box.left;
-      line.style.left = `${left}px`;
-      line.style.width = `${column.width}px`;
-      line.style.top = `${dotY - 1}px`;
-      line.style.transformOrigin = `${dotX - left}px 50%`;
+      // On the baseline right after the last letter, like a full stop (the dot
+      // is 10px, so its centre sits 5px up).
+      dotY = baseline.getBoundingClientRect().bottom - box.top - 5;
       t0 = now;
       frame(now);
     };
@@ -164,7 +149,6 @@ export default function HeroGreeting({ text }: { text: string }) {
       <span aria-hidden data-caret className="caret-block" />
       <span aria-hidden className="hello-dot" />
       <span aria-hidden className="hello-ring" />
-      <span aria-hidden className="hello-line" />
     </h1>
   );
 }

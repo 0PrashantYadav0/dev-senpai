@@ -570,8 +570,8 @@
   }
 }
 
-/* Typing: a blue block caret. Hero intro: dot, ring and line; the greeting is
-   held back while html[data-hello] is set. */
+/* Typing: a blue block caret. Hero intro: dot and ring; the greeting is held
+   back while html[data-hello] is set. */
 @layer base {
   .caret-block {
     position: absolute;
@@ -599,17 +599,6 @@
   }
   .hello-ring {
     border: 1.5px solid hsl(var(--signal));
-  }
-  /* Behind the text and the donut: z-index -1 inside the hero's stacking context. */
-  .hello-line {
-    position: absolute;
-    left: 0;
-    top: 0;
-    height: 2px;
-    z-index: -1;
-    background: hsl(var(--signal));
-    opacity: 0;
-    pointer-events: none;
   }
   .hello-wave {
     transform-origin: 50% 60%;
