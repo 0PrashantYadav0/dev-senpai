@@ -1,3 +1,4 @@
+import PageTitle from "@/components/motion/PageTitle";
 import profile from "@/data/profile.json";
 import type { Metadata } from "next";
 import Link from "next/link";
@@ -12,7 +13,7 @@ export const metadata: Metadata = {
 export default function PrivacyPage() {
   return (
     <article className="prose-page max-w-[68ch] pb-8 pt-10 sm:pt-16">
-      <h1 className="display text-4xl sm:text-5xl">Privacy</h1>
+      <PageTitle label="PRIVACY" title="Privacy" />
       <p>Last updated {lastUpdated}.</p>
       <p>
         This is a personal portfolio. It exists to show work and make it easy

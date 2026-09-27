@@ -1,3 +1,4 @@
+import PageTitle from "@/components/motion/PageTitle";
 import Timeline from "@/components/experience/Timeline";
 import SectionHeading from "@/components/home/SectionHeading";
 import careerData from "@/data/career.json";
@@ -19,7 +20,7 @@ export default function ExperiencePage() {
   return (
     <div className="flex flex-col gap-16 pb-8 pt-10 sm:pt-16">
       <header>
-        <h1 className="display text-4xl sm:text-5xl">Work</h1>
+        <PageTitle label="WORK" title="Work" />
         <p className="measure mt-4 text-muted-foreground sm:text-lg">
           Four internships, steady open-source contributions, and a degree in
           progress. Newest first.
@@ -27,7 +28,7 @@ export default function ExperiencePage() {
       </header>
 
       <section>
-        <SectionHeading title="Internships" />
+        <SectionHeading label="01 / INTERNSHIPS" title="Internships" />
         <Timeline
           items={career.map((c) => ({
             name: c.name,
@@ -44,7 +45,7 @@ export default function ExperiencePage() {
       </section>
 
       <section>
-        <SectionHeading title="Open source" />
+        <SectionHeading label="02 / OPEN SOURCE" title="Open source" />
         <Timeline
           items={[
             {
@@ -61,7 +62,7 @@ export default function ExperiencePage() {
       </section>
 
       <section>
-        <SectionHeading title="Education" />
+        <SectionHeading label="03 / EDUCATION" title="Education" />
         <Timeline
           items={education.map((e) => ({
             name: e.name,
@@ -76,7 +77,7 @@ export default function ExperiencePage() {
       </section>
 
       <section>
-        <SectionHeading title="Roles at college" />
+        <SectionHeading label="04 / ROLES AT COLLEGE" title="Roles at college" />
         <Timeline
           items={profile.roles.map((r) => ({
             name: r.title,
