@@ -1,3 +1,4 @@
+import PageTitle from "@/components/motion/PageTitle";
 import ContactForm from "@/components/ContactForm";
 import Socials from "@/components/Socials";
 import profile from "@/data/profile.json";
@@ -12,7 +13,7 @@ export default function ContactPage() {
   return (
     <div className="flex flex-col gap-12 pb-8 pt-10 sm:pt-14">
       <header>
-        <h1 className="display text-4xl sm:text-5xl">Contact</h1>
+        <PageTitle label="CONTACT" title="Contact" />
         <p className="measure mt-4 text-muted-foreground sm:text-lg">
           For roles, collaborations, or questions about anything on this site.
           Messages go straight to his inbox.

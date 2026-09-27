@@ -1,3 +1,4 @@
+import PageTitle from "@/components/motion/PageTitle";
 import ProjectsBrowser from "@/components/projects/ProjectsBrowser";
 import data from "@/data/projects.json";
 import { projectSchema } from "@/lib/schemas";
@@ -18,7 +19,7 @@ export default function ProjectPage() {
   return (
     <div className="flex flex-col gap-10 pb-8 pt-10 sm:pt-16">
       <header>
-        <h1 className="display text-4xl sm:text-5xl">Projects</h1>
+        <PageTitle label="PROJECTS" title="Projects" />
         <p className="measure mt-4 text-muted-foreground sm:text-lg">
           {projects.length} things built for hackathons, coursework, curiosity,
           and production. Most link to source.

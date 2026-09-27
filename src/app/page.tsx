@@ -9,8 +9,11 @@ import IndexRail from "@/components/home/IndexRail";
 import OpenSource from "@/components/home/OpenSource";
 import SectionHeading from "@/components/home/SectionHeading";
 import SkillChips from "@/components/home/SkillChips";
+import LangReel from "@/components/motion/LangReel";
+import { reelWords } from "@/lib/motion";
 import Icon from "@/components/Icon";
 import Rule from "@/components/layout/Rule";
+import HeroGreeting from "@/components/motion/HeroGreeting";
 import profile from "@/data/profile.json";
 import projectsData from "@/data/projects.json";
 import socialsData from "@/data/socials.json";
@@ -25,6 +28,7 @@ const INDEX = [
   { id: "experience", label: "Experience" },
   { id: "projects", label: "Projects" },
   { id: "open-source", label: "Open source" },
+  { id: "achievements", label: "Achievements" },
   { id: "skills", label: "Skills" },
   { id: "contact", label: "Contact" },
 ];
@@ -35,6 +39,7 @@ export default async function Home() {
   const [stdlib, prs] = await Promise.all([getMergedStdlibPrCount(), getPullRequests()]);
   const mergedEverywhere = prs?.merged.total ?? stdlib.count;
   const age = new Date().getFullYear() - profile.birthYear - 1;
+  const languages = profile.skills.find((s) => s.group === "Languages")?.items ?? [];
 
   return (
     <div className="pb-4">
@@ -48,12 +53,7 @@ export default async function Home() {
       <section id="intro" className="relative z-10 scroll-mt-20">
         <div className="-mt-[88px] flex flex-col-reverse gap-2 sm:-mt-[112px] sm:flex-row sm:items-center sm:justify-between sm:gap-6">
           <div className="min-w-0 sm:pt-6">
-            <h1 className="display text-[2.2rem] leading-[0.95] sm:text-[2.9rem]">
-              hi, prashant here{" "}
-              <span aria-hidden className="inline-block">
-                👋
-              </span>
-            </h1>
+            <HeroGreeting text="hi, prashant here" />
             <p className="mt-3 text-sm text-muted-foreground">
               {age}, {profile.location}. Final year at IIIT Lucknow.
             </p>
@@ -132,6 +132,7 @@ export default async function Home() {
 
       <section id="github" className="scroll-mt-20">
         <SectionHeading
+          label="02 / GITHUB"
           title="GitHub"
           href={`https://github.com/${GITHUB_USER}`}
           linkText={`@${GITHUB_USER}`}
@@ -143,7 +144,7 @@ export default async function Home() {
       <Rule />
 
       <section id="experience" className="scroll-mt-20">
-        <SectionHeading title="Experience" href="/experience" linkText="All work and education" />
+        <SectionHeading label="03 / EXPERIENCE" title="Experience" href="/experience" linkText="All work and education" />
         <ExperienceLedger />
       </section>
 
@@ -151,6 +152,7 @@ export default async function Home() {
 
       <section id="projects" className="scroll-mt-20">
         <SectionHeading
+          label="04 / PROJECTS"
           title="Selected projects"
           href="/projects"
           linkText={`All ${projectCount} projects`}
@@ -162,11 +164,11 @@ export default async function Home() {
 
       <section id="open-source" className="scroll-mt-20 grid gap-12 md:grid-cols-2 md:gap-10">
         <div>
-          <SectionHeading title="Open source" />
+          <SectionHeading label="05 / OPEN SOURCE" title="Open source" />
           <OpenSource />
         </div>
-        <div>
-          <SectionHeading title="Achievements" />
+        <div id="achievements" className="scroll-mt-20">
+          <SectionHeading label="06 / ACHIEVEMENTS" title="Achievements" />
           <Achievements />
         </div>
       </section>
@@ -174,7 +176,8 @@ export default async function Home() {
       <Rule />
 
       <section id="skills" className="scroll-mt-20">
-        <SectionHeading title="Skills and technologies" />
+        <SectionHeading label="07 / SKILLS" title="Skills and technologies" />
+        <LangReel words={reelWords(languages)} className="mb-6" />
         <SkillChips />
       </section>
 
