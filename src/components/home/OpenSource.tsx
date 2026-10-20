@@ -13,7 +13,7 @@ export default async function OpenSource() {
         <span className="text-2xl text-muted-foreground sm:text-3xl">merged pull requests</span>
       </p>
       <p className="text-muted-foreground">
-        {os.role} to{" "}
+        {os.role} of{" "}
         <a
           href={os.href}
           target="_blank"

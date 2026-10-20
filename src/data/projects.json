@@ -1,6 +1,76 @@
 {
   "projects": [
     {
+      "name": "ActionGuard",
+      "description": "An execution firewall for AI agents. Before any tool runs, the agent asks a gateway that allows it, denies it, or holds it for a human, based on a declarative policy and a risk score. Every decision lands in a SHA-256 hash-chained audit log, and a live dashboard streams the feed, the pending approvals, and a kill switch. Blocks prompt-injected credential theft, destructive commands, and runaway loops; the gateway runs on the Python standard library alone.",
+      "tags": [
+        "Python",
+        "AI Agents",
+        "LLMs",
+        "Security",
+        "Policy Engine",
+        "SQLite",
+        "Server-Sent Events"
+      ],
+      "links": [
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/ActionGuard",
+          "icon": "github"
+        }
+      ],
+      "language": "Python"
+    },
+    {
+      "name": "graphify-stdlibjs",
+      "description": "Browse the stdlib-js monorepo as a graph. Expand namespaces into their packages, see naming families like sum folded into their variants and algorithms, follow a package's whole dependency web, and see what a change to it could break, split into runtime, rebuild, and test-only dependents. Answers everything client-side over CSR adjacency lists for about 6,000 packages, regenerated from stdlib's develop branch every week.",
+      "tags": [
+        "TypeScript",
+        "React",
+        "D3",
+        "Vite",
+        "Graphs",
+        "stdlib-js"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://graphify-stdlibjs.vercel.app",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/graphify-stdlibjs",
+          "icon": "github"
+        }
+      ],
+      "language": "TypeScript"
+    },
+    {
+      "name": "nekoshell",
+      "description": "A Catppuccin terminal rig for macOS. One command sets up zsh, a prompt, a greeting with a Pokémon or your own pixel art, a music panel, and a plugin set, with the same font and colours across kitty, Ghostty, Warp, iTerm2, and Terminal.app and a theme switch that recolours all of them at once. Ships through its own Homebrew tap, with a doctor command and CI.",
+      "tags": [
+        "Shell",
+        "zsh",
+        "Homebrew",
+        "Developer Tools",
+        "Dotfiles"
+      ],
+      "links": [
+        {
+          "name": "Website",
+          "href": "https://nekosh.vercel.app",
+          "icon": "globe"
+        },
+        {
+          "name": "Source",
+          "href": "https://github.com/0PrashantYadav0/nekoshell",
+          "icon": "github"
+        }
+      ],
+      "language": "Shell"
+    },
+    {
       "name": "raft-kv",
       "description": "Distributed key-value store built from scratch on Raft: leader election, log replication, and snapshotting over a gRPC transport with durable bbolt storage. Kill the leader mid-write and a new one is elected in a few hundred milliseconds with no committed data lost. Passes the full suite under the Go race detector.",
       "tags": [

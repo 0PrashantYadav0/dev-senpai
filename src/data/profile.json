@@ -10,7 +10,7 @@
   "summary": [
     "Prashant is a final-year B.Tech student in Computer Science and Artificial Intelligence at IIIT Lucknow (2023 to 2027, GPA 8.6).",
     "He has interned at Walmart Global Tech, Nugget by Zomato, Eternal (Zomato), and UBIQCURE, working on voice AI, Go microservices, telephony, data pipelines, AI observability agents, and cloud infrastructure.",
-    "He is a regular contributor to stdlib-js, the standard library for JavaScript, with more than 160 merged pull requests.",
+    "He is a maintainer of stdlib-js, the standard library for JavaScript, with more than 160 merged pull requests since May 2024.",
     "He likes shipping ambitious systems, instant coffee, and anime."
   ],
   "focus": [
@@ -187,7 +187,7 @@
   ],
   "openSource": {
     "name": "stdlib-js",
-    "role": "Contributor",
+    "role": "Maintainer",
     "href": "https://github.com/stdlib-js/stdlib",
     "start": "May 2024",
     "end": null,
@@ -230,7 +230,7 @@
       "title": "Coordinator, Web Wing, AXIOS (technical society of IIIT Lucknow)",
       "start": "Aug 2024",
       "end": null,
-      "description": "Coordinated more than 10 technical development events for over 240 students."
+      "description": "Coordinated more than 10 technical development events for over 240 students, and is rebuilding the official IIIT Lucknow website (iiitl.ac.in) on Next.js, Vercel, and Supabase, with an admin dashboard, role-based permissions, two-factor auth, and an audit log, across more than 30 merged pull requests."
     },
     {
       "title": "Senior member, FOSS Wing, AXIOS (technical society of IIIT Lucknow)",
