@@ -42,7 +42,9 @@ All site content is data, not markup. Edit these and the pages follow:
 
 After editing any of them run `npm run gen` so Dev Senpai's index
 (`src/data/embeddings.json`) picks up the change. The resume PDF is
-`public/resume.pdf`.
+`public/resume.pdf`, built from `resume/resume.tex` with `npm run resume`
+(needs `brew install tectonic`). Keep it to one page and in step with the
+data files.
 
 ## Design system (redesign of Sep 2026)
 

@@ -1,0 +1,167 @@
+% Source for public/resume.pdf. Build with:  npm run resume  (needs tectonic: brew install tectonic)
+% Keep it to one page: check with  pdfinfo public/resume.pdf | grep Pages
+\documentclass[a4paper,10pt]{article}
+
+\usepackage{fontspec}            % Latin Modern as OpenType, so the PDF text extracts cleanly for ATS parsers
+\usepackage[a4paper,top=0.42in,bottom=0.38in,left=0.5in,right=0.5in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+
+\hypersetup{
+  pdftitle={Prashant Kumar Yadav - Resume},
+  pdfauthor={Prashant Kumar Yadav},
+  pdfsubject={Software Development Engineer},
+  pdfkeywords={Software Engineer, SDE, Go, C++, Java, Distributed Systems, Kubernetes, Backend}
+}
+
+\pagestyle{empty}
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+\setlength{\parindent}{0pt}
+
+\titleformat{\section}{\scshape\raggedright\large}{}{0em}{}[\titlerule]
+\titlespacing*{\section}{0pt}{5pt}{3pt}
+
+% \entry{left top}{right top}{left bottom}{right bottom}
+\newcommand{\entry}[4]{%
+  \item\begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} & #2 \\
+    \textit{\small #3} & \textit{\small #4} \\
+  \end{tabular*}\vspace{-6pt}}
+% \project{name and link}{tech}{year}
+\newcommand{\project}[3]{%
+  \item\begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} $|$ \textit{\small #2} & \small #3 \\
+  \end{tabular*}\vspace{-6pt}}
+% \role{title}{dates}
+\newcommand{\role}[2]{%
+  \item\begin{tabular*}{0.98\textwidth}[t]{l@{\extracolsep{\fill}}r}
+    \textbf{#1} & \small #2 \\
+  \end{tabular*}\vspace{-6pt}}
+\newcommand{\gh}[1]{\href{https://github.com/0PrashantYadav0/#1}}
+
+\newenvironment{entries}{\begin{itemize}[leftmargin=0.12in,label={},itemsep=1pt,topsep=1pt]}{\end{itemize}}
+\newenvironment{points}{\begin{itemize}[leftmargin=0.2in,itemsep=0pt,topsep=1pt,parsep=0pt,label={\tiny$\bullet$}]\small}{\end{itemize}\vspace{-3pt}}
+
+\begin{document}
+
+%----------HEADING----------
+\begin{tabular*}{\textwidth}{l@{\extracolsep{\fill}}r}
+  {\LARGE\textbf{Prashant Kumar Yadav}} & \href{mailto:devprashantkyadav@gmail.com}{devprashantkyadav@gmail.com} $|$ +91-8198862356 \\
+  \href{https://prashantyadav.vercel.app}{prashantyadav.vercel.app} &
+  \href{https://github.com/0PrashantYadav0}{github.com/0PrashantYadav0} $|$
+  \href{https://www.linkedin.com/in/prashantyadav097}{linkedin.com/in/prashantyadav097} \\
+\end{tabular*}
+
+%----------EDUCATION----------
+\section{Education}
+\begin{entries}
+  \entry{Indian Institute of Information Technology, Lucknow}{Lucknow, India}
+        {B.Tech in Computer Science and Artificial Intelligence; CGPA 8.6/10}{Aug 2023 -- Jun 2027}
+  \begin{points}
+    \item[] \textbf{Coursework:} Data Structures and Algorithms, Operating Systems, DBMS, Computer Networks, OOP
+  \end{points}
+\end{entries}
+
+%----------EXPERIENCE----------
+\section{Experience}
+\begin{entries}
+  \entry{\href{https://tech.walmart.com}{Walmart Global Tech}}{Onsite}
+        {Software Developer Intern}{May 2026 -- Jul 2026}
+  \begin{points}
+    \item Built a data migration pipeline that moves and validates large datasets across internal systems with integrity checks.
+    \item Developed AI agent skills on the Model Context Protocol (MCP) that correlate logs and metrics from OpenObserve, Grafana, and Prometheus, with pod-level diagnostics and automated root-cause reports for incidents.
+    \item Drove cloud cost optimization across Kubernetes services. \textit{Java, Spring Boot, Python, Kubernetes, MCP}
+  \end{points}
+
+  \entry{\href{https://www.nugget.com}{Nugget by Zomato}}{Onsite}
+        {Engineering Intern}{Dec 2025 -- Feb 2026}
+  \begin{points}
+    \item Architected LLM-powered ticketing for voice bots that captures, classifies, and resolves issues; shipped multi-tenant deployments for Tata 1mg and VoloHealth.
+    \item Engineered high-throughput Go microservices on Ozonetel dialers and SIP telephony for inbound and outbound calls.
+    \item Built the backend for a real-time agent-assist tool that hands live calls to humans with the full conversation context.
+  \end{points}
+
+  \entry{\href{https://www.eternal.com}{Eternal (Zomato)}}{Onsite}
+        {Engineering Intern}{Jun 2025 -- Sep 2025}
+  \begin{points}
+    \item Shipped production voice bots end to end (NLU, TTS, STT, VAD) on Gemini, Deepgram, ElevenLabs, and OpenAI/Groq.
+    \item Built a modular voice-orchestration framework adopted by Zomato Ads to automate customer-support workflows.
+    \item Set up GitOps CI/CD from scratch with GitHub Actions, ArgoCD, and Infrastructure as Code on AWS EKS and ECS.
+  \end{points}
+
+  \entry{\href{https://ubiqcure.com}{UBIQCURE} (healthcare startup)}{Remote}
+        {Software Engineering Intern (Tech Lead)}{Aug 2024 -- Nov 2024}
+  \begin{points}
+    \item Shipped four production web portals (user, health and school management, landing) with React, Node.js, and MongoDB.
+    \item Led a team of 6+ engineers with Jira and Agile; sped up Azure CI/CD deployments with Docker.
+  \end{points}
+\end{entries}
+
+%----------OPEN SOURCE----------
+\section{Open Source}
+\begin{entries}
+  \entry{\href{https://github.com/stdlib-js/stdlib}{stdlib-js}: the standard library for JavaScript}{Remote}
+        {Maintainer}{May 2024 -- Present}
+  \begin{points}
+    \item Authored \href{https://github.com/stdlib-js/stdlib/pulls?q=is\%3Apr+author\%3A0PrashantYadav0+is\%3Amerged}{\underline{160+ merged pull requests}} across the BLAS, LAPACK, and statistics packages, including C-level BLAS extensions and WebAssembly implementations that speed up numerical computing.
+  \end{points}
+\end{entries}
+
+%----------PROJECTS----------
+\section{Projects}
+\begin{entries}
+  \project{\gh{raft-kv}{\underline{raft-kv}}: Distributed Key-Value Store}{Go, gRPC, bbolt}{2026}
+  \begin{points}
+    \item Built a strongly consistent, replicated key-value store from scratch on Raft: leader election, log replication, and snapshotting over gRPC, persisted in bbolt.
+    \item Kill the leader mid-write and a new one is elected in a few hundred ms with no committed data lost; race-detector clean.
+  \end{points}
+
+  \project{\gh{limit-order-book}{\underline{Limit Order Book}}: Low-Latency Matching Engine}{C++20, CMake}{2026}
+  \begin{points}
+    \item Price-time-priority matching engine, zero dependencies: limit and market orders, O(1) cancel/modify, self-trade prevention.
+    \item Benchmarked at 6.97M orders/sec with 68 ns p50 and 319 ns p99 latency; property-tested and sanitizer-clean.
+  \end{points}
+
+  \project{\gh{KubeStore}{\underline{KubeStore}}: Kubernetes Store Provisioning Platform}{Go, React, Kubernetes, Helm}{2026}
+  \begin{points}
+    \item Go platform that provisions MedusaJS and WooCommerce stores via Helm (install, upgrade, rollback) on Kind and k3s.
+    \item Namespace isolation, persistent volumes, RBAC, network policies, rate limiting, and a React observability dashboard.
+  \end{points}
+
+  \project{\gh{ActionGuard}{\underline{ActionGuard}}: Execution Firewall for AI Agents}{Python, SQLite, SSE}{2026}
+  \begin{points}
+    \item Gateway that allows, denies, or holds agent tool calls for human approval by policy and risk score; hash-chained audit log.
+  \end{points}
+\end{entries}
+
+%----------SKILLS----------
+\section{Technical Skills}
+\begin{points}
+  \item[] \textbf{Languages:} Go, C++, Java, Python, TypeScript, JavaScript, C, SQL, Bash
+  \item[] \textbf{Backend and Systems:} Spring Boot, Node.js, Express, FastAPI, Django, gRPC, REST, GraphQL, Kafka, Microservices
+  \item[] \textbf{Frontend and Databases:} React, Next.js, Tailwind CSS; PostgreSQL, MySQL, MongoDB, Redis, SQLite, Supabase
+  \item[] \textbf{Cloud and DevOps:} AWS (EKS, ECS), Azure, Docker, Kubernetes, Helm, GitHub Actions, ArgoCD, Linux, Prometheus
+  \item[] \textbf{AI:} LLM integration, RAG, AI agents, Model Context Protocol, LangChain, voice pipelines (STT, TTS, VAD)
+\end{points}
+
+%----------ACHIEVEMENTS----------
+\section{Achievements}
+\begin{points}
+  \item Overall Winner, GenTech Thales; Global Top 11, Walmart Sparkathon; 2nd ML, 3rd Finance at Techkriti IIT Kanpur.
+  \item \textbf{Codeforces Specialist} (peak 1534), \textbf{CodeChef 4-star} (peak 1813); global rank 386 in a Codeforces Div. 2 contest.
+\end{points}
+
+%----------LEADERSHIP----------
+\section{Leadership}
+\begin{entries}
+  \role{AXIOS, the technical society of IIIT Lucknow}{Aug 2024 -- Present}
+  \begin{points}
+    \item \textbf{Web Wing Coordinator:} rebuilding the official IIIT Lucknow website on Next.js, Supabase, and Vercel (30+ merged PRs) with a role-based admin, two-factor auth, and an audit log; ran 10+ technical events for 240+ students.
+    \item \textbf{FOSS Wing Senior Member:} led open-source workshops for 240+ students and promoted Hacktoberfest.
+  \end{points}
+\end{entries}
+
+\end{document}
