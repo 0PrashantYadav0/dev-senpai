@@ -86,18 +86,13 @@ interface Cloud {
   speed: number;
 }
 
-function ridgeTriangle(phase: number) {
-  const cycle = ((phase % 1) + 1) % 1;
-  return 1 - Math.abs(cycle * 2 - 1);
-}
-
-function mountainProfile(seed: number, amp: number, base: number, freq: number) {
-  return (x: number) => {
-    const mainPeak = ridgeTriangle(x * freq + seed);
-    const shoulder = ridgeTriangle(x * freq * 1.8 + seed * 1.7) * 0.62;
-    const spur = ridgeTriangle(x * freq * 2.7 + seed * 2.5) * 0.38;
-    return base - amp * Math.max(mainPeak, shoulder, spur);
-  };
+function hillProfile(seed: number, amp: number, base: number, freq: number) {
+  return (x: number) =>
+    base +
+    amp *
+      (0.55 * Math.sin(x * freq + seed) +
+        0.3 * Math.sin(x * freq * 2.3 + seed * 1.7) +
+        0.15 * Math.sin(x * freq * 5.1 + seed * 0.4));
 }
 
 export default function Banner() {
@@ -124,12 +119,12 @@ export default function Banner() {
     let screenIdx = 0;
     let nextBlink = 1.5;
 
-    // Amplitude and base are fractions of the height. Each range has a
-    // different peak frequency, with the distant ridge changing slowest.
-    const mountains = [
-      mountainProfile(0.13, 0.33, 0.58, 0.0042),
-      mountainProfile(0.52, 0.25, 0.7, 0.007),
-      mountainProfile(0.05, 0.18, 0.83, 0.0105),
+    // Amplitude and base are fractions of the height; frequency is per
+    // logical pixel, so the back range rolls slowest.
+    const hills = [
+      hillProfile(1.3, 0.1, 0.5, 0.035),
+      hillProfile(4.1, 0.08, 0.63, 0.05),
+      hillProfile(7.7, 0.06, 0.76, 0.08),
     ];
 
     const seedScene = () => {
@@ -233,8 +228,8 @@ export default function Banner() {
         });
       }
 
-      // Jagged alpine ridges: three layers, each sliding at its own speed.
-      mountains.forEach((profile, i) => {
+      // Hills: three layers, each sliding at its own speed.
+      hills.forEach((profile, i) => {
         ctx.fillStyle = p.hills[i];
         const drift = t * (0.3 + i * 0.45);
         for (let x = 0; x < W; x++) {
@@ -242,37 +237,6 @@ export default function Banner() {
           ctx.fillRect(x, top, 1, H - top);
         }
       });
-
-      // A blue switchback marks the ascent to the foreground summit.
-      const foregroundDrift = t * (0.3 + 2 * 0.45);
-      const summitX = Math.floor(W * 0.55);
-      const summitY = Math.floor(H * mountains[2](summitX + foregroundDrift));
-      const route = [
-        [W * 0.34, H * 0.91],
-        [W * 0.38, H * 0.89],
-        [W * 0.36, H * 0.85],
-        [W * 0.42, H * 0.82],
-        [W * 0.4, H * 0.78],
-        [W * 0.48, H * 0.74],
-        [W * 0.45, H * 0.7],
-        [summitX, summitY + 1],
-      ];
-      ctx.strokeStyle = p.screen[0];
-      ctx.lineWidth = 1;
-      ctx.lineJoin = "miter";
-      ctx.beginPath();
-      route.forEach(([x, y], i) => {
-        if (i === 0) ctx.moveTo(x, y);
-        else ctx.lineTo(x, y);
-      });
-      ctx.stroke();
-      ctx.fillStyle = p.screen[0];
-      ctx.beginPath();
-      ctx.moveTo(summitX, summitY - 3);
-      ctx.lineTo(summitX + 2, summitY);
-      ctx.lineTo(summitX - 2, summitY);
-      ctx.closePath();
-      ctx.fill();
 
       // Grass band with swaying blades.
       const gy = H - 6;

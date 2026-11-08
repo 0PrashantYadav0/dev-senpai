@@ -63,9 +63,6 @@ export default async function Home() {
               Software developer. I like building complex systems, instant coffee,
               and anime.
             </p>
-            <p className="mt-3 text-[15px] leading-relaxed text-muted-foreground">
-              Outside code, I&apos;m learning to climb with the goal of becoming a mountaineer.
-            </p>
             <ul className="intro-list mt-3 flex flex-col gap-1.5 text-[15px] leading-relaxed text-muted-foreground">
               <li>
                 Lately that means voice AI that picks up real phone calls, and the
