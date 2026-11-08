@@ -298,7 +298,7 @@
 
   /* Index rail: parked in the right margin, just outside the column. */
   .index-rail {
-    left: calc(50% + 22rem + 2.5rem);
+    left: calc(50% + theme(maxWidth.site) / 2 + 2.5rem);
   }
 
   /* The banner canvas fades into the page at its edges. */

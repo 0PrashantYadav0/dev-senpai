@@ -51,81 +51,82 @@ export default async function Home() {
       </div>
 
       <section id="intro" className="relative z-10 scroll-mt-20">
-        <div className="-mt-[88px] flex flex-col-reverse gap-2 sm:-mt-[112px] sm:flex-row sm:items-center sm:justify-between sm:gap-6">
-          <div className="min-w-0 sm:pt-6">
+        {/* Copy on the left; the donut on the right rises over the banner. */}
+        <div className="-mt-[88px] flex flex-col-reverse gap-2 sm:-mt-[112px] sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+          <div className="min-w-0 max-w-2xl sm:pt-[136px]">
             <HeroGreeting text="hi, prashant here" />
             <p className="mt-3 text-sm text-muted-foreground">
               {age}, {profile.location}. Final year at IIIT Lucknow.
             </p>
+
+            <p className="mt-8 text-[17px] leading-relaxed">
+              Software developer. I like building complex systems, instant coffee,
+              and anime.
+            </p>
+            <ul className="intro-list mt-3 flex flex-col gap-1.5 text-[15px] leading-relaxed text-muted-foreground">
+              <li>
+                Lately that means voice AI that picks up real phone calls, and the
+                Go services that keep it on the line.
+              </li>
+              <li>
+                {mergedEverywhere}+ pull requests merged into other people&apos;s projects,
+                most of them into{" "}
+                <a
+                  href={profile.openSource.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="whitespace-nowrap font-medium text-foreground hover:text-signal"
+                >
+                  stdlib-js
+                </a>
+                .
+              </li>
+              <li>
+                Graduating in June 2027. Building new software that makes an impact.
+              </li>
+            </ul>
+
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Link
+                href={profile.resume}
+                target="_blank"
+                className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+              >
+                <FileText className="size-4" />
+                Download resume
+              </Link>
+              <Link
+                href="/contact"
+                className="inline-flex h-9 items-center gap-2 rounded-md border bg-card px-3.5 text-sm font-medium transition-colors hover:border-signal"
+              >
+                <Mail className="size-4" />
+                Send an email
+              </Link>
+            </div>
+
+            <p className="mt-7 text-sm text-muted-foreground">
+              Here are my <span className="text-foreground">socials</span>
+            </p>
+            <ul className="mt-2.5 flex flex-wrap gap-2">
+              {socials.map((s) => (
+                <li key={s.name}>
+                  <a
+                    href={s.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex h-8 items-center gap-1.5 rounded-md border bg-card px-2.5 text-[13px] transition-colors hover:border-signal"
+                  >
+                    <Icon name={s.icon} aria-hidden className="size-3.5" />
+                    {s.name}
+                  </a>
+                </li>
+              ))}
+            </ul>
           </div>
           <div className="-mr-2 shrink-0 sm:-mr-3">
-            <AsciiDonut className="text-[7px] sm:text-[8.5px] md:text-[9.5px]" />
+            <AsciiDonut className="text-[7px] sm:text-[8.5px] md:text-[9.5px] lg:text-[11px]" />
           </div>
         </div>
-
-        <p className="mt-8 text-[17px] leading-relaxed">
-          Software developer. I like building complex systems, instant coffee,
-          and anime.
-        </p>
-        <ul className="intro-list mt-3 flex flex-col gap-1.5 text-[15px] leading-relaxed text-muted-foreground">
-          <li>
-            Lately that means voice AI that picks up real phone calls, and the
-            Go services that keep it on the line.
-          </li>
-          <li>
-            {mergedEverywhere}+ pull requests merged into other people&apos;s projects,
-            most of them into{" "}
-            <a
-              href={profile.openSource.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-medium text-foreground hover:text-signal"
-            >
-              stdlib-js
-            </a>
-            .
-          </li>
-          <li>
-            Graduating in June 2027. Building new software that makes an impact.
-          </li>
-        </ul>
-
-        <div className="mt-6 flex flex-wrap items-center gap-3">
-          <Link
-            href={profile.resume}
-            target="_blank"
-            className="inline-flex h-9 items-center gap-2 rounded-md bg-primary px-3.5 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-          >
-            <FileText className="size-4" />
-            Download resume
-          </Link>
-          <Link
-            href="/contact"
-            className="inline-flex h-9 items-center gap-2 rounded-md border bg-card px-3.5 text-sm font-medium transition-colors hover:border-signal"
-          >
-            <Mail className="size-4" />
-            Send an email
-          </Link>
-        </div>
-
-        <p className="mt-7 text-sm text-muted-foreground">
-          Here are my <span className="text-foreground">socials</span>
-        </p>
-        <ul className="mt-2.5 flex flex-wrap gap-2">
-          {socials.map((s) => (
-            <li key={s.name}>
-              <a
-                href={s.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex h-8 items-center gap-1.5 rounded-md border bg-card px-2.5 text-[13px] transition-colors hover:border-signal"
-              >
-                <Icon name={s.icon} aria-hidden className="size-3.5" />
-                {s.name}
-              </a>
-            </li>
-          ))}
-        </ul>
       </section>
 
       <Rule />

@@ -3,6 +3,7 @@
     {
       "name": "ActionGuard",
       "description": "An execution firewall for AI agents. Before any tool runs, the agent asks a gateway that allows it, denies it, or holds it for a human, based on a declarative policy and a risk score. Every decision lands in a SHA-256 hash-chained audit log, and a live dashboard streams the feed, the pending approvals, and a kill switch. Blocks prompt-injected credential theft, destructive commands, and runaway loops; the gateway runs on the Python standard library alone.",
+      "image": "/projects/actionguard.jpg",
       "tags": [
         "Python",
         "AI Agents",
@@ -24,6 +25,7 @@
     {
       "name": "graphify-stdlibjs",
       "description": "Browse the stdlib-js monorepo as a graph. Expand namespaces into their packages, see naming families like sum folded into their variants and algorithms, follow a package's whole dependency web, and see what a change to it could break, split into runtime, rebuild, and test-only dependents. Answers everything client-side over CSR adjacency lists for about 6,000 packages, regenerated from stdlib's develop branch every week.",
+      "image": "/projects/graphify-stdlibjs.jpg",
       "tags": [
         "TypeScript",
         "React",
@@ -49,6 +51,7 @@
     {
       "name": "nekoshell",
       "description": "A Catppuccin terminal rig for macOS. One command sets up zsh, a prompt, a greeting with a Pokémon or your own pixel art, a music panel, and a plugin set, with the same font and colours across kitty, Ghostty, Warp, iTerm2, and Terminal.app and a theme switch that recolours all of them at once. Ships through its own Homebrew tap, with a doctor command and CI.",
+      "image": "/projects/nekoshell.jpg",
       "tags": [
         "Shell",
         "zsh",
@@ -73,6 +76,7 @@
     {
       "name": "raft-kv",
       "description": "Distributed key-value store built from scratch on Raft: leader election, log replication, and snapshotting over a gRPC transport with durable bbolt storage. Kill the leader mid-write and a new one is elected in a few hundred milliseconds with no committed data lost. Passes the full suite under the Go race detector.",
+      "image": "/projects/raft-kv.jpg",
       "tags": [
         "Go",
         "Raft",
@@ -93,6 +97,7 @@
     {
       "name": "Limit Order Book",
       "description": "Price-time-priority limit order book and matching engine in C++20 with zero dependencies: limit and market orders, O(1) cancel and modify, self-trade prevention, and sanitizer-clean builds. Benchmarked at about 6.97 million orders per second with a 68 ns p50 engine latency on Apple Silicon.",
+      "image": "/projects/limit-order-book.jpg",
       "tags": [
         "C++20",
         "CMake",
@@ -112,6 +117,7 @@
     {
       "name": "Event-Driven Backtesting Engine",
       "description": "Backtesting engine for systematic trading strategies that mirrors a live system: a single FIFO event queue drives market, signal, order, and fill components, with transaction-cost and slippage modelling and walk-forward validation. Ships with momentum and pairs-trading strategies and a deterministic synthetic-data generator.",
+      "image": "/projects/backtesting-engine.jpg",
       "tags": [
         "Python",
         "NumPy",
@@ -131,6 +137,7 @@
     {
       "name": "AgentOps Cockpit",
       "description": "Observability and auto-triage for AI agents. Instruments a real agent (Llama 3.2 on Ollama with live search and embedding retrieval) using OpenTelemetry GenAI semantic conventions, streams traces to self-hosted SigNoz, tracks token cost per model and user, and ships a Triage Copilot that reads the telemetry and explains what broke.",
+      "image": "/projects/agentops-cockpit.jpg",
       "tags": [
         "Python",
         "OpenTelemetry",
@@ -151,6 +158,7 @@
     {
       "name": "QueryPilot",
       "description": "Ask your telemetry anything. Turns natural language, PromQL, or LogQL into SigNoz Query Builder specs with a live result panel, plus a gallery of one-click demos such as secret-leak detection, orphan-span checks, and top-N endpoints by p99. Built for the SigNoz hackathon.",
+      "image": "/projects/querypilot.jpg",
       "tags": [
         "Python",
         "PromQL",
@@ -171,6 +179,7 @@
     {
       "name": "SigNoz Beacon",
       "description": "Turns live SigNoz alert state into an ambient signal: a lamp that glows green, breathes amber, and flashes red as systems misbehave. Ships a virtual browser orb driven over server-sent events, with a device adapter so an ESP32 LED strip or a Hue bulb drops in with a one-line change.",
+      "image": "/projects/signoz-beacon.jpg",
       "tags": [
         "Python",
         "SigNoz",
@@ -190,6 +199,7 @@
     {
       "name": "Mnemos",
       "description": "A narrative RPG where the townsfolk run on a typed knowledge graph. Every character remembers what you did, who told them, and how they feel about you, and that memory spreads as gossip across graph edges. Runs locally and mirrors every event to Cognee Cloud when a key is present.",
+      "image": "/projects/mnemos.jpg",
       "tags": [
         "Python",
         "Knowledge Graph",
@@ -209,6 +219,7 @@
     {
       "name": "Dev Senpai",
       "description": "This site. A portfolio with a retrieval-augmented chatbot that answers questions from the resume and project notes: local MiniLM embeddings, BM25 with rank fusion and MMR, and Groq, Gemini, or ChatGPT behind one client with per-provider budgets and automatic fallback.",
+      "image": "/projects/dev-senpai.jpg",
       "tags": [
         "Next.js",
         "TypeScript",
@@ -361,6 +372,7 @@
     {
       "name": "RepoMind",
       "description": "Gives a Git repository a brain: turns a codebase into a typed knowledge graph of commits, PRs, issues, people, and decisions, then answers natural-language questions via multi-hop RAG.",
+      "image": "/projects/repomind.jpg",
       "href": "https://github.com/0PrashantYadav0/RepoMind",
       "tags": [
         "Python",
@@ -383,6 +395,7 @@
     {
       "name": "Splitwise over QUIC",
       "description": "A Splitwise clone that talks to the browser entirely over HTTP/3 + QUIC (UDP), paired with HTMX and SQLite — an experiment in modern low-latency web transport.",
+      "image": "/projects/splitwise-quic.jpg",
       "href": "https://github.com/0PrashantYadav0/splitwise-quic",
       "tags": [
         "Go",
@@ -549,6 +562,7 @@
     {
       "name": "End-to-End CI/CD Pipeline",
       "description": "A complete DevSecOps pipeline deploying a Maven app to Kubernetes with GitHub Actions and Jenkins, security scanning via Trivy, and code quality gates through SonarQube.",
+      "image": "/projects/cicd-pipeline.jpg",
       "href": "https://github.com/0PrashantYadav0/CICD-Pipeline-Project",
       "tags": [
         "Jenkins",
@@ -960,6 +974,7 @@
     {
       "name": "TechDocs",
       "description": "Hands-on technical deep dives that pair theory with runnable code and Mermaid diagrams, organised as a learning path from system-design fundamentals through networking, databases, security, and infrastructure to senior-level architecture judgement.",
+      "image": "/projects/techdocs.jpg",
       "tags": [
         "System Design",
         "Documentation",
