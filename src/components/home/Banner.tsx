@@ -340,7 +340,7 @@ export default function Banner() {
   }, []);
 
   return (
-    <div className="banner relative h-[176px] w-full overflow-hidden sm:h-[220px]">
+    <div className="banner relative h-[176px] w-full overflow-hidden sm:h-[220px] lg:h-[260px]">
       <canvas ref={ref} aria-hidden className="block h-full w-full [image-rendering:pixelated]" />
       <PixelClock className="absolute right-3 top-3" />
     </div>
