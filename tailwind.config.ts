@@ -59,7 +59,7 @@ const config: Config = {
         pixel: ["var(--font-pixel)", "Courier New", "monospace"],
       },
       maxWidth: {
-        site: "64rem",
+        site: "48.5rem",
       },
       spacing: {
         13: "3.25rem",
