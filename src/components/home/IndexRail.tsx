@@ -61,7 +61,7 @@ export default function IndexRail({ entries }: { entries: IndexEntry[] }) {
   }, [active]);
 
   return (
-    <nav aria-label="On this page" className="index-rail fixed top-[38vh] hidden w-44 2xl:block">
+    <nav aria-label="On this page" className="index-rail fixed top-[38vh] hidden w-44 xl:block">
       <p className="label mb-3">Index</p>
       <div className="relative pl-4">
         <span aria-hidden className="absolute bottom-0 left-0 top-0 w-px bg-border" />

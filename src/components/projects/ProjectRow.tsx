@@ -26,25 +26,24 @@ export default function ProjectRow({ project, layout }: Props) {
     <article
       className={cn(
         "group grid",
-        compact ? "gap-3" : "gap-4 sm:grid-cols-[14rem_1fr] sm:gap-6 md:grid-cols-[20rem_1fr] md:gap-8",
+        compact ? "gap-3" : "gap-4 sm:grid-cols-[13rem_1fr] sm:gap-6",
       )}
     >
       <a
         href={primary}
         target="_blank"
         rel="noopener noreferrer"
-        className="relative block aspect-[16/10] overflow-hidden rounded-md bg-secondary ring-1 ring-border transition-shadow duration-300 group-hover:ring-signal/60"
+        className={cn(
+          "relative block overflow-hidden rounded-md bg-secondary ring-1 ring-border",
+          compact ? "aspect-[4/3]" : "aspect-[16/10]",
+        )}
       >
         {image ? (
           <Image
             src={image}
             alt={`${name} screenshot`}
             fill
-            sizes={
-              compact
-                ? "(min-width: 640px) 30rem, 100vw"
-                : "(min-width: 768px) 20rem, (min-width: 640px) 14rem, 100vw"
-            }
+            sizes={compact ? "(min-width: 640px) 20rem, 100vw" : "(min-width: 640px) 13rem, 100vw"}
             className="object-cover object-top transition-transform duration-300 group-hover:scale-[1.03]"
           />
         ) : (

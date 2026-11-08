@@ -18,10 +18,7 @@ export default function ContactPage() {
           For roles, collaborations, or questions about anything on this site.
           Messages go straight to his inbox.
         </p>
-      </header>
-      {/* Details beside the form once the column is wide enough. */}
-      <div className="grid gap-12 md:grid-cols-[14rem_1fr] md:gap-10">
-        <dl className="flex flex-col gap-4 text-sm">
+        <dl className="mt-8 flex flex-col gap-4 text-sm">
           <div>
             <dt className="text-muted-foreground">Email</dt>
             <dd>
@@ -41,8 +38,8 @@ export default function ContactPage() {
             </dd>
           </div>
         </dl>
-        <ContactForm />
-      </div>
+      </header>
+      <ContactForm />
     </div>
   );
 }

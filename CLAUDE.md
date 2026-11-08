@@ -61,11 +61,11 @@ blue signal colour. Dark is the default theme; light mode is white.
   (`PKY / WORK`), dates, places, tech lists and captions. Silkscreen
   (`.font-pixel`) only for the banner clock. Loaded in `src/app/layout.tsx`
   via `next/font`.
-- Layout: one centred column, `max-w-site` (64rem), with dashed rails on
+- Layout: one centred column, `max-w-site` (44rem), with dashed rails on
   both edges (`.column`) and a `--gutter` variable for the side padding.
   Sections are separated by `src/components/layout/Rule.tsx`, a dashed rule
   that spans the viewport with a tick at each rail. On the home page an
-  `IndexRail` lists the sections in the right margin at `2xl` and up.
+  `IndexRail` lists the sections in the right margin at `xl` and up.
 - Ground: `src/components/layout/WorkbenchGrid.tsx` draws a faint line grid
   on a fixed canvas with a few blue traces running along it. It powers on
   from the centre on the first load of a tab session. Static under
